@@ -4,20 +4,19 @@
 #include <FlexLexer.h>
 %}
 %language "c++"
-
-%define api.token.constructor
-
 %defines "parser.hpp"
 %output "parser.cpp"
 
 %define api.parser.class {Parser}
-/* %define api.namespace {interpreter} */
+%define api.namespace {interpreter}
 %define api.value.type variant
 %parse-param {Scanner* scanner}
 
 %code requires
 {
-    class Scanner;
+    namespace interpreter {
+      class Scanner;
+    }
 }
 
 %code
@@ -88,6 +87,6 @@ function: FN IDENTIFIER'(' ')' '{' commands '}'
 
 %%
 
-void yy::Parser::error(const std::string& msg) {
+void interpreter::Parser::error(const std::string& msg) {
       std::cerr << msg << '\n';
 }
