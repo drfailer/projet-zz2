@@ -2,25 +2,31 @@
 
 <number> ::= '0'-'9'
 
-<name> ::= 'a'-'z'( <alpha> | '0'-'9' )*
+<identifier> ::= 'a'-'z'( <alpha> | '0'-'9' )*
 
 <range> ::= <number>".."<number>[ ".."<number> ]
 
-<type> ::= nbr | flt | chr | str | arr
+<nbr> ::= "nbr"
 
-<declaration> ::= <type> <name> [ "=" <value> ] ";"
+<flt> ::= "flt"
 
-<affectation> ::=  <name> "=" <value> ";"
+<chr> ::= "chr"
 
-<fncall> ::= <name>"(" [ <name>  ("," <name>)* ] ")" ";"
+<type> ::= <nbr> | <flt> | <chr>
 
-<parameter> ::= <type> <name>
+<declaration> ::= <type> <identifier> [ "=" <value> ] ";"
+
+<affectation> ::=  <identifier> "=" <value> ";"
+
+<fncall> ::= <identifier>"(" [ <identifier>  ("," <identifier>)* ] ")" ";"
+
+<parameter> ::= <type> <identifier>
 
 <parameters> ::= <parameter> [ "," <parameters> ]
 
 <if> ::= if <condition> "{"<instructions>"}" [ else "{" <instructions>"}" ]
 
-<for> ::= for <declaration> in (<name> | <range>) "{"<instructions>"}"
+<for> ::= for <declaration> in (<identifier> | <range>) "{"<instructions>"}"
 
 <while> ::= while <condition> "{" <instructions> "}"
 
@@ -34,4 +40,4 @@
 
 <instructions> ::= <instruction>+
 
-<function> ::= fn <name>"("<parameters>")" [ "->" <type> ] "{"<instructions>"}"
+<function> ::= fn <identifier>"("<parameters>")" [ "->" <type> ] "{"<instructions>"}"
