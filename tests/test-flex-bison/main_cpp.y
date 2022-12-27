@@ -40,17 +40,28 @@
 
 
 %%
+prog: commands
+    | stmts
+;
+
 commands: %empty
-  | command ';' commands
+  | command SEMI commands
+;
+
+stmts: %empty
+     | stmt stmts
 
 command:
   declaration { std::cout << "declaration" << std::endl; }
   | assignment {  std::cout << "assignment" << std::endl; }
-  | if {  std::cout << "if" << std::endl; }
-  | else {  std::cout << "else" << std::endl; }
-  | for {  std::cout << "for" << std::endl; }
-  | while {  std::cout << "while" << std::endl; }
-  | function {  std::cout << "fun" << std::endl; }
+;
+
+stmt:
+  if { std::cout << "stmt if" << std::endl; }
+  | else {  std::cout << "stmt else" << std::endl; }
+  | for { std::cout << "stmt for" << std::endl; }
+  | while {  std::cout << "stmt while" << std::endl; }
+  | function {  std::cout << "stmt fun" << std::endl; }
 ;
 
 type:
@@ -61,18 +72,18 @@ value:
   INT | FLOAT | CHAR
 ;
 
-assignment: IDENTIFIER '=' value SEMI
+assignment: IDENTIFIER '=' value
+;
 
 declaration:
-  type IDENTIFIER SEMI
-  | type assignment
+  type IDENTIFIER { std::cout << "declaration simple"; }
+  | type assignment { std::cout << "declaration assignment"; }
 ;
 
 if: IF '{' commands '}'
 ;
 
-
-else: ELSE '{' '}'
+else: ELSE '{' commands '}'
 ;
 
 for: FOR '{' commands '}'
@@ -82,11 +93,16 @@ while: WHILE '{' commands '}'
 ;
 
 function: FN IDENTIFIER'(' ')' '{' commands '}'
+{ std::cout << "function: " << $2 << std::endl; }
 ;
-
-
 %%
 
 void interpreter::Parser::error(const std::string& msg) {
       std::cerr << msg << '\n';
+}
+
+int main() {
+  interpreter::Scanner scanner{ std::cin, std::cerr };
+  interpreter::Parser parser{ &scanner };
+  parser.parse();
 }
