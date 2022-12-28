@@ -4,3 +4,4 @@ tests/test-flex-bison/main_cpp.output
 tests/test-flex-bison/main_cpp.tab.cc
 tests/test-flex-bison/main_cpp.tab.hh
 tests/test-flex-bison/stack.hh
+doc
