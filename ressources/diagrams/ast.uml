@@ -1,0 +1,32 @@
+@startuml
+skinparam classAttributeIconSize 0
+
+class AST {
+}
+
+AST *- Node
+
+abstract class Node {
++compile()
+}
+
+Node <|-- Statements
+Node <|-- Commands
+Node <|-- Function
+
+Commands <|-- Assignement
+Commands <|-- Declaration
+Commands <|-- IOAction
+Commands <|-- FunctionCall
+
+Statements <|-- Loop
+Statements <|-- If
+Statements <|-- Return
+
+Loop <|-- For
+Loop <|-- Foreach
+Loop <|-- While
+
+IOAction <|-- Print
+IOAction <|-- Read
+@enduml
