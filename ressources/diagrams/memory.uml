@@ -1,0 +1,24 @@
+@startuml
+skinparam classAttributeIconSize 0
+
+class Memory {
+  -memory: mem_t[100000]
+  +malloc()
+  +getValue()
+  +setValue()
+}
+
+class GC {
+  -memory: Memory
+  -contiguous: int
+  -nonContiguous: List<int>
+  +new()
+  +collect()
+  +defragment()
+}
+
+GC -- Memory : gère >
+
+note right of GC: "defragmentation possible si on a plus de place pour un tableau par exemple"
+
+@enduml
