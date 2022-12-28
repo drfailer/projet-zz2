@@ -31,70 +31,102 @@
 %token <char>       CHAR
 /* %nonassoc           ASSIGN */
 %token NBRT FLTT CHRT
-%token IF ELSE FOR WHILE FN
-%token SEMI
+%token IF ELSE FOR WHILE FN INCLUDE IN
+%token SEMI COMMA
+%token PRINT READ ADD MNS TMS DIV EQUAL DDOT
 %token ERROR
 %token <std::string> IDENTIFIER
 %token <int> NBR
 %token <double> FLT
 
-
 %%
-prog: commands
-    | stmts
-;
+program: %empty
+       | programElt program;
+
+programElt:
+       includes | functions | commands | statements
+       ;
+
+includes: %empty
+       | INCLUDE IDENTIFIER SEMI includes
+       ;
+
+functions: %empty
+         | function functions
+         ;
+
+function: FN IDENTIFIER'('')' block
+        | FN IDENTIFIER'('params')' block
+        ;
+
+params: %empty
+      | param COMMA params
+      ;
+
+param: type IDENTIFIER
+     ;
+
+type: NBRT | FLTT | CHRT
+    ;
+
+block: '{' code '}'
+     ;
+
+code: %empty | statements | commands
+    ;
 
 commands: %empty
-  | command SEMI commands
-;
+        | command SEMI commands
+        ;
 
-stmts: %empty
-     | stmt stmts
+command: funcall
+        | print
+        | read
+        | declaration
+        | assignement
+        ;
 
-command:
-  declaration { std::cout << "declaration" << std::endl; }
-  | assignment {  std::cout << "assignment" << std::endl; }
-;
+funcall: IDENTIFIER'('')'
+       | IDENTIFIER'('params')'
+       ;
 
-stmt:
-  if { std::cout << "stmt if" << std::endl; }
-  | else {  std::cout << "stmt else" << std::endl; }
-  | for { std::cout << "stmt for" << std::endl; }
-  | while {  std::cout << "stmt while" << std::endl; }
-  | function {  std::cout << "stmt fun" << std::endl; }
-;
+print: PRINT'('')'
+     ;
 
-type:
-  NBRT | FLTT | CHRT
-;
+read: READ'('')'
+     ;
 
-value:
-  INT | FLOAT | CHAR
-;
+declaration: type IDENTIFIER
+           | type assignement
+           ;
 
-assignment: IDENTIFIER '=' value
-;
+assignement: IDENTIFIER EQUAL value
+           ;
 
-declaration:
-  type IDENTIFIER { std::cout << "declaration simple"; }
-  | type assignment { std::cout << "declaration assignment"; }
-;
+value: INT | FLOAT | CHAR
+     ;
 
-if: IF '{' commands '}'
-;
+statements: %empty
+          | statement statements
+          ;
 
-else: ELSE '{' commands '}'
-;
+statement: if | for | while
+         ;
 
-for: FOR '{' commands '}'
-;
+if: IF block
+  | IF block ELSE
+  | IF block ELSE if
+  ;
 
-while: WHILE '{' commands '}'
-;
+for: FOR IDENTIFIER IN range block
+   ;
 
-function: FN IDENTIFIER'(' ')' '{' commands '}'
-{ std::cout << "function: " << $2 << std::endl; }
-;
+range: value DDOT value
+     | value DDOT value DDOT value
+     ;
+
+while: WHILE block
+     ;
 %%
 
 void interpreter::Parser::error(const std::string& msg) {
