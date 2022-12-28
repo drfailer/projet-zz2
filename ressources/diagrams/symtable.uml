@@ -1,0 +1,21 @@
+@startuml
+skinparam classAttributeIconSize 0
+
+class Symbol {
+  -name: string
+  -type: Type
+  -scope: ?
+  -address: int
+}
+
+class SymbolsTable {
+  -table: HashTable<Symbols>
+  +isDefined()
+  +install()
+  +delete()
+}
+
+SymbolsTable o-- Symbol
+
+note right of Symbol: pour le scope je sais pas trop pour l'instant
+@enduml

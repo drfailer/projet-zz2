@@ -7,16 +7,19 @@ class AST {
 AST *- Node
 
 abstract class Node {
-+compile()
++ {abstract} compile()
 }
 
 Node <|-- Statements
 Node <|-- Commands
 Node <|-- Function
+Node <|-- Includes
 
 Commands <|-- Assignement
 Commands <|-- Declaration
 Commands <|-- IOAction
+Commands <|-- ArithmeticOperation
+Commands <|-- BooleanOperation
 Commands <|-- FunctionCall
 
 Statements <|-- Loop

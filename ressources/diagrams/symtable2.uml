@@ -1,0 +1,25 @@
+@startuml
+skinparam classAttributeIconSize 0
+
+class Symbol {
+  -name: string
+  -type: Type
+  -scope: SymbolsTable
+  -address: int
+}
+
+class SymbolsTable {
+  -table: HashTable<SymbolsTable>
+  -scopeElts: HashTable<Symbol>
+  +isDefined()
+  +install()
+  +delete()
+}
+
+SymbolsTable o-- Symbol
+
+note "là la table des symboles est une liste de sous tables qui contiennent les\n\
+  symboles pour chaque scope, en gros, tout ce qui est déclaré au niveau le plus\n\
+  haut sera des fonction est des variables globlales et au plus bas, ce sera des\n\
+  variables statiques, ..." as N1
+@enduml
