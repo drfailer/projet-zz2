@@ -10,10 +10,15 @@ abstract class Node {
 + {abstract} compile()
 }
 
+class Function {
+  -returnType: Type
+  -returnValue: type_t
+}
+
 Node <|-- Statements
 Node <|-- Commands
-Node <|-- Function
 Node <|-- Includes
+Node <|-- Block
 
 Commands <|-- Assignement
 Commands <|-- Declaration
@@ -24,7 +29,9 @@ Commands <|-- FunctionCall
 
 Statements <|-- Loop
 Statements <|-- If
-Statements <|-- Return
+
+Statements *-- Block
+Statements <|-- Function
 
 Loop <|-- For
 Loop <|-- Foreach
