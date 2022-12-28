@@ -55,11 +55,11 @@ functions: %empty
          | function functions
          ;
 
-function: FN IDENTIFIER'('')' block
+function: FN IDENTIFIER'('')' block { std::cout << "fonction: " << $2 << std::endl; }
         | FN IDENTIFIER'('params')' block
         ;
 
-params: %empty
+params: param
       | param COMMA params
       ;
 
@@ -72,7 +72,9 @@ type: NBRT | FLTT | CHRT
 block: '{' code '}'
      ;
 
-code: %empty | statements | commands
+code: %empty
+    | statements
+    | commands
     ;
 
 commands: %empty
@@ -103,7 +105,9 @@ declaration: type IDENTIFIER
 assignement: IDENTIFIER EQUAL value
            ;
 
-value: INT | FLOAT | CHAR
+value: INT { std::cout << "value: " << $1 << std::endl; }
+     | FLOAT { std::cout << "value: " << $1 << std::endl;  }
+     | CHAR { std::cout << "value: " << $1 << std::endl;  }
      ;
 
 statements: %empty
