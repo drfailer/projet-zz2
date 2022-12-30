@@ -8,21 +8,34 @@ ASTNode::~ASTNode() {}
 
 /* -------------------------------------------------------------------------- */
 
-void Function::afficher() {
+void Function::display() {
   std::cout << "(fun: " << id << std::endl;
-  instructions->afficher();
+  Statement::display();
   std::cout << ")" << std::endl;
 }
 
-Function::Function(std::string nid, Block* ninstructions):
-  id(nid),
-  instructions(ninstructions)
+Function::Function(std::string nid, Block* instructions):
+  Statement(instructions), id(nid)
 {
 }
 
 Function::~Function()
 {
-  delete instructions;
+}
+
+/* -------------------------------------------------------------------------- */
+
+Include::Include(std::string name): libName(name)
+{
+}
+
+Include::~Include()
+{
+}
+
+void Include::display()
+{
+  std::cout << "(include: " << libName << ")" << std::endl;
 }
 
 /* -------------------------------------------------------------------------- */
@@ -38,17 +51,17 @@ Block::~Block()
     delete o;
 }
 
-void Block::ajoutOp(ASTNode* operation)
+void Block::addOp(ASTNode* operation)
 {
   operations.push_back(operation);
 }
 
-void Block::afficher()
+void Block::display()
 {
   std::cout << "  (block:" << std::endl;
   for (ASTNode* o: operations) {
     std::cout << "    ";
-    o->afficher();
+    o->display();
   }
   std::cout << "  )" << std::endl;
 }
@@ -78,7 +91,7 @@ Assignement::Assignement(std::string nvar, char v)
 
 Assignement::~Assignement() {}
 
-void Assignement::afficher()
+void Assignement::display()
 {
   // TODO: trouver mieux qu'un switch
   switch (type) {
@@ -105,23 +118,107 @@ Declaration::Declaration(std::string nvar, Type ntype):
 
 Declaration::~Declaration() {}
 
-void Declaration::afficher()
+void Declaration::display()
 {
   std::cout << "(declaration: " << var << " " << type << ")" << std::endl;
 }
 
 /* -------------------------------------------------------------------------- */
 
-int main(void)
+BuildinFunctionCall::BuildinFunctionCall(std::string name, std::string p):
+  functionName(name), params(p)
 {
-  Declaration* d = new Declaration{"a", NBR};
-  Assignement* a = new Assignement("a", (long long) 0);
-  Block *b = new Block();
-  b->ajoutOp(d);
-  b->ajoutOp(a);
-  Function *f = new Function("main", b);
-  f->afficher();
+}
 
-  delete f;
-  return 0;
+BuildinFunctionCall::~BuildinFunctionCall() {}
+
+void BuildinFunctionCall::display()
+{
+  std::cout << "(fncall: " << functionName << " [" << params << "])" << std::endl;
+}
+
+/* -------------------------------------------------------------------------- */
+
+Statement::Statement(Block* b): block(b) {}
+
+Statement::~Statement()
+{
+  delete block;
+}
+
+void Statement::display()
+{
+  block->display();
+}
+
+/* -------------------------------------------------------------------------- */
+
+If::If(std::string c, Block* b): Statement(b), condition(c)
+{
+}
+
+If::~If()
+{
+}
+
+void If::display()
+{
+  std::cout << "(if: " << condition << std::endl;
+  Statement::display();
+  std::cout << ")" << std::endl;
+}
+
+/* -------------------------------------------------------------------------- */
+
+For::For(std::string v, Block* b): Statement(b), var(v)
+{
+}
+
+For::For(std::string v, long long be, long long e, long long s, Block* b):
+  For(v, b)
+{
+  begin.i = be;
+  end.i = e;
+  step.i = s;
+  type = NBR;
+}
+
+For::For(std::string v, double be, double e, double s, Block* b):
+  For(v, b)
+{
+  begin.f = be;
+  end.f = e;
+  step.f = s;
+  type = FLT;
+}
+
+For::~For()
+{
+}
+
+void For::display()
+{
+  if (type == NBR)
+    std::cout << "(if: " << var << " " << begin.i << ".." << end.i << ".." << step.i << std::endl;
+  else
+    std::cout << "(flt: " << var << " " << begin.f << ".." << end.f << ".." << step.f << std::endl;
+  Statement::display();
+  std::cout << ")" << std::endl;
+}
+
+/* -------------------------------------------------------------------------- */
+
+While::While(std::string c, Block* b): Statement(b), condition(c)
+{
+}
+
+While::~While()
+{
+}
+
+void While::display()
+{
+  std::cout << "(while: " << condition << std::endl;
+  Statement::display();
+  std::cout << ")" << std::endl;
 }

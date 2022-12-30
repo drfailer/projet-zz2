@@ -2,5 +2,5 @@ CC = g++
 CFLAGS = -Wall -Wextra -Wuninitialized
 LDFLAGS =
 
-prog: AST.cpp
+test1: test1.cpp AST.cpp
 	$(CC) $(CFLAGS) -o $@ $^ $(LDFLAGS)

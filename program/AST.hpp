@@ -25,7 +25,7 @@ enum Type
 class ASTNode
 {
   public:
-    virtual void afficher() = 0;
+    virtual void display() = 0;
     virtual ~ASTNode() = 0;
 };
 
@@ -35,22 +35,10 @@ class Block : public ASTNode
     std::list<ASTNode*> operations;
 
   public:
-    void ajoutOp(ASTNode*);
-    void afficher() override;
+    void addOp(ASTNode*);
+    void display() override;
     Block();
     ~Block();
-};
-
-class Function : public ASTNode
-{
-  private:
-    std::string id;
-    Block* instructions;
-
-  public:
-    void afficher() override;
-    Function(std::string, Block*);
-    ~Function();
 };
 
 class Include : public ASTNode
@@ -59,7 +47,7 @@ class Include : public ASTNode
     std::string libName;
 
   public:
-    void afficher() override;
+    void display() override;
     Include(std::string);
     ~Include();
 };
@@ -72,7 +60,7 @@ class Include : public ASTNode
 /* class Command : public ASTNode */
 /* { */
 /*   public: */
-/*     virtual void afficher() override; */
+/*     virtual void display() override; */
 /*     virtual ~Command(); */
 /* }; */
 
@@ -84,7 +72,7 @@ class Assignement : public ASTNode
     Type type;
 
   public:
-    void afficher() override;
+    void display() override;
     Assignement(std::string, long long);
     Assignement(std::string, double);
     Assignement(std::string, char);
@@ -98,11 +86,12 @@ class Declaration : public ASTNode
     Type type;
 
   public:
-    void afficher() override;
+    void display() override;
     Declaration(std::string, Type);
     ~Declaration();
 };
 
+// TODO: may be an abstract class and have one class per function will be esier
 class BuildinFunctionCall : public ASTNode
 {
   private:
@@ -112,7 +101,7 @@ class BuildinFunctionCall : public ASTNode
   public:
     BuildinFunctionCall(std::string, std::string);
     ~BuildinFunctionCall();
-    void afficher() override;
+    void display() override;
 };
 
 /******************************************************************************/
@@ -122,12 +111,23 @@ class BuildinFunctionCall : public ASTNode
 class Statement : public ASTNode
 {
   private:
-    Block block;
+    Block* block;
 
   public:
-    Statement(Block);
+    Statement(Block*);
     ~Statement();
-    void afficher() override;
+    void display() override;
+};
+
+class Function : public Statement
+{
+  private:
+    std::string id;
+
+  public:
+    void display() override;
+    Function(std::string, Block*);
+    ~Function();
 };
 
 // TODO: else | else if
@@ -138,43 +138,68 @@ class If : public Statement
     std::string condition; // TODO: put real conditions
 
   public:
-    If(std::string, Block);
+    If(std::string, Block*);
     ~If();
-    void afficher() override;
+    void display() override;
 };
 
 class For : public Statement
 {
   private:
     std::string var;
+    Type type;
     type_t begin;
     type_t end;
     type_t step;
 
   public:
-    For(std::string, type_t, type_t, type_t, Block);
+    For(std::string, Block*);
+    For(std::string, long long, long long, long long, Block*);
+    For(std::string, double, double, double, Block*);
     ~For();
-    void afficher() override;
+    void display() override;
 };
 
 class While : public Statement
 {
   private:
-    std::string condtion; // TODO: create condition class
+    std::string condition; // TODO: create condition class
 
   public:
-    While(std::string, Block);
+    While(std::string, Block*);
     ~While();
-    void afficher() override;
+    void display() override;
 };
+
+/******************************************************************************/
+/*                                  program                                   */
+/******************************************************************************/
+
+class Program: public ASTNode
+{
+  private:
+    std::list<Include*> includes;
+    std::list<Function*> functions;
+
+  public:
+    Program();
+    ~Program();
+    void addInclude(Include*);
+    void addFunctioin(Function*);
+    void display() override;
+};
+
+/******************************************************************************/
+/*                                    AST                                     */
+/******************************************************************************/
 
 class AST
 {
   private:
-    ASTNode* program;
+    Program* program;
 
   public:
-    void afficher();
+    void display();
     AST(ASTNode&);
     ~AST();
 };
