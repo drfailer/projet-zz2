@@ -1,3 +1,4 @@
+#pragma once
 #include <list>
 #include <string>
 
@@ -5,7 +6,7 @@
 
 union type_t
 {
-  int i;
+  long long i;
   double f;
   char c;
 };
@@ -21,52 +22,61 @@ enum Type
 /*                                    node                                    */
 /******************************************************************************/
 
-class Node
+class ASTNode
 {
   public:
-    virtual void afficher();
+    virtual void afficher() = 0;
+    virtual ~ASTNode() = 0;
 };
 
-class Block : public Node
+class Block : public ASTNode
 {
   private:
-    std::list<Node> operations;
+    std::list<ASTNode*> operations;
 
   public:
-    void ajoutOp(Node);
+    void ajoutOp(ASTNode*);
     void afficher() override;
     Block();
+    ~Block();
 };
 
-class Function : public Node
+class Function : public ASTNode
 {
   private:
     std::string id;
-    Block instructions;
+    Block* instructions;
 
   public:
     void afficher() override;
-    Function(std::string, Block);
+    Function(std::string, Block*);
+    ~Function();
 };
 
-class Include : public Node
+class Include : public ASTNode
 {
   private:
     std::string libName;
 
   public:
     void afficher() override;
+    Include(std::string);
+    ~Include();
 };
 
 /******************************************************************************/
 /*                                 commands                                   */
 /******************************************************************************/
 
-class Command : public Node
-{
-};
+// NOTE: may be not as usefull for the implementation
+/* class Command : public ASTNode */
+/* { */
+/*   public: */
+/*     virtual void afficher() override; */
+/*     virtual ~Command(); */
+/* }; */
 
-class Assignement : public Command
+class Assignement : public ASTNode
 {
   private:
     std::string var;
@@ -75,10 +85,13 @@ class Assignement : public Command
 
   public:
     void afficher() override;
-    Assignement(std::string, type_t, Type);
+    Assignement(std::string, long long);
+    Assignement(std::string, double);
+    Assignement(std::string, char);
+    ~Assignement();
 };
 
-class Declaration : public Command
+class Declaration : public ASTNode
 {
   private:
     std::string var;
@@ -86,15 +99,19 @@ class Declaration : public Command
 
   public:
     void afficher() override;
+    Declaration(std::string, Type);
+    ~Declaration();
 };
 
-class BuildinFunctionCall : public Command
+class BuildinFunctionCall : public ASTNode
 {
   private:
     std::string functionName;
     std::string params; // TODO: get all params
 
   public:
+    BuildinFunctionCall(std::string, std::string);
+    ~BuildinFunctionCall();
     void afficher() override;
 };
 
@@ -102,12 +119,14 @@ class BuildinFunctionCall : public Command
 /*                                 statements                                 */
 /******************************************************************************/
 
-class Statement : public Node
+class Statement : public ASTNode
 {
   private:
     Block block;
 
   public:
+    Statement(Block);
+    ~Statement();
     void afficher() override;
 };
 
@@ -119,6 +138,8 @@ class If : public Statement
     std::string condition; // TODO: put real conditions
 
   public:
+    If(std::string, Block);
+    ~If();
     void afficher() override;
 };
 
@@ -131,6 +152,8 @@ class For : public Statement
     type_t step;
 
   public:
+    For(std::string, type_t, type_t, type_t, Block);
+    ~For();
     void afficher() override;
 };
 
@@ -140,15 +163,19 @@ class While : public Statement
     std::string condtion; // TODO: create condition class
 
   public:
+    While(std::string, Block);
+    ~While();
     void afficher() override;
 };
 
 class AST
 {
   private:
-    Node program;
+    ASTNode* program;
 
   public:
     void afficher();
+    AST(ASTNode&);
+    ~AST();
 };
 

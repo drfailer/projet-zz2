@@ -1,50 +1,82 @@
 #include "AST.hpp"
 #include <iostream>
+#include <ostream>
 
 // TODO: create multiple files
+
+ASTNode::~ASTNode() {}
 
 /* -------------------------------------------------------------------------- */
 
 void Function::afficher() {
   std::cout << "(fun: " << id << std::endl;
-  instructions.afficher();
+  instructions->afficher();
   std::cout << ")" << std::endl;
 }
 
-Function::Function(std::string nid, Block ninstructions):
+Function::Function(std::string nid, Block* ninstructions):
   id(nid),
   instructions(ninstructions)
 {
+}
+
+Function::~Function()
+{
+  delete instructions;
 }
 
 /* -------------------------------------------------------------------------- */
 
 Block::Block()
 {
-  operations = std::list<Node>();
+  operations = std::list<ASTNode*>();
 }
 
-void Block::ajoutOp(Node operation)
+Block::~Block()
+{
+  for (ASTNode* o : operations)
+    delete o;
+}
+
+void Block::ajoutOp(ASTNode* operation)
 {
   operations.push_back(operation);
 }
 
 void Block::afficher()
 {
-  std::cout << "(block:" << std::endl;
-  for (Node o: operations) {
-    std::cout << "\t";
-    o.afficher();
+  std::cout << "  (block:" << std::endl;
+  for (ASTNode* o: operations) {
+    std::cout << "    ";
+    o->afficher();
   }
-  std::cout << ")" << std::endl;
+  std::cout << "  )" << std::endl;
 }
 
 /* -------------------------------------------------------------------------- */
 
-Assignement::Assignement(std::string nvar, type_t v, Type t):
-  var(nvar), value(v), type(t)
+Assignement::Assignement(std::string nvar, long long v)
 {
+  var = nvar;
+  value.i = v;
+  type = NBR;
 }
+
+Assignement::Assignement(std::string nvar, double v)
+{
+  var = nvar;
+  value.f = v;
+  type = FLT;
+}
+
+Assignement::Assignement(std::string nvar, char v)
+{
+  var = nvar;
+  value.c = v;
+  type = CHR;
+}
+
+Assignement::~Assignement() {}
 
 void Assignement::afficher()
 {
@@ -67,8 +99,29 @@ void Assignement::afficher()
 
 /* -------------------------------------------------------------------------- */
 
+Declaration::Declaration(std::string nvar, Type ntype):
+  var(nvar), type(ntype)
+{}
+
+Declaration::~Declaration() {}
+
+void Declaration::afficher()
+{
+  std::cout << "(declaration: " << var << " " << type << ")" << std::endl;
+}
+
+/* -------------------------------------------------------------------------- */
+
 int main(void)
 {
-  std::cout << "Hello, World!" << std::endl;
+  Declaration* d = new Declaration{"a", NBR};
+  Assignement* a = new Assignement("a", (long long) 0);
+  Block *b = new Block();
+  b->ajoutOp(d);
+  b->ajoutOp(a);
+  Function *f = new Function("main", b);
+  f->afficher();
+
+  delete f;
   return 0;
 }
