@@ -24,8 +24,10 @@ int main(void)
   b->addOp(w);
   b->addOp(i);
   Function *ff = new Function("main", b);
-  ff->display();
-
-  delete ff;
+  Include *inc = new Include("test");
+  Program p {};
+  p.addInclude(inc);
+  p.addFunction(ff);
+  p.display();
   return 0;
 }

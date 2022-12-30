@@ -222,3 +222,37 @@ void While::display()
   Statement::display();
   std::cout << ")" << std::endl;
 }
+
+/* -------------------------------------------------------------------------- */
+
+Program::Program()
+{
+  includes = std::list<Include*>();
+  functions = std::list<Function*>();
+}
+
+Program::~Program()
+{
+  for (Include* i : includes)
+    delete i;
+  for (Function* f : functions)
+    delete f;
+}
+
+void Program::addInclude(Include *i) {
+  includes.push_back(i);
+}
+
+void Program::addFunction(Function *f) {
+  functions.push_back(f);
+}
+
+void Program::display()
+{
+  for (Include* i : includes)
+    i->display();
+  for (Function* f : functions)
+    f->display();
+}
+
+/* -------------------------------------------------------------------------- */

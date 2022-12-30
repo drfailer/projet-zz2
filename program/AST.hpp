@@ -185,7 +185,7 @@ class Program: public ASTNode
     Program();
     ~Program();
     void addInclude(Include*);
-    void addFunctioin(Function*);
+    void addFunction(Function*);
     void display() override;
 };
 
@@ -193,14 +193,14 @@ class Program: public ASTNode
 /*                                    AST                                     */
 /******************************************************************************/
 
-class AST
-{
-  private:
-    Program* program;
+/* class AST */
+/* { */
+/*   private: */
+/*     Program* program; */
 
-  public:
-    void display();
-    AST(ASTNode&);
-    ~AST();
-};
+/*   public: */
+/*     void display(); */
+/*     AST(ASTNode&); */
+/*     ~AST(); */
+/* }; */
 
