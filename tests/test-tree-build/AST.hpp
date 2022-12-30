@@ -123,6 +123,7 @@ class Function : public Statement
 {
   private:
     std::string id;
+    // TODO: add parameters
 
   public:
     void display() override;
