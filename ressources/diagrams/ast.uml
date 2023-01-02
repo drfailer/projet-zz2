@@ -1,42 +1,94 @@
 @startuml
 skinparam classAttributeIconSize 0
 
-class AST {
+class ProgramBuilder {
+  -commands: stack<Command>
+  -blocks: stack<Block>
+  -statements: stack<Statement>
+  +add(Command)
+  +buildStatement()
+  +buildFunction()
 }
 
-AST *- Node
+ProgramBuilder o-- Program
 
-abstract class Node {
+AST *- ASTNode
+
+abstract class ASTNode {
 + {abstract} compile()
+}
+
+class Block {
+  -operations: list<ASTNode>
+}
+
+class Include {
+  -libName: string
+}
+
+class Assignement {
+  -var: string
+  -value: type_t
+  -type: Type
+}
+
+class Declaration {
+  -var: string
+  -type: Type
+}
+
+class FunctionCall {
+  -name: string
+  -params: list<string>
 }
 
 class Function {
   -returnType: Type
   -returnValue: type_t
+  -name: string
 }
 
-Node <|-- Statements
-Node <|-- Commands
-Node <|-- Includes
-Node <|-- Block
+class If {
+  -condition: BooleanOperation
+}
 
-Commands <|-- Assignement
-Commands <|-- Declaration
-Commands <|-- IOAction
-Commands <|-- ArithmeticOperation
-Commands <|-- BooleanOperation
-Commands <|-- FunctionCall
+class For {
+  -var: string
+  -type: Type
+  -begin: type_t
+  -end: type_t
+  -step: type_t
+}
 
-Statements <|-- Loop
-Statements <|-- If
+class While {
+  -condition: BooleanOperation
+}
 
-Statements *-- Block
-Statements <|-- Function
+ASTNode <|-- Statement
+ASTNode <|-- Command
+ASTNode <|-- Include
+ASTNode <|-- Block
+
+Command <|-- Assignement
+Command <|-- Declaration
+Command <|-- ArithmeticOperation
+Command <|-- BooleanOperation
+Command <|-- FunctionCall
+Command <|-- IOAction
+
+Statement <|-- Loop
+Statement <|-- If
+
+Statement *-- Block
+Statement <|-- Function
 
 Loop <|-- For
 Loop <|-- Foreach
 Loop <|-- While
 
-IOAction <|-- Print
-IOAction <|-- Read
+IOAction <|-- read
+IOAction <|-- print
+
+Program *-- Include
+Program *-- Function
 @enduml
