@@ -74,3 +74,17 @@ utilise la macro `YY_DECL` (cf: **The generated scanner** dans la doc).
 ## Bison
 
 TODO
+
+### Génération du code
+
+Pour la génération du code, on a 2 options:
+- utiliser des instruction très simple => sorte de bytecode
+- créer un code objet où tous les éléments sont des objets
+
+Choix de la représentation objet:
+- plus simple à comprendre et à visualiser
+- plus compliquer à générer: on peut générer du bytecode au fil de l'exécution
+  du parser, en utilisant des `goto` pour sauter de blocks d'instructions en
+  blocks d'instructions. Pour le code objet, les éléments à l'intérieurs des
+  block doivent-être créés avant le block, et le block est détecté avant les
+  instructions, il faut donc stoquer les instructions.

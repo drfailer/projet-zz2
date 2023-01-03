@@ -24,7 +24,7 @@
 {
     #include "lexer.hpp"
     #define yylex(x) scanner->lex(x)
-    Program program;
+    ProgramBuilder pb;
 }
 
 %token              EOL LPAREN RPAREN
@@ -51,7 +51,10 @@ programElt:
        ;
 
 includes: %empty
-       | INCLUDE IDENTIFIER SEMI includes { std::cout << "new include id: " << $2 << std::endl; }
+       | INCLUDE IDENTIFIER SEMI includes {
+         std::cout << "new include id: " << $2 << std::endl;
+         pb.addInclude(new Include($2));
+       }
        ;
 
 functions: %empty
@@ -102,7 +105,7 @@ read: READ'('')' { std::cout << "new read" << std::endl; }
      ;
 
 declaration: type IDENTIFIER { std::cout << "new declaration: " << $2 << std::endl; }
-           | type assignement
+           | type IDENTIFIER EQUAL value
            ;
 
 assignement: IDENTIFIER EQUAL value { std::cout << "new assignement: " << $1 << std::endl; }

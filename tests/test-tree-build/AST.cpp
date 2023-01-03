@@ -1,5 +1,6 @@
 #include "AST.hpp"
 #include <iostream>
+#include <list>
 #include <ostream>
 
 // TODO: create multiple files
@@ -43,6 +44,11 @@ void Include::display()
 Block::Block()
 {
   operations = std::list<ASTNode*>();
+}
+
+Block::Block(std::list<ASTNode*> ops)
+{
+  operations = ops;
 }
 
 Block::~Block()
@@ -253,6 +259,43 @@ void Program::display()
     i->display();
   for (Function* f : functions)
     f->display();
+}
+
+/* -------------------------------------------------------------------------- */
+
+ProgramBuilder::ProgramBuilder()
+{
+  program = new Program();
+}
+
+ProgramBuilder::~ProgramBuilder()
+{
+  delete program;
+}
+
+void ProgramBuilder::display()
+{
+  program->display();
+}
+
+void ProgramBuilder::addInclude(Include *i)
+{
+  program->addInclude(i);
+}
+
+void ProgramBuilder::pushCommand(ASTNode * command)
+{
+  blocks.back()->addOp(command);
+}
+
+// FIXME: unsafe operations
+void ProgramBuilder::createBlock()
+{
+  blocks.push_back(new Block());
+}
+
+void ProgramBuilder::createIf()
+{
 }
 
 /* -------------------------------------------------------------------------- */

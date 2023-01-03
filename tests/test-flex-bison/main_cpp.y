@@ -69,12 +69,12 @@ param: type IDENTIFIER
 type: NBRT | FLTT | CHRT
     ;
 
-block: '{' code '}'
+block: '{' code '}' { std::cout << "block d'instruction" << std::endl; }
      ;
 
 code: %empty
-    | statements
-    | commands
+    | statements code
+    | commands code
     ;
 
 commands: %empty
@@ -98,16 +98,16 @@ print: PRINT'('')'
 read: READ'('')'
      ;
 
-declaration: type IDENTIFIER
-           | type assignement
+declaration: type IDENTIFIER { std::cout << "déclaration de: " << $2 << std::endl; }
+           | type assignement { std::cout << "declaration assignement" << std::endl; }
            ;
 
-assignement: IDENTIFIER EQUAL value
+assignement: IDENTIFIER EQUAL value { std::cout << "assignement de: " << $1 << std::endl; }
            ;
 
 value: INT { std::cout << "value: " << $1 << std::endl; }
-     | FLOAT { std::cout << "value: " << $1 << std::endl;  }
-     | CHAR { std::cout << "value: " << $1 << std::endl;  }
+     | FLOAT { std::cout << "value: " << $1 << std::endl; }
+     | CHAR { std::cout << "value: " << $1 << std::endl; }
      ;
 
 statements: %empty
@@ -117,9 +117,9 @@ statements: %empty
 statement: if | for | while
          ;
 
-if: IF block
-  | IF block ELSE
-  | IF block ELSE if
+if: IF block { std::cout << "if" << std::endl; }
+  | if ELSE if { std::cout << "else if" << std::endl; }
+  | if ELSE block { std::cout << "else" << std::endl; }
   ;
 
 for: FOR IDENTIFIER IN range block

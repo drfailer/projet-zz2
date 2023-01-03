@@ -37,6 +37,7 @@ class Block : public ASTNode
   public:
     void addOp(ASTNode*);
     void display() override;
+    Block(std::list<ASTNode*>);
     Block();
     ~Block();
 };
@@ -201,14 +202,23 @@ class Program: public ASTNode
 // commandes, qu'on peut combiner dans un block, block qu'on peut ajouter à un
 // statement qui sera lui aussi ajouter à une liste pour pouvoir créer une
 // fonction ou être ajouter à un autre block.
-class AST
+class ProgramBuilder
 {
   private:
     Program* program;
+    std::list<Block*> blocks;
+    std::list<Statement*> statements;
 
   public:
     void display();
-    AST(ASTNode&);
-    ~AST();
+    void pushCommand(ASTNode*);
+    void createBlock();
+    void createIf(); // TODO: gérer les conditions
+    void createFor();
+    void createWhile();
+    void createFunction();
+    void addInclude(Include*);
+    ProgramBuilder();
+    ~ProgramBuilder();
 };
 
