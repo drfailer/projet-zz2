@@ -49,38 +49,51 @@ program: %empty
        | programElt program;
 
 programElt:
-       includes {
+       includes
+       {
          std::cout << "create new include" << std::endl;
        }
-       | functions {
+       |
+       functions
+       {
          std::cout << "create new function" << std::endl;
        }
        ;
 
 includes: %empty
-       | INCLUDE IDENTIFIER SEMI  {
+       |
+       INCLUDE IDENTIFIER SEMI
+       {
          std::cout << "new include id: " << $2 << std::endl;
          pb.addInclude(new Include($2));
-       } includes
+       }
+       includes
        ;
 
 functions: %empty
          | function functions
          ;
 
-function: FN IDENTIFIER'('')' {
+function:
+        FN IDENTIFIER'('')'
+        {
           std::cout << "new function id: " << $2 << std::endl;
           pb.createBlock();
           lastFunctionName = $2;
-        } block {
+        }
+        block
+        {
           pb.createFunction(lastFunctionName);
         }
-        | FN IDENTIFIER'('params')' {
+        |
+        FN IDENTIFIER'('params')'
+        {
           std::cout << "new function id: " << $2 << std::endl;
           pb.createBlock();
           lastFunctionName = $2;
         }
-        block {
+        block
+        {
           pb.createFunction(lastFunctionName);
         }
         ;
@@ -89,16 +102,26 @@ params: param
       | param COMMA params
       ;
 
-param: type IDENTIFIER { std::cout << "new param: " << $2 << std::endl; }
+param:
+     type IDENTIFIER
+     {
+       std::cout << "new param: " << $2 << std::endl;
+     }
      ;
 
-type: NBRT {
+type:
+    NBRT
+    {
       lastType = NBR;
     }
-    | FLTT {
+    |
+    FLTT
+    {
       lastType = FLT;
     }
-    | CHRT {
+    |
+    CHRT
+    {
       lastType = CHR;
     }
     ;
@@ -122,82 +145,124 @@ command: funcall
         | assignement
         ;
 
-funcall: IDENTIFIER'('')' { std::cout << "new funcall: " << $1 << std::endl; }
-       | IDENTIFIER'('params')' { std::cout << "new funcall: " << $1 << std::endl; }
+funcall:
+       IDENTIFIER'('')'
+       {
+         std::cout << "new funcall: " << $1 << std::endl;
+       }
+       |
+       IDENTIFIER'('params')'
+       {
+         std::cout << "new funcall: " << $1 << std::endl;
+       }
        ;
 
-print: PRINT'('')' { std::cout << "new print" << std::endl; }
+print:
+     PRINT'('')'
+     {
+       std::cout << "new print" << std::endl;
+     }
      ;
 
-read: READ'('')' { std::cout << "new read" << std::endl; }
+read:
+    READ'('')'
+    {
+      std::cout << "new read" << std::endl;
+    }
      ;
 
-declaration: type IDENTIFIER {
-               std::cout << "new declaration: " << $2 << std::endl;
-               pb.pushCommand(new Declaration($2, lastType));
-             }
-           | type IDENTIFIER EQUAL value {
-               pb.pushCommand(new Declaration($2, lastType));
-             }
+declaration:
+           type IDENTIFIER
+           {
+             std::cout << "new declaration: " << $2 << std::endl;
+             pb.pushCommand(new Declaration($2, lastType));
+           }
+           |
+           type IDENTIFIER EQUAL value
+           {
+             pb.pushCommand(new Declaration($2, lastType));
+           }
            ;
 
-assignement: IDENTIFIER EQUAL value {
-               std::cout << "new assignement: " << $1 << std::endl;
-               pb.pushCommand(new Assignement($1, lastValue));
-             }
+assignement:
+           IDENTIFIER EQUAL value
+           {
+             std::cout << "new assignement: " << $1 << std::endl;
+             pb.pushCommand(new Assignement($1, lastValue));
+           }
            ;
 
-value: INT {
-         std::cout << "new int: " << $1 << std::endl;
-         lastValue.i = $1;
-       }
-     | FLOAT {
-         std::cout << "new double: " << $1 << std::endl;
-         lastValue.f = $1;
-       }
-     | CHAR {
-         std::cout << "new char: " << $1 << std::endl;
-         lastValue.c = $1;
-       }
+value:
+     INT
+     {
+       std::cout << "new int: " << $1 << std::endl;
+       lastValue.i = $1;
+     }
+     |
+     FLOAT
+     {
+       std::cout << "new double: " << $1 << std::endl;
+       lastValue.f = $1;
+     }
+     |
+     CHAR
+     {
+       std::cout << "new char: " << $1 << std::endl;
+       lastValue.c = $1;
+     }
      ;
 
 statements: %empty
           | statement statements
           ;
 
-statement: if {
-             std::cout << "new if" << std::endl;
-             pb.createIf();
-           }
-         | for {
-             std::cout << "new for" << std::endl;
-             pb.createFor();
-           }
-         | while {
-             std::cout << "new for" << std::endl;
-             pb.createWhile();
-           }
+statement: if
+         {
+           std::cout << "new if" << std::endl;
+           pb.createIf();
+         }
+         |
+         for
+         {
+           std::cout << "new for" << std::endl;
+           pb.createFor();
+         }
+         |
+         while
+         {
+           std::cout << "new for" << std::endl;
+           pb.createWhile();
+         }
          ;
 
-if: IF {
-      std::cout << "---- if ----" << std::endl;
-      pb.createBlock();
-    }
-  block {
-      std::cout << "if" << std::endl;
-    }
-  | if ELSE if {
-      std::cout << "else if" << std::endl;
-    }
-  | if ELSE block {
-      std::cout << "else" << std::endl;
-    }
+if: IF
+  {
+    std::cout << "---- if ----" << std::endl;
+    pb.createBlock();
+  }
+  block
+  {
+    std::cout << "if" << std::endl;
+  }
+  |
+  if ELSE if
+  {
+    std::cout << "else if" << std::endl;
+  }
+  |
+  if ELSE block
+  {
+    std::cout << "else" << std::endl;
+  }
   ;
 
-for: FOR {
-        pb.createBlock();
-     }
-   IDENTIFIER IN range block {
+for:
+   FOR
+   {
+      pb.createBlock();
+   }
+   IDENTIFIER IN range block
+   {
      std::cout << "in for" << std::endl;
    }
    ;
@@ -206,10 +271,15 @@ range: value DDOT value
      | value DDOT value DDOT value
      ;
 
-while: WHILE {
+while:
+     WHILE
+     {
       pb.createBlock();
      }
-     block { std::cout << "in for" << std::endl; }
+     block
+     {
+       std::cout << "in for" << std::endl;
+     }
      ;
 %%
 
