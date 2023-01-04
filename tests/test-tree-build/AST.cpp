@@ -74,46 +74,50 @@ void Block::display()
 
 /* -------------------------------------------------------------------------- */
 
-Assignement::Assignement(std::string nvar, long long v)
-{
-  var = nvar;
-  value.i = v;
-  type = NBR;
-}
+/* Assignement::Assignement(std::string nvar, long long v) */
+/* { */
+/*   var = nvar; */
+/*   value.i = v; */
+/*   type = NBR; */
+/* } */
 
-Assignement::Assignement(std::string nvar, double v)
-{
-  var = nvar;
-  value.f = v;
-  type = FLT;
-}
+/* Assignement::Assignement(std::string nvar, double v) */
+/* { */
+/*   var = nvar; */
+/*   value.f = v; */
+/*   type = FLT; */
+/* } */
 
-Assignement::Assignement(std::string nvar, char v)
-{
-  var = nvar;
-  value.c = v;
-  type = CHR;
-}
+/* Assignement::Assignement(std::string nvar, char v) */
+/* { */
+/*   var = nvar; */
+/*   value.c = v; */
+/*   type = CHR; */
+/* } */
+
+Assignement::Assignement(std::string var, type_t value): var(var), value(value)
+                                                         {}
 
 Assignement::~Assignement() {}
 
 void Assignement::display()
 {
-  // TODO: trouver mieux qu'un switch
-  switch (type) {
-    case NBR:
-      std::cout << "(nbr-assign: " << var << " '" << value.i << "')" << std::endl;
-      break;
-    case FLT:
-      std::cout << "(flt-assign: " << var << " '" << value.f << "')" << std::endl;
-      break;
-    case CHR:
-      std::cout << "(chr-assign: " << var << " '" << value.c << "')" << std::endl;
-      break;
-    default:
-      std::cout << "ERROR" << std::endl;
-      break;
-  }
+  std::cout << "(nbr-assign: " << var << " '" << value.i << "')" << std::endl;
+  // TODO: use the symtable
+  /* switch (type) { */
+  /*   case NBR: */
+  /*     std::cout << "(nbr-assign: " << var << " '" << value.i << "')" << std::endl; */
+  /*     break; */
+  /*   case FLT: */
+  /*     std::cout << "(flt-assign: " << var << " '" << value.f << "')" << std::endl; */
+  /*     break; */
+  /*   case CHR: */
+  /*     std::cout << "(chr-assign: " << var << " '" << value.c << "')" << std::endl; */
+  /*     break; */
+  /*   default: */
+  /*     std::cout << "ERROR" << std::endl; */
+  /*     break; */
+  /* } */
 }
 
 /* -------------------------------------------------------------------------- */
@@ -294,8 +298,49 @@ void ProgramBuilder::createBlock()
   blocks.push_back(new Block());
 }
 
+/**
+ * @brief take the last block, add it to a new If and add the new if to the
+ * parent block.
+ */
 void ProgramBuilder::createIf()
 {
+  Block *lastBlock = blocks.back();
+  blocks.pop_back();
+  If *newif = new If("condition", lastBlock);
+  blocks.back()->addOp(newif);
+}
+
+/**
+ * @brief take the last block, add it to a new If and add the new if to the
+ * parent block.
+ */
+void ProgramBuilder::createFor()
+{
+  Block *lastBlock = blocks.back();
+  blocks.pop_back();
+  For *newfor = new For("n..m..s", lastBlock);
+  blocks.back()->addOp(newfor);
+}
+
+/**
+ * @brief take the last block, add it to a new If and add the new if to the
+ * parent block.
+ */
+void ProgramBuilder::createWhile()
+{
+  Block *lastBlock = blocks.back();
+  blocks.pop_back();
+  While *newwhile = new While("condition", lastBlock);
+  blocks.back()->addOp(newwhile);
+}
+
+void ProgramBuilder::createFunction(std::string name)
+{
+  Block *lastBlock = blocks.back();
+  blocks.pop_back(); // NOTE: should be empty at this point
+                     // TODO: throw error if not empty
+  Function *newfun = new Function(name, lastBlock);
+  program->addFunction(newfun);
 }
 
 /* -------------------------------------------------------------------------- */

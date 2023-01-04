@@ -70,13 +70,14 @@ class Assignement : public ASTNode
   private:
     std::string var;
     type_t value;
-    Type type;
+    /* Type type; */ // useless
 
   public:
     void display() override;
-    Assignement(std::string, long long);
-    Assignement(std::string, double);
-    Assignement(std::string, char);
+    /* Assignement(std::string, long long); */
+    /* Assignement(std::string, double); */
+    /* Assignement(std::string, char); */
+    Assignement(std::string, type_t);
     ~Assignement();
 };
 
@@ -125,6 +126,7 @@ class Function : public Statement
   private:
     std::string id;
     // TODO: add parameters
+    // TODO: add the return type
 
   public:
     void display() override;
@@ -207,7 +209,8 @@ class ProgramBuilder
   private:
     Program* program;
     std::list<Block*> blocks;
-    std::list<Statement*> statements;
+    // NOTE: store the last type as well as the last identifier may be a good
+    // idea. Last value too
 
   public:
     void display();
@@ -216,7 +219,7 @@ class ProgramBuilder
     void createIf(); // TODO: gérer les conditions
     void createFor();
     void createWhile();
-    void createFunction();
+    void createFunction(std::string); // TODO: add the return type
     void addInclude(Include*);
     ProgramBuilder();
     ~ProgramBuilder();
