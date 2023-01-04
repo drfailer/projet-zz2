@@ -334,13 +334,48 @@ void ProgramBuilder::createWhile()
   blocks.back()->addOp(newwhile);
 }
 
-void ProgramBuilder::createFunction(std::string name)
+void ProgramBuilder::createFunction()
 {
   Block *lastBlock = blocks.back();
   blocks.pop_back(); // NOTE: should be empty at this point
                      // TODO: throw error if not empty
-  Function *newfun = new Function(name, lastBlock);
+  Function *newfun = new Function(lastFunctionName, lastBlock);
   program->addFunction(newfun);
+}
+
+void ProgramBuilder::newValue(long long i)
+{
+  lastValue.i = i;
+}
+
+void ProgramBuilder::newValue(double f)
+{
+  lastValue.f = f;
+}
+
+void ProgramBuilder::newValue(char c)
+{
+  lastValue.c = c;
+}
+
+void ProgramBuilder::newType(Type type)
+{
+  lastType = type;
+}
+
+void ProgramBuilder::newFunctionName(std::string name)
+{
+  lastFunctionName = name;
+}
+
+type_t ProgramBuilder::getLastValue()
+{
+  return lastValue;
+}
+
+Type ProgramBuilder::getLastType()
+{
+  return lastType;
 }
 
 /* -------------------------------------------------------------------------- */

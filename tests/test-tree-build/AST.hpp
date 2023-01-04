@@ -209,17 +209,27 @@ class ProgramBuilder
   private:
     Program* program;
     std::list<Block*> blocks;
+    Type lastType;
+    type_t lastValue;
+    std::string lastFunctionName;
     // NOTE: store the last type as well as the last identifier may be a good
     // idea. Last value too
 
   public:
     void display();
     void pushCommand(ASTNode*);
+    void newValue(long long);
+    void newValue(double);
+    void newValue(char);
+    type_t getLastValue();
+    void newType(Type);
+    Type getLastType();
+    void newFunctionName(std::string);
     void createBlock();
     void createIf(); // TODO: gérer les conditions
     void createFor();
     void createWhile();
-    void createFunction(std::string); // TODO: add the return type
+    void createFunction(); // TODO: add the return type
     void addInclude(Include*);
     ProgramBuilder();
     ~ProgramBuilder();

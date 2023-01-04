@@ -25,9 +25,6 @@
     #include "lexer.hpp"
     #define yylex(x) scanner->lex(x)
     ProgramBuilder pb;
-    Type lastType;
-    type_t lastValue;
-    std::string lastFunctionName;
 }
 
 %token              EOL LPAREN RPAREN
@@ -79,22 +76,22 @@ function:
         {
           std::cout << "new function id: " << $2 << std::endl;
           pb.createBlock();
-          lastFunctionName = $2;
+          pb.newFunctionName($2);
         }
         block
         {
-          pb.createFunction(lastFunctionName);
+          pb.createFunction();
         }
         |
         FN IDENTIFIER'('params')'
         {
           std::cout << "new function id: " << $2 << std::endl;
           pb.createBlock();
-          lastFunctionName = $2;
+          pb.newFunctionName($2);
         }
         block
         {
-          pb.createFunction(lastFunctionName);
+          pb.createFunction();
         }
         ;
 
@@ -112,17 +109,17 @@ param:
 type:
     NBRT
     {
-      lastType = NBR;
+      pb.newType(NBR);
     }
     |
     FLTT
     {
-      lastType = FLT;
+      pb.newType(FLT);
     }
     |
     CHRT
     {
-      lastType = CHR;
+      pb.newType(CHR);
     }
     ;
 
@@ -175,12 +172,12 @@ declaration:
            type IDENTIFIER
            {
              std::cout << "new declaration: " << $2 << std::endl;
-             pb.pushCommand(new Declaration($2, lastType));
+             pb.pushCommand(new Declaration($2, pb.getLastType()));
            }
            |
            type IDENTIFIER EQUAL value
            {
-             pb.pushCommand(new Declaration($2, lastType));
+             pb.pushCommand(new Declaration($2, pb.getLastType()));
            }
            ;
 
@@ -188,7 +185,7 @@ assignement:
            IDENTIFIER EQUAL value
            {
              std::cout << "new assignement: " << $1 << std::endl;
-             pb.pushCommand(new Assignement($1, lastValue));
+             pb.pushCommand(new Assignement($1, pb.getLastValue()));
            }
            ;
 
@@ -196,19 +193,19 @@ value:
      INT
      {
        std::cout << "new int: " << $1 << std::endl;
-       lastValue.i = $1;
+       pb.newValue((long long) $1);
      }
      |
      FLOAT
      {
        std::cout << "new double: " << $1 << std::endl;
-       lastValue.f = $1;
+       pb.newValue((double) $1);
      }
      |
      CHAR
      {
        std::cout << "new char: " << $1 << std::endl;
-       lastValue.c = $1;
+       pb.newValue((char) $1);
      }
      ;
 
@@ -216,7 +213,8 @@ statements: %empty
           | statement statements
           ;
 
-statement: if
+statement:
+         if
          {
            std::cout << "new if" << std::endl;
            pb.createIf();
