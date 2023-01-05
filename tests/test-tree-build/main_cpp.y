@@ -38,8 +38,6 @@
 %token PRINT READ ADD MNS TMS DIV EQUAL DDOT
 %token ERROR
 %token <std::string> IDENTIFIER
-%token <int> NBR
-%token <double> FLT
 
 %%
 program: %empty
@@ -62,7 +60,7 @@ includes: %empty
        INCLUDE IDENTIFIER SEMI
        {
          std::cout << "new include id: " << $2 << std::endl;
-         pb.addInclude(new Include($2));
+         pb.addInclude(std::make_shared<Include>($2));
        }
        includes
        ;
@@ -172,12 +170,12 @@ declaration:
            type IDENTIFIER
            {
              std::cout << "new declaration: " << $2 << std::endl;
-             pb.pushCommand(new Declaration($2, pb.getLastType()));
+             pb.pushCommand(std::make_shared<Declaration>($2, pb.getLastType()));
            }
            |
            type IDENTIFIER EQUAL value
            {
-             pb.pushCommand(new Declaration($2, pb.getLastType()));
+             pb.pushCommand(std::make_shared<Declaration>($2, pb.getLastType()));
            }
            ;
 
@@ -185,7 +183,7 @@ assignement:
            IDENTIFIER EQUAL value
            {
              std::cout << "new assignement: " << $1 << std::endl;
-             pb.pushCommand(new Assignement($1, pb.getLastValue()));
+             pb.pushCommand(std::make_shared<Assignement>($1, pb.getLastValue()));
            }
            ;
 

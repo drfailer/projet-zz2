@@ -1,11 +1,11 @@
 #include "AST.hpp"
 #include <iostream>
 #include <list>
+#include <memory>
 #include <ostream>
+#include <type_traits>
 
 // TODO: create multiple files
-
-ASTNode::~ASTNode() {}
 
 /* -------------------------------------------------------------------------- */
 
@@ -15,22 +15,14 @@ void Function::display() {
   std::cout << ")" << std::endl;
 }
 
-Function::Function(std::string nid, Block* instructions):
+Function::Function(std::string nid, std::shared_ptr<Block> instructions):
   Statement(instructions), id(nid)
-{
-}
-
-Function::~Function()
 {
 }
 
 /* -------------------------------------------------------------------------- */
 
 Include::Include(std::string name): libName(name)
-{
-}
-
-Include::~Include()
 {
 }
 
@@ -43,21 +35,10 @@ void Include::display()
 
 Block::Block()
 {
-  operations = std::list<ASTNode*>();
+  operations = std::list<std::shared_ptr<ASTNode>>();
 }
 
-Block::Block(std::list<ASTNode*> ops)
-{
-  operations = ops;
-}
-
-Block::~Block()
-{
-  for (ASTNode* o : operations)
-    delete o;
-}
-
-void Block::addOp(ASTNode* operation)
+void Block::addOp(std::shared_ptr<ASTNode> operation)
 {
   operations.push_back(operation);
 }
@@ -65,7 +46,7 @@ void Block::addOp(ASTNode* operation)
 void Block::display()
 {
   std::cout << "  (block:" << std::endl;
-  for (ASTNode* o: operations) {
+  for (std::shared_ptr<ASTNode> o: operations) {
     std::cout << "    ";
     o->display();
   }
@@ -98,8 +79,6 @@ void Block::display()
 Assignement::Assignement(std::string var, type_t value): var(var), value(value)
                                                          {}
 
-Assignement::~Assignement() {}
-
 void Assignement::display()
 {
   std::cout << "(nbr-assign: " << var << " '" << value.i << "')" << std::endl;
@@ -126,8 +105,6 @@ Declaration::Declaration(std::string nvar, Type ntype):
   var(nvar), type(ntype)
 {}
 
-Declaration::~Declaration() {}
-
 void Declaration::display()
 {
   std::cout << "(declaration: " << var << " " << type << ")" << std::endl;
@@ -140,8 +117,6 @@ BuildinFunctionCall::BuildinFunctionCall(std::string name, std::string p):
 {
 }
 
-BuildinFunctionCall::~BuildinFunctionCall() {}
-
 void BuildinFunctionCall::display()
 {
   std::cout << "(fncall: " << functionName << " [" << params << "])" << std::endl;
@@ -149,12 +124,7 @@ void BuildinFunctionCall::display()
 
 /* -------------------------------------------------------------------------- */
 
-Statement::Statement(Block* b): block(b) {}
-
-Statement::~Statement()
-{
-  delete block;
-}
+Statement::Statement(std::shared_ptr<Block> b): block(b) {}
 
 void Statement::display()
 {
@@ -163,11 +133,7 @@ void Statement::display()
 
 /* -------------------------------------------------------------------------- */
 
-If::If(std::string c, Block* b): Statement(b), condition(c)
-{
-}
-
-If::~If()
+If::If(std::string c, std::shared_ptr<Block> b): Statement(b), condition(c)
 {
 }
 
@@ -180,11 +146,11 @@ void If::display()
 
 /* -------------------------------------------------------------------------- */
 
-For::For(std::string v, Block* b): Statement(b), var(v)
+For::For(std::string v, std::shared_ptr<Block> b): Statement(b), var(v)
 {
 }
 
-For::For(std::string v, long long be, long long e, long long s, Block* b):
+For::For(std::string v, long long be, long long e, long long s, std::shared_ptr<Block> b):
   For(v, b)
 {
   begin.i = be;
@@ -193,17 +159,13 @@ For::For(std::string v, long long be, long long e, long long s, Block* b):
   type = NBR;
 }
 
-For::For(std::string v, double be, double e, double s, Block* b):
+For::For(std::string v, double be, double e, double s, std::shared_ptr<Block> b):
   For(v, b)
 {
   begin.f = be;
   end.f = e;
   step.f = s;
   type = FLT;
-}
-
-For::~For()
-{
 }
 
 void For::display()
@@ -218,11 +180,7 @@ void For::display()
 
 /* -------------------------------------------------------------------------- */
 
-While::While(std::string c, Block* b): Statement(b), condition(c)
-{
-}
-
-While::~While()
+While::While(std::string c, std::shared_ptr<Block> b): Statement(b), condition(c)
 {
 }
 
@@ -237,31 +195,23 @@ void While::display()
 
 Program::Program()
 {
-  includes = std::list<Include*>();
-  functions = std::list<Function*>();
+  includes = std::list<std::shared_ptr<Include>>();
+  functions = std::list<std::shared_ptr<Function>>();
 }
 
-Program::~Program()
-{
-  for (Include* i : includes)
-    delete i;
-  for (Function* f : functions)
-    delete f;
-}
-
-void Program::addInclude(Include *i) {
+void Program::addInclude(std::shared_ptr<Include> i) {
   includes.push_back(i);
 }
 
-void Program::addFunction(Function *f) {
+void Program::addFunction(std::shared_ptr<Function> f) {
   functions.push_back(f);
 }
 
 void Program::display()
 {
-  for (Include* i : includes)
+  for (std::shared_ptr<Include> i : includes)
     i->display();
-  for (Function* f : functions)
+  for (std::shared_ptr<Function> f : functions)
     f->display();
 }
 
@@ -269,12 +219,7 @@ void Program::display()
 
 ProgramBuilder::ProgramBuilder()
 {
-  program = new Program();
-}
-
-ProgramBuilder::~ProgramBuilder()
-{
-  delete program;
+  program = std::make_shared<Program>();
 }
 
 void ProgramBuilder::display()
@@ -282,12 +227,12 @@ void ProgramBuilder::display()
   program->display();
 }
 
-void ProgramBuilder::addInclude(Include *i)
+void ProgramBuilder::addInclude(std::shared_ptr<Include> i)
 {
   program->addInclude(i);
 }
 
-void ProgramBuilder::pushCommand(ASTNode * command)
+void ProgramBuilder::pushCommand(std::shared_ptr<ASTNode> command)
 {
   blocks.back()->addOp(command);
 }
@@ -295,7 +240,7 @@ void ProgramBuilder::pushCommand(ASTNode * command)
 // FIXME: unsafe operations
 void ProgramBuilder::createBlock()
 {
-  blocks.push_back(new Block());
+  blocks.push_back(std::make_shared<Block>());
 }
 
 /**
@@ -304,9 +249,8 @@ void ProgramBuilder::createBlock()
  */
 void ProgramBuilder::createIf()
 {
-  Block *lastBlock = blocks.back();
+  std::shared_ptr<If> newif = std::make_shared<If>("condition", blocks.back());
   blocks.pop_back();
-  If *newif = new If("condition", lastBlock);
   blocks.back()->addOp(newif);
 }
 
@@ -316,9 +260,8 @@ void ProgramBuilder::createIf()
  */
 void ProgramBuilder::createFor()
 {
-  Block *lastBlock = blocks.back();
+  std::shared_ptr<For> newfor = std::make_shared<For>("n..m..s", blocks.back());
   blocks.pop_back();
-  For *newfor = new For("n..m..s", lastBlock);
   blocks.back()->addOp(newfor);
 }
 
@@ -328,18 +271,16 @@ void ProgramBuilder::createFor()
  */
 void ProgramBuilder::createWhile()
 {
-  Block *lastBlock = blocks.back();
+  std::shared_ptr<While> newwhile = std::make_shared<While>("condition", blocks.back());
   blocks.pop_back();
-  While *newwhile = new While("condition", lastBlock);
   blocks.back()->addOp(newwhile);
 }
 
 void ProgramBuilder::createFunction()
 {
-  Block *lastBlock = blocks.back();
+  std::shared_ptr<Function> newfun = std::make_shared<Function>(lastFunctionName, blocks.back());
   blocks.pop_back(); // NOTE: should be empty at this point
                      // TODO: throw error if not empty
-  Function *newfun = new Function(lastFunctionName, lastBlock);
   program->addFunction(newfun);
 }
 

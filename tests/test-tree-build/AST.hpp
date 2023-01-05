@@ -1,6 +1,7 @@
 #pragma once
 #include <list>
 #include <string>
+#include <memory>
 
 // TODO: create multiple files
 
@@ -26,20 +27,17 @@ class ASTNode
 {
   public:
     virtual void display() = 0;
-    virtual ~ASTNode() = 0;
 };
 
 class Block : public ASTNode
 {
   private:
-    std::list<ASTNode*> operations;
+    std::list<std::shared_ptr<ASTNode>> operations;
 
   public:
-    void addOp(ASTNode*);
+    void addOp(std::shared_ptr<ASTNode>);
     void display() override;
-    Block(std::list<ASTNode*>);
     Block();
-    ~Block();
 };
 
 class Include : public ASTNode
@@ -50,7 +48,6 @@ class Include : public ASTNode
   public:
     void display() override;
     Include(std::string);
-    ~Include();
 };
 
 /******************************************************************************/
@@ -78,7 +75,6 @@ class Assignement : public ASTNode
     /* Assignement(std::string, double); */
     /* Assignement(std::string, char); */
     Assignement(std::string, type_t);
-    ~Assignement();
 };
 
 class Declaration : public ASTNode
@@ -90,7 +86,6 @@ class Declaration : public ASTNode
   public:
     void display() override;
     Declaration(std::string, Type);
-    ~Declaration();
 };
 
 // TODO: may be an abstract class and have one class per function will be esier
@@ -102,7 +97,6 @@ class BuildinFunctionCall : public ASTNode
 
   public:
     BuildinFunctionCall(std::string, std::string);
-    ~BuildinFunctionCall();
     void display() override;
 };
 
@@ -113,11 +107,10 @@ class BuildinFunctionCall : public ASTNode
 class Statement : public ASTNode
 {
   private:
-    Block* block;
+    std::shared_ptr<Block> block;
 
   public:
-    Statement(Block*);
-    ~Statement();
+    Statement(std::shared_ptr<Block>);
     void display() override;
 };
 
@@ -130,8 +123,7 @@ class Function : public Statement
 
   public:
     void display() override;
-    Function(std::string, Block*);
-    ~Function();
+    Function(std::string, std::shared_ptr<Block>);
 };
 
 // TODO: else | else if
@@ -142,8 +134,7 @@ class If : public Statement
     std::string condition; // TODO: put real conditions
 
   public:
-    If(std::string, Block*);
-    ~If();
+    If(std::string, std::shared_ptr<Block>);
     void display() override;
 };
 
@@ -157,10 +148,9 @@ class For : public Statement
     type_t step;
 
   public:
-    For(std::string, Block*);
-    For(std::string, long long, long long, long long, Block*);
-    For(std::string, double, double, double, Block*);
-    ~For();
+    For(std::string, std::shared_ptr<Block>);
+    For(std::string, long long, long long, long long, std::shared_ptr<Block>);
+    For(std::string, double, double, double, std::shared_ptr<Block>);
     void display() override;
 };
 
@@ -170,8 +160,7 @@ class While : public Statement
     std::string condition; // TODO: create condition class
 
   public:
-    While(std::string, Block*);
-    ~While();
+    While(std::string, std::shared_ptr<Block>);
     void display() override;
 };
 
@@ -182,14 +171,13 @@ class While : public Statement
 class Program: public ASTNode
 {
   private:
-    std::list<Include*> includes;
-    std::list<Function*> functions;
+    std::list<std::shared_ptr<Include>> includes;
+    std::list<std::shared_ptr<Function>> functions;
 
   public:
     Program();
-    ~Program();
-    void addInclude(Include*);
-    void addFunction(Function*);
+    void addInclude(std::shared_ptr<Include>);
+    void addFunction(std::shared_ptr<Function>);
     void display() override;
 };
 
@@ -207,8 +195,8 @@ class Program: public ASTNode
 class ProgramBuilder
 {
   private:
-    Program* program;
-    std::list<Block*> blocks;
+    std::shared_ptr<Program> program;
+    std::list<std::shared_ptr<Block>> blocks;
     Type lastType;
     type_t lastValue;
     std::string lastFunctionName;
@@ -217,7 +205,7 @@ class ProgramBuilder
 
   public:
     void display();
-    void pushCommand(ASTNode*);
+    void pushCommand(std::shared_ptr<ASTNode>);
     void newValue(long long);
     void newValue(double);
     void newValue(char);
@@ -230,8 +218,7 @@ class ProgramBuilder
     void createFor();
     void createWhile();
     void createFunction(); // TODO: add the return type
-    void addInclude(Include*);
+    void addInclude(std::shared_ptr<Include>);
     ProgramBuilder();
-    ~ProgramBuilder();
 };
 
