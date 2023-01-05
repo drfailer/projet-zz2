@@ -25,7 +25,7 @@ blanks [\S\s \t\n]
 ddot \.\.
 
 %%
-nbr          { AFFICHE("L_nbrt"); return Parser::token::NBRT; }
+int          { AFFICHE("L_nbrt"); return Parser::token::INTT; }
 flt          { AFFICHE("L_fltt"); return Parser::token::FLTT; }
 chr          { AFFICHE("L_chrt"); return Parser::token::CHRT; }
 fn           { AFFICHE("L_fn"); return Parser::token::FN; }

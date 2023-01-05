@@ -32,12 +32,12 @@
 %token <double>     FLOAT
 %token <char>       CHAR
 /* %nonassoc           ASSIGN */
-%token NBRT FLTT CHRT
+%token INTT FLTT CHRT
 %token IF ELSE FOR WHILE FN INCLUDE IN
 %token SEMI COMMA
 %token PRINT READ ADD MNS TMS DIV EQUAL DDOT
-%token ERROR
 %token <std::string> IDENTIFIER
+%token ERROR
 
 %%
 program: %empty
@@ -105,9 +105,9 @@ param:
      ;
 
 type:
-    NBRT
+    INTT
     {
-      pb.newType(NBR);
+      pb.newType(INT);
     }
     |
     FLTT
@@ -176,6 +176,7 @@ declaration:
            type IDENTIFIER EQUAL value
            {
              pb.pushCommand(std::make_shared<Declaration>($2, pb.getLastType()));
+             pb.pushCommand(std::make_shared<Assignement>($2, pb.getLastValue()));
            }
            ;
 

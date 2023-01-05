@@ -14,7 +14,7 @@ union type_t
 
 enum Type
 {
-  NBR,
+  INT,
   FLT,
   CHR
 };

@@ -59,7 +59,7 @@ void Block::display()
 /* { */
 /*   var = nvar; */
 /*   value.i = v; */
-/*   type = NBR; */
+/*   type = INT; */
 /* } */
 
 /* Assignement::Assignement(std::string nvar, double v) */
@@ -84,7 +84,7 @@ void Assignement::display()
   std::cout << "(nbr-assign: " << var << " '" << value.i << "')" << std::endl;
   // TODO: use the symtable
   /* switch (type) { */
-  /*   case NBR: */
+  /*   case INT: */
   /*     std::cout << "(nbr-assign: " << var << " '" << value.i << "')" << std::endl; */
   /*     break; */
   /*   case FLT: */
@@ -107,7 +107,17 @@ Declaration::Declaration(std::string nvar, Type ntype):
 
 void Declaration::display()
 {
-  std::cout << "(declaration: " << var << " " << type << ")" << std::endl;
+  switch (type) {
+    case INT:
+      std::cout << "(declaration: " << var << " INT)" << std::endl;
+      break;
+    case FLT:
+      std::cout << "(declaration: " << var << " FLT)" << std::endl;
+      break;
+    case CHR:
+      std::cout << "(declaration: " << var << " CHR)" << std::endl;
+      break;
+  }
 }
 
 /* -------------------------------------------------------------------------- */
@@ -156,7 +166,7 @@ For::For(std::string v, long long be, long long e, long long s, std::shared_ptr<
   begin.i = be;
   end.i = e;
   step.i = s;
-  type = NBR;
+  type = INT;
 }
 
 For::For(std::string v, double be, double e, double s, std::shared_ptr<Block> b):
@@ -170,7 +180,7 @@ For::For(std::string v, double be, double e, double s, std::shared_ptr<Block> b)
 
 void For::display()
 {
-  if (type == NBR)
+  if (type == INT)
     std::cout << "(if: " << var << " " << begin.i << ".." << end.i << ".." << step.i << std::endl;
   else
     std::cout << "(flt: " << var << " " << begin.f << ".." << end.f << ".." << step.f << std::endl;
