@@ -4,6 +4,8 @@
 #include <memory>
 
 // TODO: create multiple files
+// TODO: arithmetic operations
+// TODO: boolean operations
 
 union type_t
 {
@@ -235,6 +237,7 @@ class ProgramBuilder
                                               // element is the current block)
     std::list<Variable> funParams;        // parameters of the last function
     std::list<std::shared_ptr<Litteral>> funcallParams;    // parameters of the last funcall
+    // NOTE: maybe move this to the .y file as global variable:
     Type lastType;                     // last type parsed
     Type lastValueType;                // the type of the last value parsed
     type_t lastValue;                  // last value parsed
