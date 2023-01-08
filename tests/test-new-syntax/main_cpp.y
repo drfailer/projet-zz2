@@ -113,12 +113,14 @@ param: %empty
      |
      IDENTIFIER
      {
-        pb.pushFuncallParam(Variable($1, VOID)); // use symTable to get the type
+        std::cout << "new param variable" << std::endl;
+        pb.pushFuncallParam(std::make_shared<Variable>($1, VOID)); // use symTable to get the type
      }
      |
      value
      {
-        pb.pushFuncallParam(Value(pb.getLastValue(), pb.getLastValueType()));
+        std::cout << "new param value" << std::endl;
+        pb.pushFuncallParam(std::make_shared<Value>(pb.getLastValue(), pb.getLastValueType()));
      }
      ;
 
@@ -159,14 +161,10 @@ command: funcall
         ;
 
 funcall:
-       IDENTIFIER'('')'
-       {
-         std::cout << "new funcall: " << $1 << std::endl;
-       }
-       |
        IDENTIFIER'('params')'
        {
          std::cout << "new funcall: " << $1 << std::endl;
+         pb.createFuncall($1);
        }
        ;
 
@@ -193,7 +191,7 @@ declaration:
            ;
 
 assignement:
-           SET'('IDENTIFIER',' value')'
+           SET'('IDENTIFIER COMMA value')'
            {
              std::cout << "new assignement: " << $3 << std::endl;
              pb.pushCommand(std::make_shared<Assignement>(Variable($3, VOID),

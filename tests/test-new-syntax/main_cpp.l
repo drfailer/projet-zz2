@@ -40,7 +40,7 @@ add          { AFFICHE("L_add"); return Parser::token::ADD; }
 mns          { AFFICHE("L_mns"); return Parser::token::MNS; }
 tms          { AFFICHE("L_tms"); return Parser::token::TMS; }
 div          { AFFICHE("L_div"); return Parser::token::DIV; }
-set          { AFFICHE("L_div"); return Parser::token::SET; }
+set          { AFFICHE("L_set"); return Parser::token::SET; }
 include      { AFFICHE("L_include"); return Parser::token::INCLUDE; }
 
 {identifier} {

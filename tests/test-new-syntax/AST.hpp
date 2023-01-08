@@ -55,10 +55,10 @@ class Include : public ASTNode
 /*                                 litterals                                  */
 /******************************************************************************/
 
-class Litteral : ASTNode // ???
+class Litteral : public ASTNode // ???
 {
-  public:
-    void display() override;
+  /* public: */
+  /*   virtual ~Litteral() = 0; */
 };
 
 class Value : public Litteral
@@ -128,10 +128,10 @@ class Funcall : public ASTNode
 {
   private:
     std::string functionName;
-    std::list<Litteral> params; // TODO: get all params
+    std::list<std::shared_ptr<Litteral>> params; // TODO: get all params
 
   public:
-    Funcall(std::string, std::list<Litteral>);
+    Funcall(std::string, std::list<std::shared_ptr<Litteral>>);
     void display() override;
 };
 
@@ -234,21 +234,19 @@ class ProgramBuilder
     std::list<std::shared_ptr<Block>> blocks; // stack of blocks (the last
                                               // element is the current block)
     std::list<Variable> funParams;        // parameters of the last function
-    std::list<Litteral> funcallParams;    // parameters of the last funcall
+    std::list<std::shared_ptr<Litteral>> funcallParams;    // parameters of the last funcall
     Type lastType;                     // last type parsed
     Type lastValueType;                // the type of the last value parsed
     type_t lastValue;                  // last value parsed
     std::string lastFunctionName;      // the name of the last function parsed
-    std::string lastFuncallName;       // the name of the last function parsed
     // NOTE: store the last type as well as the last identifier may be a good
     // idea. Last value too
 
   public:
     void display();
     void pushCommand(std::shared_ptr<ASTNode>);
-    void pushFuncallParam(Litteral);
+    void pushFuncallParam(std::shared_ptr<Litteral>);
     void pushFunctionParam(Variable);
-    void setLastFuncallName(std::string);
     void newValue(long long);
     void newValue(double);
     void newValue(char);
@@ -262,7 +260,7 @@ class ProgramBuilder
     void createIf(); // TODO: gérer les conditions
     void createFor();
     void createWhile();
-    void createFuncall();
+    void createFuncall(std::string);
     void createFunction(); // TODO: add the return type
     void addInclude(std::shared_ptr<Include>);
     ProgramBuilder();

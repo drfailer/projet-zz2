@@ -10,12 +10,6 @@
 
 /* -------------------------------------------------------------------------- */
 
-void Litteral::display()
-{
-}
-
-/* -------------------------------------------------------------------------- */
-
 Value::Value(type_t value, Type type): value(value), type(type)
 {
 }
@@ -170,7 +164,7 @@ void Declaration::display()
 /* -------------------------------------------------------------------------- */
 
 Funcall::Funcall(std::string functionName,
-    std::list<Litteral> params):
+    std::list<std::shared_ptr<Litteral>> params):
   functionName(functionName), params(params)
 {
 }
@@ -178,8 +172,8 @@ Funcall::Funcall(std::string functionName,
 void Funcall::display()
 {
   std::cout << "(fncall: " << functionName << " [";
-  for (Litteral l : params) {
-    l.display();
+  for (std::shared_ptr<Litteral> l : params) {
+    l->display();
     std::cout << " ";
   }
   std::cout << "])" << std::endl;
@@ -285,7 +279,7 @@ ProgramBuilder::ProgramBuilder()
   program = std::make_shared<Program>();
   blocks = std::list<std::shared_ptr<Block>>();
   funParams = std::list<Variable>();
-  funcallParams = std::list<Litteral>();
+  funcallParams = std::list<std::shared_ptr<Litteral>>();
 }
 
 void ProgramBuilder::display()
@@ -342,10 +336,10 @@ void ProgramBuilder::createWhile()
   blocks.back()->addOp(newwhile);
 }
 
-void ProgramBuilder::createFuncall()
+void ProgramBuilder::createFuncall(std::string name)
 {
   std::shared_ptr<Funcall> newFuncall =
-    std::make_shared<Funcall>(lastFuncallName, funcallParams);
+    std::make_shared<Funcall>(name, funcallParams);
   blocks.back()->addOp(newFuncall);
   funcallParams.clear();
 }
@@ -405,7 +399,7 @@ Type ProgramBuilder::getLastValueType()
   return lastValueType;
 }
 
-void ProgramBuilder::pushFuncallParam(Litteral newParam)
+void ProgramBuilder::pushFuncallParam(std::shared_ptr<Litteral> newParam)
 {
   funcallParams.push_back(newParam);
 }
@@ -413,11 +407,6 @@ void ProgramBuilder::pushFuncallParam(Litteral newParam)
 void ProgramBuilder::pushFunctionParam(Variable newParam)
 {
   funParams.push_back(newParam);
-}
-
-void ProgramBuilder::setLastFuncallName(std::string name)
-{
-  lastFuncallName = name;
 }
 
 /* -------------------------------------------------------------------------- */
