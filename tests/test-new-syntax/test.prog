@@ -1,0 +1,7 @@
+fn main() {
+  int a;
+  flt b;
+  if {
+    chr c;
+  }
+}
