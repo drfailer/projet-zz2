@@ -1,10 +1,32 @@
-test:
+test: parser.o lexer.o AST.o
+	g++ -o test $^
+
+# -------------------------------------------------------------- flex and bison
+
+lexer:
 	flex main_cpp.l
+
+parser:
 	bison main_cpp.y
-	g++ -o test parser.cpp lexer.cpp AST.cpp
+
+# ---------------------------------------------------------------- Object files
+
+AST.o: AST/AST.cpp
+	g++ -c $^
+
+parser.o: parser parser.cpp
+	g++ -c parser.cpp
+
+lexer.o: lexer lexer.cpp
+	g++ -c lexer.cpp
+
+# ----------------------------------------------------------------------- clean
 
 clean:
 	rm -rf stack.hh
 	rm -rf parser.cpp parser.hpp
 	rm -rf lexer.cpp
 	rm -rf test
+
+cleaner: clean
+	rm -rf *.o

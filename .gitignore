@@ -6,3 +6,11 @@ tests/test-flex-bison/main_cpp.tab.hh
 tests/test-flex-bison/stack.hh
 doc
 program/prog
+tests/test-new-syntax/AST.o
+tests/test-new-syntax/lexer.cpp
+tests/test-new-syntax/lexer.o
+tests/test-new-syntax/parser.cpp
+tests/test-new-syntax/parser.hpp
+tests/test-new-syntax/parser.o
+tests/test-new-syntax/stack.hh
+tests/test-new-syntax/test

@@ -2,7 +2,7 @@
 #include <iostream>
 #include <string>
 #include <FlexLexer.h>
-#include "AST.hpp"
+#include "AST/AST.hpp"
 %}
 %language "c++"
 %defines "parser.hpp"
