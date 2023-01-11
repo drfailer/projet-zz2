@@ -15,6 +15,7 @@
 
 %code requires
 {
+    #include "AST/AST.hpp"
     namespace interpreter {
       class Scanner;
     }
@@ -38,6 +39,9 @@
 %token PRINT READ ADD MNS TMS DIV DDOT SET
 %token <std::string> IDENTIFIER
 %token ERROR
+
+%nterm <Type> type
+%nterm <Value> value
 
 %%
 program: %empty
@@ -98,10 +102,10 @@ paramDeclarations: paramDeclaration
       ;
 
 paramDeclaration: %empty
-     | type IDENTIFIER
+     | type[t] IDENTIFIER
      {
        std::cout << "new param: " << $2 << std::endl;
-       pb.pushFunctionParam(Variable($2, pb.getLastType()));
+       pb.pushFunctionParam(Variable($2, $t));
      }
      ;
 
@@ -117,27 +121,27 @@ param: %empty
         pb.pushFuncallParam(std::make_shared<Variable>($1, VOID)); // use symTable to get the type
      }
      |
-     value
+     value[v]
      {
         std::cout << "new param value" << std::endl;
-        pb.pushFuncallParam(std::make_shared<Value>(pb.getLastValue(), pb.getLastValueType()));
+        pb.pushFuncallParam(std::make_shared<Value>($v));
      }
      ;
 
 type:
     INTT
     {
-      pb.newType(INT);
+      $$ = INT;
     }
     |
     FLTT
     {
-      pb.newType(FLT);
+      $$ = FLT;
     }
     |
     CHRT
     {
-      pb.newType(CHR);
+      $$ = CHR;
     }
     ;
 
@@ -183,19 +187,18 @@ read:
      ;
 
 declaration:
-           type IDENTIFIER
+           type[t] IDENTIFIER
            {
              std::cout << "new declaration: " << $2 << std::endl;
-             pb.pushCommand(std::make_shared<Declaration>(Variable($2, pb.getLastType())));
+             pb.pushCommand(std::make_shared<Declaration>(Variable($2, $t)));
            }
            ;
 
 assignement:
-           SET'('IDENTIFIER COMMA value')'
+           SET'('IDENTIFIER COMMA value[v]')'
            {
              std::cout << "new assignement: " << $3 << std::endl;
-             pb.pushCommand(std::make_shared<Assignement>(Variable($3, VOID),
-             Value(pb.getLastValue(), pb.getLastValueType())));
+             pb.pushCommand(std::make_shared<Assignement>(Variable($3, VOID), $v));
            }
            ;
 
@@ -203,22 +206,25 @@ value:
      INT
      {
        std::cout << "new int: " << $1 << std::endl;
-       pb.newValue((long long) $1);
-       pb.newValueType(INT);
+       type_t v;
+       v.i = $1;
+       $$ = Value(v, INT);
      }
      |
      FLOAT
      {
        std::cout << "new double: " << $1 << std::endl;
-       pb.newValue((double) $1);
-       pb.newValueType(FLT);
+       type_t v;
+       v.f = $1;
+       $$ = Value(v, FLT);
      }
      |
      CHAR
      {
        std::cout << "new char: " << $1 << std::endl;
-       pb.newValue((char) $1);
-       pb.newValueType(CHR);
+       type_t v;
+       v.c = $1;
+       $$ = Value(v, CHR);
      }
      ;
 

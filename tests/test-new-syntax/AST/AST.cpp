@@ -8,6 +8,27 @@
 
 // TODO: create multiple files
 
+std::string typToString(Type type)
+{
+  std::string output;
+
+  switch (type) {
+    case INT:
+      output = "int";
+      break;
+    case FLT:
+      output = "flt";
+      break;
+    case CHR:
+      output = "chr";
+      break;
+    default:
+      output = "void";
+      break;
+  }
+  return output;
+}
+
 /* -------------------------------------------------------------------------- */
 
 Value::Value(type_t value, Type type): value(value), type(type)
@@ -65,12 +86,12 @@ void Variable::display()
 /* -------------------------------------------------------------------------- */
 
 void Function::display() {
-  std::cout << "(fun [";
+  std::cout << "Function(" << id << ", " << typToString(returnType) << ", [";
   for (Variable p: params) {
     p.display();
-    std::cout << " ";
+    std::cout << ", ";
   }
-  std::cout << "] -> " << returnType << ": " << id << std::endl;
+  std::cout << "], ";
   Statement::display();
   std::cout << ")" << std::endl;
 }
@@ -88,7 +109,7 @@ Include::Include(std::string name): libName(name)
 
 void Include::display()
 {
-  std::cout << "(include: " << libName << ")" << std::endl;
+  std::cout << "Include(" << libName << ")" << std::endl;
 }
 
 /* -------------------------------------------------------------------------- */
@@ -105,12 +126,11 @@ void Block::addOp(std::shared_ptr<ASTNode> operation)
 
 void Block::display()
 {
-  std::cout << "  (block:" << std::endl;
+  std::cout << "Block(" << std::endl;
   for (std::shared_ptr<ASTNode> o: operations) {
-    std::cout << "    ";
     o->display();
   }
-  std::cout << "  )" << std::endl;
+  std::cout << ")" << std::endl;
 }
 
 /* -------------------------------------------------------------------------- */
@@ -141,11 +161,11 @@ Assignement::Assignement(Variable variable, Value value): variable(variable), va
 
 void Assignement::display()
 {
-  std::cout << "(nbr-assign: ";
+  std::cout << "Assignement(";
   variable.display();
-  std::cout << " '";
+  std::cout << ",";
   value.display();
-  std::cout << "')" << std::endl;
+  std::cout << ")" << std::endl;
 }
 
 /* -------------------------------------------------------------------------- */
@@ -156,7 +176,7 @@ Declaration::Declaration(Variable variable):
 
 void Declaration::display()
 {
-  std::cout << "(declaration: ";
+  std::cout << "Declaration(";
   variable.display();
   std::cout << ")" << std::endl;
 }
@@ -171,10 +191,10 @@ Funcall::Funcall(std::string functionName,
 
 void Funcall::display()
 {
-  std::cout << "(fncall: " << functionName << " [";
-  for (std::shared_ptr<Litteral> l : params) {
-    l->display();
-    std::cout << " ";
+  std::cout << "Funcall(" << functionName << ", [";
+  for (std::shared_ptr<ASTNode> p : params) {
+    p->display();
+    std::cout << ", ";
   }
   std::cout << "])" << std::endl;
 }
@@ -196,7 +216,7 @@ If::If(std::string c, std::shared_ptr<Block> b): Statement(b), condition(c)
 
 void If::display()
 {
-  std::cout << "(if: " << condition << std::endl;
+  std::cout << "If(" << condition << ", ";
   Statement::display();
   std::cout << ")" << std::endl;
 }
@@ -228,9 +248,9 @@ For::For(std::string v, double be, double e, double s, std::shared_ptr<Block> b)
 void For::display()
 {
   if (type == INT)
-    std::cout << "(if: " << var << " " << begin.i << ".." << end.i << ".." << step.i << std::endl;
+    std::cout << "For(" << var << ", " << begin.i << ".." << end.i << ".." << step.i << ", ";
   else
-    std::cout << "(flt: " << var << " " << begin.f << ".." << end.f << ".." << step.f << std::endl;
+    std::cout << "For(" << var << ", " << begin.f << ".." << end.f << ".." << step.f << ", ";
   Statement::display();
   std::cout << ")" << std::endl;
 }
@@ -243,9 +263,101 @@ While::While(std::string c, std::shared_ptr<Block> b): Statement(b), condition(c
 
 void While::display()
 {
-  std::cout << "(while: " << condition << std::endl;
+  std::cout << "While(" << condition << ", ";
   Statement::display();
   std::cout << ")" << std::endl;
+}
+
+/* -------------------------------------------------------------------------- */
+
+BinaryOperation::BinaryOperation(std::shared_ptr<ASTNode> left, std::shared_ptr<ASTNode> right)
+  : left(left), right(right)
+{
+}
+
+void BinaryOperation::display()
+{
+  left->display();
+  std::cout << ", ";
+  right->display();
+  std::cout << ")";
+}
+
+AddOP::AddOP(std::shared_ptr<ASTNode> left, std::shared_ptr<ASTNode> right)
+  : BinaryOperation(left, right)
+{
+}
+
+void AddOP::display()
+{
+  std::cout << "(add: ";
+  BinaryOperation::display();
+}
+
+MnsOP::MnsOP(std::shared_ptr<ASTNode> left, std::shared_ptr<ASTNode> right)
+  : BinaryOperation(left, right)
+{
+}
+
+void MnsOP::display()
+{
+  std::cout << "(mns: ";
+  BinaryOperation::display();
+}
+
+TmsOP::TmsOP(std::shared_ptr<ASTNode> left, std::shared_ptr<ASTNode> right)
+  : BinaryOperation(left, right)
+{
+}
+
+void TmsOP::display()
+{
+  std::cout << "(tms: ";
+  BinaryOperation::display();
+}
+
+DivOP::DivOP(std::shared_ptr<ASTNode> left, std::shared_ptr<ASTNode> right)
+  : BinaryOperation(left, right)
+{
+}
+
+void DivOP::display()
+{
+  std::cout << "(div: ";
+  BinaryOperation::display();
+}
+
+/* -------------------------------------------------------------------------- */
+
+void EqlOP::display()
+{
+  std::cout << "(eql: ";
+  BinaryOperation::display();
+}
+
+void OrOP::display()
+{
+  std::cout << "(or: ";
+  BinaryOperation::display();
+}
+
+void AndOP::display()
+{
+  std::cout << "(and: ";
+  BinaryOperation::display();
+}
+
+void XorOP::display()
+{
+  std::cout << "(xor: ";
+  BinaryOperation::display();
+}
+
+void NotOP::display()
+{
+  std::cout << "(not: ";
+  param->display();
+  std::cout << ")";
 }
 
 /* -------------------------------------------------------------------------- */
@@ -354,49 +466,9 @@ void ProgramBuilder::createFunction()
   funcallParams.clear();
 }
 
-void ProgramBuilder::newValue(long long i)
-{
-  lastValue.i = i;
-}
-
-void ProgramBuilder::newValue(double f)
-{
-  lastValue.f = f;
-}
-
-void ProgramBuilder::newValue(char c)
-{
-  lastValue.c = c;
-}
-
-void ProgramBuilder::newType(Type type)
-{
-  lastType = type;
-}
-
-void ProgramBuilder::newValueType(Type type)
-{
-  lastValueType = type;
-}
-
 void ProgramBuilder::newFunctionName(std::string name)
 {
   lastFunctionName = name;
-}
-
-type_t ProgramBuilder::getLastValue()
-{
-  return lastValue;
-}
-
-Type ProgramBuilder::getLastType()
-{
-  return lastType;
-}
-
-Type ProgramBuilder::getLastValueType()
-{
-  return lastValueType;
 }
 
 void ProgramBuilder::pushFuncallParam(std::shared_ptr<Litteral> newParam)

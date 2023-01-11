@@ -74,6 +74,7 @@ class Value : public Litteral
     type_t getValue();
     Type getType();
     Value(type_t, Type);
+    Value() = default;
 };
 
 class Variable : public Litteral
@@ -202,6 +203,86 @@ class While : public Statement
 };
 
 /******************************************************************************/
+/*                           arithmetic operations                            */
+/******************************************************************************/
+
+class BinaryOperation: public ASTNode
+{
+  protected:
+    std::shared_ptr<ASTNode> left;
+    std::shared_ptr<ASTNode> right;
+
+  public:
+    BinaryOperation(std::shared_ptr<ASTNode>, std::shared_ptr<ASTNode>);
+    void display() override;
+};
+
+class AddOP: public BinaryOperation
+{
+  public:
+    AddOP(std::shared_ptr<ASTNode>, std::shared_ptr<ASTNode>);
+    void display() override; // +
+};
+
+class MnsOP: public BinaryOperation
+{
+  public:
+    MnsOP(std::shared_ptr<ASTNode>, std::shared_ptr<ASTNode>);
+    void display() override; // -
+};
+
+class TmsOP: public BinaryOperation
+{
+  public:
+    TmsOP(std::shared_ptr<ASTNode>, std::shared_ptr<ASTNode>);
+    void display() override; // *
+};
+
+class DivOP: public BinaryOperation
+{
+  public:
+    DivOP(std::shared_ptr<ASTNode>, std::shared_ptr<ASTNode>);
+    void display() override; // /
+};
+
+/******************************************************************************/
+/*                             boolean operations                             */
+/******************************************************************************/
+
+class EqlOP: BinaryOperation
+{
+  public:
+    void display() override; // left == right
+};
+
+class OrOP: BinaryOperation
+{
+  public:
+    void display() override; // left || right
+};
+
+class AndOP: BinaryOperation
+{
+  public:
+    void display() override; // left && right
+};
+
+class XorOP: BinaryOperation
+{
+  public:
+    void display() override; // left ^ right
+};
+
+class NotOP: ASTNode
+{
+  private:
+    std::shared_ptr<ASTNode> param;
+
+  public:
+    void display() override; // !param
+};
+
+/******************************************************************************/
 /*                                  program                                   */
 /******************************************************************************/
 
@@ -238,9 +319,6 @@ class ProgramBuilder
     std::list<Variable> funParams;        // parameters of the last function
     std::list<std::shared_ptr<Litteral>> funcallParams;    // parameters of the last funcall
     // NOTE: maybe move this to the .y file as global variable:
-    Type lastType;                     // last type parsed
-    Type lastValueType;                // the type of the last value parsed
-    type_t lastValue;                  // last value parsed
     std::string lastFunctionName;      // the name of the last function parsed
     // NOTE: store the last type as well as the last identifier may be a good
     // idea. Last value too
@@ -254,9 +332,7 @@ class ProgramBuilder
     void newValue(double);
     void newValue(char);
     type_t getLastValue();
-    void newType(Type);
     void newValueType(Type);
-    Type getLastType();
     Type getLastValueType();
     void newFunctionName(std::string);
     void createBlock();
