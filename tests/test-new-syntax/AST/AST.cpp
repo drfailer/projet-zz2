@@ -156,7 +156,7 @@ void Block::display()
 /*   type = CHR; */
 /* } */
 
-Assignement::Assignement(Variable variable, Value value): variable(variable), value(value)
+Assignement::Assignement(Variable variable, std::shared_ptr<ASTNode> value): variable(variable), value(value)
                                                          {}
 
 void Assignement::display()
@@ -164,7 +164,7 @@ void Assignement::display()
   std::cout << "Assignement(";
   variable.display();
   std::cout << ",";
-  value.display();
+  value->display();
   std::cout << ")" << std::endl;
 }
 
@@ -290,7 +290,7 @@ AddOP::AddOP(std::shared_ptr<ASTNode> left, std::shared_ptr<ASTNode> right)
 
 void AddOP::display()
 {
-  std::cout << "(add: ";
+  std::cout << "AddOP(";
   BinaryOperation::display();
 }
 
@@ -301,7 +301,7 @@ MnsOP::MnsOP(std::shared_ptr<ASTNode> left, std::shared_ptr<ASTNode> right)
 
 void MnsOP::display()
 {
-  std::cout << "(mns: ";
+  std::cout << "MnsOP(";
   BinaryOperation::display();
 }
 
@@ -312,7 +312,7 @@ TmsOP::TmsOP(std::shared_ptr<ASTNode> left, std::shared_ptr<ASTNode> right)
 
 void TmsOP::display()
 {
-  std::cout << "(tms: ";
+  std::cout << "TmsOP(";
   BinaryOperation::display();
 }
 
@@ -323,7 +323,7 @@ DivOP::DivOP(std::shared_ptr<ASTNode> left, std::shared_ptr<ASTNode> right)
 
 void DivOP::display()
 {
-  std::cout << "(div: ";
+  std::cout << "DivOP(";
   BinaryOperation::display();
 }
 
@@ -331,31 +331,31 @@ void DivOP::display()
 
 void EqlOP::display()
 {
-  std::cout << "(eql: ";
+  std::cout << "EqlOP(";
   BinaryOperation::display();
 }
 
 void OrOP::display()
 {
-  std::cout << "(or: ";
+  std::cout << "OrOP(";
   BinaryOperation::display();
 }
 
 void AndOP::display()
 {
-  std::cout << "(and: ";
+  std::cout << "AndOP(";
   BinaryOperation::display();
 }
 
 void XorOP::display()
 {
-  std::cout << "(xor: ";
+  std::cout << "XorOP(";
   BinaryOperation::display();
 }
 
 void NotOP::display()
 {
-  std::cout << "(not: ";
+  std::cout << "NotOP(";
   param->display();
   std::cout << ")";
 }
@@ -392,6 +392,7 @@ ProgramBuilder::ProgramBuilder()
   blocks = std::list<std::shared_ptr<Block>>();
   funParams = std::list<Variable>();
   funcallParams = std::list<std::shared_ptr<Litteral>>();
+  /* commands = std::list<std::shared_ptr<ASTNode>>(); */
 }
 
 void ProgramBuilder::display()
@@ -404,7 +405,7 @@ void ProgramBuilder::addInclude(std::shared_ptr<Include> i)
   program->addInclude(i);
 }
 
-void ProgramBuilder::pushCommand(std::shared_ptr<ASTNode> command)
+void ProgramBuilder::pushBlock(std::shared_ptr<ASTNode> command)
 {
   blocks.back()->addOp(command);
 }
@@ -448,12 +449,12 @@ void ProgramBuilder::createWhile()
   blocks.back()->addOp(newwhile);
 }
 
-void ProgramBuilder::createFuncall(std::string name)
+std::shared_ptr<ASTNode> ProgramBuilder::createFuncall(std::string name)
 {
   std::shared_ptr<Funcall> newFuncall =
     std::make_shared<Funcall>(name, funcallParams);
-  blocks.back()->addOp(newFuncall);
   funcallParams.clear();
+  return newFuncall;
 }
 
 void ProgramBuilder::createFunction()
@@ -474,6 +475,13 @@ void ProgramBuilder::newFunctionName(std::string name)
 void ProgramBuilder::pushFuncallParam(std::shared_ptr<Litteral> newParam)
 {
   funcallParams.push_back(newParam);
+}
+
+std::shared_ptr<Litteral> ProgramBuilder::popFuncallParam()
+{
+  std::shared_ptr<Litteral> param = funcallParams.back();
+  funcallParams.pop_back();
+  return param;
 }
 
 void ProgramBuilder::pushFunctionParam(Variable newParam)

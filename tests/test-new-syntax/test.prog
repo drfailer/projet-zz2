@@ -4,6 +4,10 @@ fn main(int p1, flt p2, chr p3) {
   myFun(a, b, 5, 'a');
   flt b;
   set(b, 4.0);
+  set(b, add(add(2,2), 4));
+  set(b, add(2, add(5,6)));
+  set(b, add(mns(3, tms(3, fonction(a))), add(5,6)));
+  set(b, fonction(mns(3, tms(3, fonction(mns(4,6)))), add(5,6)));
   if {
     chr c;
     set(c, 'a');

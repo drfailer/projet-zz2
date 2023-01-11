@@ -24,6 +24,7 @@
 %code
 {
     #include "lexer.hpp"
+    #include <memory>
     #define yylex(x) scanner->lex(x)
     ProgramBuilder pb;
 }
@@ -42,6 +43,10 @@
 
 %nterm <Type> type
 %nterm <Value> value
+%nterm <std::shared_ptr<ASTNode>> inlineCommand
+%nterm <std::shared_ptr<ASTNode>> arithmeticOperations
+%nterm <std::shared_ptr<ASTNode>> arithmeticParam
+%nterm <std::shared_ptr<ASTNode>> funcall
 
 %%
 program: %empty
@@ -157,18 +162,69 @@ commands: %empty
         | command SEMI commands
         ;
 
-command: funcall
-        | print
+command: print
         | read
         | declaration
         | assignement
+        | funcall { pb.pushBlock($1); }
         ;
+
+inlineCommand:
+             arithmeticOperations { $$ = $1; }
+            | funcall { $$ = $1; }
+            | value { $$ = std::make_shared<Value>($1); }
+            ;
+
+arithmeticOperations:
+                    ADD'(' arithmeticParam[left] COMMA arithmeticParam[right] ')'
+                    {
+                      std::cout << "addOP" << std::endl;
+                      $$ = std::make_shared<AddOP>($left, $right);
+                    }
+                    |
+                    MNS'(' arithmeticParam[left] COMMA arithmeticParam[right] ')'
+                    {
+                      std::cout << "mnsOP" << std::endl;
+                      $$ = std::make_shared<MnsOP>($left, $right);
+                    }
+                    |
+                    TMS'(' arithmeticParam[left] COMMA arithmeticParam[right] ')'
+                    {
+                      std::cout << "tmsOP" << std::endl;
+                      $$ = std::make_shared<TmsOP>($left, $right);
+                    }
+                    |
+                    DIV'(' arithmeticParam[left] COMMA arithmeticParam[right] ')'
+                    {
+                      std::cout << "divOP" << std::endl;
+                      $$ = std::make_shared<DivOP>($left, $right);
+                    }
+                    ;
+
+arithmeticParam:
+               param
+               {
+                  std::cout << "arithmetic param" << std::endl;
+                  $$ = pb.popFuncallParam();
+               }
+               |
+               arithmeticOperations
+               {
+                  std::cout << "arithmetic param operation" << std::endl;
+                  $$ = $1;
+               }
+               |
+               funcall
+               {
+                  $$ = $1;
+               }
+               ;
 
 funcall:
        IDENTIFIER'('params')'
        {
          std::cout << "new funcall: " << $1 << std::endl;
-         pb.createFuncall($1);
+         $$ = pb.createFuncall($1);
        }
        ;
 
@@ -190,15 +246,15 @@ declaration:
            type[t] IDENTIFIER
            {
              std::cout << "new declaration: " << $2 << std::endl;
-             pb.pushCommand(std::make_shared<Declaration>(Variable($2, $t)));
+             pb.pushBlock(std::make_shared<Declaration>(Variable($2, $t)));
            }
            ;
 
 assignement:
-           SET'('IDENTIFIER COMMA value[v]')'
+           SET'('IDENTIFIER[v] COMMA inlineCommand[ic]')'
            {
-             std::cout << "new assignement: " << $3 << std::endl;
-             pb.pushCommand(std::make_shared<Assignement>(Variable($3, VOID), $v));
+             std::cout << "new assignement: " << $v << std::endl;
+             pb.pushBlock(std::make_shared<Assignement>(Variable($v, VOID), $ic));
            }
            ;
 

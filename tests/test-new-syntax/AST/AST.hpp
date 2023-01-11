@@ -106,14 +106,14 @@ class Assignement : public ASTNode
 {
   private:
     Variable variable;
-    Value value;
+    std::shared_ptr<ASTNode> value;
 
   public:
     void display() override;
     /* Assignement(std::string, long long); */
     /* Assignement(std::string, double); */
     /* Assignement(std::string, char); */
-    Assignement(Variable, Value);
+    Assignement(Variable, std::shared_ptr<ASTNode>);
 };
 
 class Declaration : public ASTNode
@@ -320,13 +320,15 @@ class ProgramBuilder
     std::list<std::shared_ptr<Litteral>> funcallParams;    // parameters of the last funcall
     // NOTE: maybe move this to the .y file as global variable:
     std::string lastFunctionName;      // the name of the last function parsed
-    // NOTE: store the last type as well as the last identifier may be a good
-    // idea. Last value too
+    /* std::list<std::shared_ptr<ASTNode>> commands; */
 
   public:
     void display();
-    void pushCommand(std::shared_ptr<ASTNode>);
+    void pushBlock(std::shared_ptr<ASTNode>);
+    /* void pushCommand(std::shared_ptr<ASTNode>); */
+    /* std::shared_ptr<ASTNode> popCommand(); */
     void pushFuncallParam(std::shared_ptr<Litteral>);
+    std::shared_ptr<Litteral> popFuncallParam();
     void pushFunctionParam(Variable);
     void newValue(long long);
     void newValue(double);
@@ -339,7 +341,7 @@ class ProgramBuilder
     void createIf(); // TODO: gérer les conditions
     void createFor();
     void createWhile();
-    void createFuncall(std::string);
+    std::shared_ptr<ASTNode> createFuncall(std::string);
     void createFunction(); // TODO: add the return type
     void addInclude(std::shared_ptr<Include>);
     ProgramBuilder();
