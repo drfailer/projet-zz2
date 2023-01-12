@@ -80,7 +80,7 @@ Type Variable::getType()
 
 void Variable::display()
 {
-  std::cout << id << " " << type;
+  std::cout << id << " " << typToString(type);
 }
 
 /* -------------------------------------------------------------------------- */
@@ -184,7 +184,7 @@ void Declaration::display()
 /* -------------------------------------------------------------------------- */
 
 Funcall::Funcall(std::string functionName,
-    std::list<std::shared_ptr<Litteral>> params):
+    std::list<std::shared_ptr<ASTNode>> params):
   functionName(functionName), params(params)
 {
 }
@@ -391,8 +391,7 @@ ProgramBuilder::ProgramBuilder()
   program = std::make_shared<Program>();
   blocks = std::list<std::shared_ptr<Block>>();
   funParams = std::list<Variable>();
-  funcallParams = std::list<std::shared_ptr<Litteral>>();
-  /* commands = std::list<std::shared_ptr<ASTNode>>(); */
+  funcallParams = std::list<std::list<std::shared_ptr<ASTNode>>>();
 }
 
 void ProgramBuilder::display()
@@ -449,12 +448,19 @@ void ProgramBuilder::createWhile()
   blocks.back()->addOp(newwhile);
 }
 
+/* funcall ---------------------------------- */
+
 std::shared_ptr<ASTNode> ProgramBuilder::createFuncall(std::string name)
 {
   std::shared_ptr<Funcall> newFuncall =
-    std::make_shared<Funcall>(name, funcallParams);
-  funcallParams.clear();
+    std::make_shared<Funcall>(name, funcallParams.back());
+  funcallParams.pop_back();
   return newFuncall;
+}
+
+void ProgramBuilder::newFuncall()
+{
+  funcallParams.push_back(std::list<std::shared_ptr<ASTNode>>());
 }
 
 void ProgramBuilder::createFunction()
@@ -467,21 +473,28 @@ void ProgramBuilder::createFunction()
   funcallParams.clear();
 }
 
+void ProgramBuilder::pushFuncallParam(std::shared_ptr<ASTNode> newParam)
+{
+  funcallParams.back().push_back(newParam);
+}
+
+/* funcall ---------------------------------- */
+
 void ProgramBuilder::newFunctionName(std::string name)
 {
   lastFunctionName = name;
 }
 
-void ProgramBuilder::pushFuncallParam(std::shared_ptr<Litteral> newParam)
+std::shared_ptr<ASTNode> ProgramBuilder::popFuncallParam()
 {
-  funcallParams.push_back(newParam);
-}
-
-std::shared_ptr<Litteral> ProgramBuilder::popFuncallParam()
-{
-  std::shared_ptr<Litteral> param = funcallParams.back();
+  std::shared_ptr<ASTNode> param = funcallParams.back().back();
   funcallParams.pop_back();
   return param;
+}
+
+void ProgramBuilder::flushFuncallParam()
+{
+  funcallParams.clear();
 }
 
 void ProgramBuilder::pushFunctionParam(Variable newParam)

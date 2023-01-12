@@ -1,7 +1,13 @@
-# Links
+# Dernier phase parser
 
-- [demo](https://learnmoderncpp.com/2020/12/18/generating-c-programs-with-flex-and-bison-3/)
-- [example in the doc](https://www.gnu.org/software/bison/manual/html_node/A-Complete-C_002b_002b-Example.html)
-- [article on the compiler contruction using flex and bison](http://penteki.web.elte.hu/compiler.pdf)
-- [other demo](http://www.jonathanbeard.io/tutorials/FlexBisonC++)
-- la doc complete: [man](https://www.gnu.org/software/bison/manual/bison.html#A-Complete-C_002b_002b-Example)
+## Funcall
+
+Pour les `funcall`, on est obligé d'utiliser une pile de pile pour stocker les
+paramètres des différentes fonctions.
+
+## Opération arithmetiques
+
+Conflit d'opération avec les `funcall` ce qui oblige à répéter la grammaire des
+`param` 2 fois:
+- une fois pour les `funcall` => on empile dans la piles des `funcall`
+- une seconde fois pour les opérandes

@@ -27,6 +27,7 @@
     #include <memory>
     #define yylex(x) scanner->lex(x)
     ProgramBuilder pb;
+    std::string lastID;
 }
 
 %token              EOL LPAREN RPAREN
@@ -45,8 +46,8 @@
 %nterm <Value> value
 %nterm <std::shared_ptr<ASTNode>> inlineCommand
 %nterm <std::shared_ptr<ASTNode>> arithmeticOperations
-%nterm <std::shared_ptr<ASTNode>> arithmeticParam
 %nterm <std::shared_ptr<ASTNode>> funcall
+%nterm <std::shared_ptr<ASTNode>> operand
 
 %%
 program: %empty
@@ -123,13 +124,30 @@ param: %empty
      IDENTIFIER
      {
         std::cout << "new param variable" << std::endl;
-        pb.pushFuncallParam(std::make_shared<Variable>($1, VOID)); // use symTable to get the type
+        // TODO: use symTable to get the type
+        pb.pushFuncallParam(std::make_shared<Variable>($1, VOID));
      }
      |
-     value[v]
+     inlineCommand
      {
-        std::cout << "new param value" << std::endl;
-        pb.pushFuncallParam(std::make_shared<Value>($v));
+        pb.pushFuncallParam($1);
+     }
+     ;
+
+operand: %empty
+     |
+     IDENTIFIER
+     {
+        std::cout << "new param variable" << std::endl;
+        std::shared_ptr<ASTNode> v = std::make_shared<Variable>($1, VOID);
+        // pb.pushFuncallParam(v); // use symTable to get the type
+        $$ = v;
+     }
+     |
+     inlineCommand
+     {
+        // pb.pushFuncallParam($1);
+        $$ = $1;
      }
      ;
 
@@ -176,55 +194,45 @@ inlineCommand:
             ;
 
 arithmeticOperations:
-                    ADD'(' arithmeticParam[left] COMMA arithmeticParam[right] ')'
+                    ADD'(' operand[left] COMMA operand[right] ')'
                     {
                       std::cout << "addOP" << std::endl;
                       $$ = std::make_shared<AddOP>($left, $right);
+                      // pb.popFuncallParam();
                     }
                     |
-                    MNS'(' arithmeticParam[left] COMMA arithmeticParam[right] ')'
+                    MNS'(' operand[left] COMMA operand[right] ')'
                     {
                       std::cout << "mnsOP" << std::endl;
                       $$ = std::make_shared<MnsOP>($left, $right);
+                      // pb.flushFuncallParam();
                     }
                     |
-                    TMS'(' arithmeticParam[left] COMMA arithmeticParam[right] ')'
+                    TMS'(' operand[left] COMMA operand[right] ')'
                     {
                       std::cout << "tmsOP" << std::endl;
                       $$ = std::make_shared<TmsOP>($left, $right);
+                      // pb.flushFuncallParam();
                     }
                     |
-                    DIV'(' arithmeticParam[left] COMMA arithmeticParam[right] ')'
+                    DIV'(' operand[left] COMMA operand[right] ')'
                     {
                       std::cout << "divOP" << std::endl;
                       $$ = std::make_shared<DivOP>($left, $right);
+                      // pb.flushFuncallParam();
                     }
                     ;
 
-arithmeticParam:
-               param
-               {
-                  std::cout << "arithmetic param" << std::endl;
-                  $$ = pb.popFuncallParam();
-               }
-               |
-               arithmeticOperations
-               {
-                  std::cout << "arithmetic param operation" << std::endl;
-                  $$ = $1;
-               }
-               |
-               funcall
-               {
-                  $$ = $1;
-               }
-               ;
-
 funcall:
-       IDENTIFIER'('params')'
+       IDENTIFIER'('
+       {
+          pb.newFuncall();
+          lastID = $1;
+       }
+       params')'
        {
          std::cout << "new funcall: " << $1 << std::endl;
-         $$ = pb.createFuncall($1);
+         $$ = pb.createFuncall(lastID);
        }
        ;
 

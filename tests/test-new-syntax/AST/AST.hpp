@@ -57,13 +57,13 @@ class Include : public ASTNode
 /*                                 litterals                                  */
 /******************************************************************************/
 
-class Litteral : public ASTNode // ???
-{
+/* class Litteral : public ASTNode // ??? */
+/* { */
   /* public: */
-  /*   virtual ~Litteral() = 0; */
-};
+  /* /1*   virtual ~Litteral() = 0; *1/ */
+/* }; */
 
-class Value : public Litteral
+class Value : public ASTNode
 {
   private:
     type_t value;
@@ -77,7 +77,7 @@ class Value : public Litteral
     Value() = default;
 };
 
-class Variable : public Litteral
+class Variable : public ASTNode
 {
   private:
     std::string id;
@@ -131,10 +131,10 @@ class Funcall : public ASTNode
 {
   private:
     std::string functionName;
-    std::list<std::shared_ptr<Litteral>> params; // TODO: get all params
+    std::list<std::shared_ptr<ASTNode>> params; // TODO: get all params
 
   public:
-    Funcall(std::string, std::list<std::shared_ptr<Litteral>>);
+    Funcall(std::string, std::list<std::shared_ptr<ASTNode>>);
     void display() override;
 };
 
@@ -317,7 +317,7 @@ class ProgramBuilder
     std::list<std::shared_ptr<Block>> blocks; // stack of blocks (the last
                                               // element is the current block)
     std::list<Variable> funParams;        // parameters of the last function
-    std::list<std::shared_ptr<Litteral>> funcallParams;    // parameters of the last funcall
+    std::list<std::list<std::shared_ptr<ASTNode>>> funcallParams;    // parameters of the last funcall
     // NOTE: maybe move this to the .y file as global variable:
     std::string lastFunctionName;      // the name of the last function parsed
     /* std::list<std::shared_ptr<ASTNode>> commands; */
@@ -327,9 +327,11 @@ class ProgramBuilder
     void pushBlock(std::shared_ptr<ASTNode>);
     /* void pushCommand(std::shared_ptr<ASTNode>); */
     /* std::shared_ptr<ASTNode> popCommand(); */
-    void pushFuncallParam(std::shared_ptr<Litteral>);
-    std::shared_ptr<Litteral> popFuncallParam();
+    void pushFuncallParam(std::shared_ptr<ASTNode>);
+    std::shared_ptr<ASTNode> popFuncallParam();
+    void flushFuncallParam();
     void pushFunctionParam(Variable);
+    void newFuncall();
     void newValue(long long);
     void newValue(double);
     void newValue(char);

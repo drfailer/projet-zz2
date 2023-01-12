@@ -1,5 +1,5 @@
 test: parser.o lexer.o AST.o
-	g++ -o test $^
+	g++ -o test $^ -g
 
 # -------------------------------------------------------------- flex and bison
 
