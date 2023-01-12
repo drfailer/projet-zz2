@@ -27,7 +27,6 @@
     #include <memory>
     #define yylex(x) scanner->lex(x)
     ProgramBuilder pb;
-    std::string lastID;
 }
 
 %token              EOL LPAREN RPAREN
@@ -198,41 +197,36 @@ arithmeticOperations:
                     {
                       std::cout << "addOP" << std::endl;
                       $$ = std::make_shared<AddOP>($left, $right);
-                      // pb.popFuncallParam();
                     }
                     |
                     MNS'(' operand[left] COMMA operand[right] ')'
                     {
                       std::cout << "mnsOP" << std::endl;
                       $$ = std::make_shared<MnsOP>($left, $right);
-                      // pb.flushFuncallParam();
                     }
                     |
                     TMS'(' operand[left] COMMA operand[right] ')'
                     {
                       std::cout << "tmsOP" << std::endl;
                       $$ = std::make_shared<TmsOP>($left, $right);
-                      // pb.flushFuncallParam();
                     }
                     |
                     DIV'(' operand[left] COMMA operand[right] ')'
                     {
                       std::cout << "divOP" << std::endl;
                       $$ = std::make_shared<DivOP>($left, $right);
-                      // pb.flushFuncallParam();
                     }
                     ;
 
 funcall:
        IDENTIFIER'('
        {
-          pb.newFuncall();
-          lastID = $1;
+          pb.newFuncall($1);
        }
        params')'
        {
          std::cout << "new funcall: " << $1 << std::endl;
-         $$ = pb.createFuncall(lastID);
+         $$ = pb.createFuncall();
        }
        ;
 

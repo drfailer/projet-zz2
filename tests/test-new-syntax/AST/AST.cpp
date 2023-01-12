@@ -416,7 +416,7 @@ void ProgramBuilder::createBlock()
 }
 
 /**
- * @brief take the last block, add it to a new If and add the new if to the
+ * @brief take the last block, add it to a new If and add the new If to the
  * parent block.
  */
 void ProgramBuilder::createIf()
@@ -427,7 +427,7 @@ void ProgramBuilder::createIf()
 }
 
 /**
- * @brief take the last block, add it to a new If and add the new if to the
+ * @brief take the last block, add it to a new For and add the new For to the
  * parent block.
  */
 void ProgramBuilder::createFor()
@@ -438,7 +438,7 @@ void ProgramBuilder::createFor()
 }
 
 /**
- * @brief take the last block, add it to a new If and add the new if to the
+ * @brief take the last block, add it to a new While and add the new If to the
  * parent block.
  */
 void ProgramBuilder::createWhile()
@@ -450,16 +450,18 @@ void ProgramBuilder::createWhile()
 
 /* funcall ---------------------------------- */
 
-std::shared_ptr<ASTNode> ProgramBuilder::createFuncall(std::string name)
+std::shared_ptr<ASTNode> ProgramBuilder::createFuncall()
 {
   std::shared_ptr<Funcall> newFuncall =
-    std::make_shared<Funcall>(name, funcallParams.back());
+    std::make_shared<Funcall>(funcallIds.back(), funcallParams.back());
   funcallParams.pop_back();
+  funcallIds.pop_back();
   return newFuncall;
 }
 
-void ProgramBuilder::newFuncall()
+void ProgramBuilder::newFuncall(std::string name)
 {
+  funcallIds.push_back(name);
   funcallParams.push_back(std::list<std::shared_ptr<ASTNode>>());
 }
 
@@ -483,18 +485,6 @@ void ProgramBuilder::pushFuncallParam(std::shared_ptr<ASTNode> newParam)
 void ProgramBuilder::newFunctionName(std::string name)
 {
   lastFunctionName = name;
-}
-
-std::shared_ptr<ASTNode> ProgramBuilder::popFuncallParam()
-{
-  std::shared_ptr<ASTNode> param = funcallParams.back().back();
-  funcallParams.pop_back();
-  return param;
-}
-
-void ProgramBuilder::flushFuncallParam()
-{
-  funcallParams.clear();
 }
 
 void ProgramBuilder::pushFunctionParam(Variable newParam)

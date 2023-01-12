@@ -320,30 +320,20 @@ class ProgramBuilder
     std::list<std::list<std::shared_ptr<ASTNode>>> funcallParams;    // parameters of the last funcall
     // NOTE: maybe move this to the .y file as global variable:
     std::string lastFunctionName;      // the name of the last function parsed
-    /* std::list<std::shared_ptr<ASTNode>> commands; */
+    std::list<std::string> funcallIds;
 
   public:
     void display();
     void pushBlock(std::shared_ptr<ASTNode>);
-    /* void pushCommand(std::shared_ptr<ASTNode>); */
-    /* std::shared_ptr<ASTNode> popCommand(); */
     void pushFuncallParam(std::shared_ptr<ASTNode>);
-    std::shared_ptr<ASTNode> popFuncallParam();
-    void flushFuncallParam();
     void pushFunctionParam(Variable);
-    void newFuncall();
-    void newValue(long long);
-    void newValue(double);
-    void newValue(char);
-    type_t getLastValue();
-    void newValueType(Type);
-    Type getLastValueType();
+    void newFuncall(std::string);
     void newFunctionName(std::string);
     void createBlock();
     void createIf(); // TODO: gérer les conditions
-    void createFor();
-    void createWhile();
-    std::shared_ptr<ASTNode> createFuncall(std::string);
+    void createFor(); // TODO: gérer les éléments du for
+    void createWhile(); // TODO: gérer les conditions
+    std::shared_ptr<ASTNode> createFuncall();
     void createFunction(); // TODO: add the return type
     void addInclude(std::shared_ptr<Include>);
     ProgramBuilder();
