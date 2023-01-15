@@ -210,13 +210,15 @@ void Statement::display()
 
 /* -------------------------------------------------------------------------- */
 
-If::If(std::string c, std::shared_ptr<Block> b): Statement(b), condition(c)
+If::If(std::shared_ptr<ASTNode> c, std::shared_ptr<Block> b): Statement(b), condition(c)
 {
 }
 
 void If::display()
 {
-  std::cout << "If(" << condition << ", ";
+  std::cout << "If(";
+  condition->display();
+  std::cout << ", ";
   Statement::display();
   std::cout << ")" << std::endl;
 }
@@ -329,11 +331,19 @@ void DivOP::display()
 
 /* -------------------------------------------------------------------------- */
 
+EqlOP::EqlOP(std::shared_ptr<ASTNode> left, std::shared_ptr<ASTNode> right)
+  : BinaryOperation(left, right)
+{}
+
 void EqlOP::display()
 {
   std::cout << "EqlOP(";
   BinaryOperation::display();
 }
+
+OrOP::OrOP(std::shared_ptr<ASTNode> left, std::shared_ptr<ASTNode> right)
+  : BinaryOperation(left, right)
+{}
 
 void OrOP::display()
 {
@@ -341,17 +351,28 @@ void OrOP::display()
   BinaryOperation::display();
 }
 
+AndOP::AndOP(std::shared_ptr<ASTNode> left, std::shared_ptr<ASTNode> right)
+  : BinaryOperation(left, right)
+{}
+
 void AndOP::display()
 {
   std::cout << "AndOP(";
   BinaryOperation::display();
 }
 
+XorOP::XorOP(std::shared_ptr<ASTNode> left, std::shared_ptr<ASTNode> right)
+  : BinaryOperation(left, right)
+{}
+
 void XorOP::display()
 {
   std::cout << "XorOP(";
   BinaryOperation::display();
 }
+
+NotOP::NotOP(std::shared_ptr<ASTNode> param): param(param)
+{}
 
 void NotOP::display()
 {
@@ -419,9 +440,9 @@ void ProgramBuilder::createBlock()
  * @brief take the last block, add it to a new If and add the new If to the
  * parent block.
  */
-void ProgramBuilder::createIf()
+void ProgramBuilder::createIf(std::shared_ptr<ASTNode> condition)
 {
-  std::shared_ptr<If> newif = std::make_shared<If>("condition", blocks.back());
+  std::shared_ptr<If> newif = std::make_shared<If>(condition, blocks.back());
   blocks.pop_back();
   blocks.back()->addOp(newif);
 }

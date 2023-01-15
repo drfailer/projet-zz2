@@ -7,8 +7,14 @@ fn main(int p1, flt p2, chr p3) {
   set(b, add(add(2,2), 4));
   set(b, add(2, add(5,6)));
   set(b, add(mns(3, tms(3, fonction(a))), add(5,6)));
-  set(b, fonction(mns(3, tms(3, fonction(mns(4,6)))), add(5,6)));
-  if {
+  set(b, myfun(mns(3, tms(3, fonction(mns(4,6)))), add(5,6)));
+
+  myFun(a, b, fonction(a, b), 4);
+  myFun(a, b, fonction(a, add(3,4)), tms(2,2));
+  myFun(a, add(3,3), fonction(a, b), 4);
+  myFun(a, fonc(a), fonction(a, b), 4);
+
+  if (and(eql(a, b), or(eql(a, 0), eql(add(a, b), 4)))) {
     chr c;
     set(c, 'a');
   }

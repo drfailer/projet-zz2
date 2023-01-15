@@ -169,10 +169,10 @@ class Function : public Statement
 class If : public Statement
 {
   private:
-    std::string condition; // TODO: put real conditions
+    std::shared_ptr<ASTNode> condition; // TODO: put real conditions
 
   public:
-    If(std::string, std::shared_ptr<Block>);
+    If(std::shared_ptr<ASTNode>, std::shared_ptr<Block>);
     void display() override;
 };
 
@@ -249,36 +249,47 @@ class DivOP: public BinaryOperation
 /*                             boolean operations                             */
 /******************************************************************************/
 
-class EqlOP: BinaryOperation
+// TODO:
+// - inf
+// - sup
+// - ieq
+// - seq
+
+class EqlOP: public BinaryOperation
 {
   public:
+    EqlOP(std::shared_ptr<ASTNode>, std::shared_ptr<ASTNode>);
     void display() override; // left == right
 };
 
-class OrOP: BinaryOperation
+class OrOP: public BinaryOperation
 {
   public:
+    OrOP(std::shared_ptr<ASTNode>, std::shared_ptr<ASTNode>);
     void display() override; // left || right
 };
 
-class AndOP: BinaryOperation
+class AndOP: public BinaryOperation
 {
   public:
+    AndOP(std::shared_ptr<ASTNode>, std::shared_ptr<ASTNode>);
     void display() override; // left && right
 };
 
-class XorOP: BinaryOperation
+class XorOP: public BinaryOperation
 {
   public:
+    XorOP(std::shared_ptr<ASTNode>, std::shared_ptr<ASTNode>);
     void display() override; // left ^ right
 };
 
-class NotOP: ASTNode
+class NotOP: public ASTNode
 {
   private:
     std::shared_ptr<ASTNode> param;
 
   public:
+    NotOP(std::shared_ptr<ASTNode>);
     void display() override; // !param
 };
 
@@ -330,7 +341,7 @@ class ProgramBuilder
     void newFuncall(std::string);
     void newFunctionName(std::string);
     void createBlock();
-    void createIf(); // TODO: gérer les conditions
+    void createIf(std::shared_ptr<ASTNode>); // TODO: gérer les conditions
     void createFor(); // TODO: gérer les éléments du for
     void createWhile(); // TODO: gérer les conditions
     std::shared_ptr<ASTNode> createFuncall();

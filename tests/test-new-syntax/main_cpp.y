@@ -38,13 +38,15 @@
 %token IF ELSE FOR WHILE FN INCLUDE IN
 %token SEMI COMMA
 %token PRINT READ ADD MNS TMS DIV DDOT SET
+%token EQL AND OR XOR NOT
 %token <std::string> IDENTIFIER
 %token ERROR
 
 %nterm <Type> type
 %nterm <Value> value
-%nterm <std::shared_ptr<ASTNode>> inlineCommand
+%nterm <std::shared_ptr<ASTNode>> inlineSymbol
 %nterm <std::shared_ptr<ASTNode>> arithmeticOperations
+%nterm <std::shared_ptr<ASTNode>> booleanOperation
 %nterm <std::shared_ptr<ASTNode>> funcall
 %nterm <std::shared_ptr<ASTNode>> operand
 
@@ -127,7 +129,7 @@ param: %empty
         pb.pushFuncallParam(std::make_shared<Variable>($1, VOID));
      }
      |
-     inlineCommand
+     inlineSymbol
      {
         pb.pushFuncallParam($1);
      }
@@ -139,13 +141,11 @@ operand: %empty
      {
         std::cout << "new param variable" << std::endl;
         std::shared_ptr<ASTNode> v = std::make_shared<Variable>($1, VOID);
-        // pb.pushFuncallParam(v); // use symTable to get the type
         $$ = v;
      }
      |
-     inlineCommand
+     inlineSymbol
      {
-        // pb.pushFuncallParam($1);
         $$ = $1;
      }
      ;
@@ -186,7 +186,7 @@ command: print
         | funcall { pb.pushBlock($1); }
         ;
 
-inlineCommand:
+inlineSymbol:
              arithmeticOperations { $$ = $1; }
             | funcall { $$ = $1; }
             | value { $$ = std::make_shared<Value>($1); }
@@ -217,6 +217,38 @@ arithmeticOperations:
                       $$ = std::make_shared<DivOP>($left, $right);
                     }
                     ;
+
+booleanOperation:
+                 EQL'(' operand[left] COMMA operand[right] ')'
+                 {
+                    std::cout << "EqlOP" << std::endl;
+                    $$ = std::make_shared<EqlOP>($left, $right);
+                 }
+                 |
+                 AND'('booleanOperation[left] COMMA booleanOperation[right]')'
+                 {
+                    std::cout << "AndOP" << std::endl;
+                    $$ = std::make_shared<AndOP>($left, $right);
+                 }
+                 |
+                 OR'('booleanOperation[left] COMMA booleanOperation[right]')'
+                 {
+                    std::cout << "OrOP" << std::endl;
+                    $$ = std::make_shared<OrOP>($left, $right);
+                 }
+                 |
+                 XOR'('booleanOperation[left] COMMA booleanOperation[right]')'
+                 {
+                    std::cout << "XorOP" << std::endl;
+                    $$ = std::make_shared<XorOP>($left, $right);
+                 }
+                 |
+                 NOT'('booleanOperation[op]')'
+                 {
+                    std::cout << "NotOP" << std::endl;
+                    $$ = std::make_shared<NotOP>($op);
+                 }
+                 ;
 
 funcall:
        IDENTIFIER'('
@@ -253,7 +285,7 @@ declaration:
            ;
 
 assignement:
-           SET'('IDENTIFIER[v] COMMA inlineCommand[ic]')'
+           SET'('IDENTIFIER[v] COMMA inlineSymbol[ic]')'
            {
              std::cout << "new assignement: " << $v << std::endl;
              pb.pushBlock(std::make_shared<Assignement>(Variable($v, VOID), $ic));
@@ -294,7 +326,7 @@ statement:
          if
          {
            std::cout << "new if" << std::endl;
-           pb.createIf();
+           // pb.createIf();
          }
          |
          for
@@ -315,9 +347,10 @@ if: IF
     std::cout << "---- if ----" << std::endl;
     pb.createBlock();
   }
-  block
+  '('booleanOperation[cond]')' block
   {
     std::cout << "if" << std::endl;
+    pb.createIf($cond);
   }
   |
   if ELSE if

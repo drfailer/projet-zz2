@@ -40,6 +40,11 @@ add          { AFFICHE("L_add"); return Parser::token::ADD; }
 mns          { AFFICHE("L_mns"); return Parser::token::MNS; }
 tms          { AFFICHE("L_tms"); return Parser::token::TMS; }
 div          { AFFICHE("L_div"); return Parser::token::DIV; }
+eql          { AFFICHE("L_eql"); return Parser::token::EQL; }
+and          { AFFICHE("L_and"); return Parser::token::AND; }
+or           { AFFICHE("L_or"); return Parser::token::OR; }
+xor          { AFFICHE("L_xor"); return Parser::token::XOR; }
+not          { AFFICHE("L_not"); return Parser::token::NOT; }
 set          { AFFICHE("L_set"); return Parser::token::SET; }
 include      { AFFICHE("L_include"); return Parser::token::INCLUDE; }
 
