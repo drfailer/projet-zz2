@@ -40,6 +40,7 @@
 %token PRINT READ ADD MNS TMS DIV RANGE SET
 %token EQL AND OR XOR NOT
 %token <std::string> IDENTIFIER
+%token <std::string> STRING
 %token ERROR
 
 %nterm <Type> type
@@ -185,6 +186,18 @@ command: print
         | assignement
         | funcall { pb.pushBlock($1); }
         ;
+
+read: READ'('IDENTIFIER')'
+    {
+      std::cout << "read" << std::endl;
+    }
+    ;
+
+print:
+     PRINT'('STRING')'
+     |
+     PRINT'('IDENTIFIER')'
+     ;
 
 inlineSymbol:
              arithmeticOperations { $$ = $1; }

@@ -22,6 +22,7 @@ semi ;
 comma ,
 equal =
 blanks [\S\s \t\n]
+str \"{alpha}*\"
 
 %%
 int          { AFFICHE("L_nbrt"); return Parser::token::INTT; }
@@ -70,6 +71,12 @@ range        { AFFICHE("L_range"); return Parser::token::RANGE; }
   AFFICHE("L_char");
   yylval->build<char>(yytext[1]);
   return Parser::token::CHAR;
+}
+
+{str} {
+  AFFICHE("L_string");
+  yylval->build<std::string>(yytext);
+  return Parser::token::STRING;
 }
 
 {semi}       { AFFICHE("L_semi"); return Parser::token::SEMI; }
