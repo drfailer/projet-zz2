@@ -32,6 +32,15 @@ class ASTNode
     virtual void display() = 0;
 };
 
+/******************************************************************************/
+/*                                   block                                    */
+/******************************************************************************/
+
+/**
+ * @brief  A `Block` refer to blocks of code between "{}". It contains the list
+ *         of the instructions defined insite the brackets.
+ *
+ */
 class Block : public ASTNode
 {
   private:
@@ -43,6 +52,14 @@ class Block : public ASTNode
     Block();
 };
 
+/******************************************************************************/
+/*                                  includes                                  */
+/******************************************************************************/
+
+/**
+ * @brief  Include a file. Note: the language doesn't have a module system, so
+ *         it acts a bit like a pre-processor instruction.
+ */
 class Include : public ASTNode
 {
   private:
@@ -54,15 +71,12 @@ class Include : public ASTNode
 };
 
 /******************************************************************************/
-/*                                 litterals                                  */
+/*                                  factors                                   */
 /******************************************************************************/
 
-/* class Litteral : public ASTNode // ??? */
-/* { */
-  /* public: */
-  /* /1*   virtual ~Litteral() = 0; *1/ */
-/* }; */
-
+/**
+ * @brief  Basic values of an available type.
+ */
 class Value : public ASTNode
 {
   private:
@@ -77,6 +91,13 @@ class Value : public ASTNode
     Value() = default;
 };
 
+/**
+ * @brief  Reference to a variable.
+ *
+ * NOTE: the type may be useless, it is here just in case.
+ * TODO: justify or not the choice of having a type using the definition of the
+ *       variable.
+ */
 class Variable : public ASTNode
 {
   private:
@@ -94,14 +115,10 @@ class Variable : public ASTNode
 /*                                 commands                                   */
 /******************************************************************************/
 
-// NOTE: may be not as usefull for the implementation
-/* class Command : public ASTNode */
-/* { */
-/*   public: */
-/*     virtual void display() override; */
-/*     virtual ~Command(); */
-/* }; */
-
+/**
+ * @brief  Represent an assignement operation. The "ifdef" check of the
+ *         variable is done in the parser using the table of symbols.
+ */
 class Assignement : public ASTNode
 {
   private:
@@ -110,12 +127,14 @@ class Assignement : public ASTNode
 
   public:
     void display() override;
-    /* Assignement(std::string, long long); */
-    /* Assignement(std::string, double); */
-    /* Assignement(std::string, char); */
     Assignement(Variable, std::shared_ptr<ASTNode>);
 };
 
+/**
+ * @brief  Declare a variable.
+ *
+ * NOTE: could be nice to have a type here.
+ */
 class Declaration : public ASTNode
 {
   private:
@@ -126,7 +145,15 @@ class Declaration : public ASTNode
     Declaration(Variable);
 };
 
-// TODO: may be an abstract class and have one class per function will be esier
+/******************************************************************************/
+/*                                  funcall                                   */
+/******************************************************************************/
+
+/**
+ * @brief  Calling a function. This function has a name and some parameters. The
+ *         parameters are node as the can have multiple types (binary operation,
+ *         variable, values, other funcall, ...)
+ */
 class Funcall : public ASTNode
 {
   private:
@@ -142,6 +169,10 @@ class Funcall : public ASTNode
 /*                                 statements                                 */
 /******************************************************************************/
 
+/**
+ * @brief  A `Statement` is somthing that contains a `Block` (function
+ *         definitions, if, for, while).
+ */
 class Statement : public ASTNode
 {
   private:
@@ -152,12 +183,18 @@ class Statement : public ASTNode
     void display() override;
 };
 
+/**
+ * @brief  Fonction declaration. It has an id (function name), some parameters
+ *         (which are just variable declarations) and a return type.
+ *
+ * TODO: create a return statment and manage return type.
+ */
 class Function : public Statement
 {
   private:
     std::string id;
-    std::list<Variable> params; // NOTE: ????
-    Type returnType;
+    std::list<Variable> params;
+    Type returnType; // TODO: unsused yet
 
   public:
     void display() override;
@@ -166,6 +203,12 @@ class Function : public Statement
 
 // TODO: else | else if
 
+/**
+ * @brief  If declaration. It has a condition which is a boolean operation (ref:
+ *         parser).
+ *
+ * TODO: else | else if ?
+ */
 class If : public Statement
 {
   private:
@@ -176,6 +219,10 @@ class If : public Statement
     void display() override;
 };
 
+/**
+ * @brief  For declaration. The for loop has a "range" which has a begin, an end
+ *         and a step value. It also has a loop variable.
+ */
 class For : public Statement
 {
   private:
@@ -190,6 +237,9 @@ class For : public Statement
     void display() override;
 };
 
+/**
+ * @brief  While declaration. The while loop just has a condition.
+ */
 class While : public Statement
 {
   private:
