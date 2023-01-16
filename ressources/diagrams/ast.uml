@@ -1,94 +1,145 @@
 @startuml
 skinparam classAttributeIconSize 0
-
-class ProgramBuilder {
-  -commands: stack<Command>
-  -blocks: stack<Block>
-  -statements: stack<Statement>
-  +add(Command)
-  +buildStatement()
-  +buildFunction()
-}
-
-ProgramBuilder o-- Program
+skinparam groupInheritance 3
 
 AST *- ASTNode
 
 abstract class ASTNode {
-+ {abstract} compile()
+  + {abstract} display(): void
+  + {abstract} compile(): void
 }
 
 class Block {
   -operations: list<ASTNode>
+  +addOp(std::shared_ptr<ASTNode>): void
 }
 
 class Include {
   -libName: string
 }
 
-class Assignement {
-  -var: string
+ASTNode <|-- Value
+class Value {
   -value: type_t
   -type: Type
 }
 
+ASTNode <|-- Variable
+class Variable {
+  -id: string
+  -type: type
+}
+
+Assignement *-- Variable
+Assignement *-- Value
+class Assignement {
+  -variable: Variable
+  -value: Value
+}
+
+Declaration *-- Variable
 class Declaration {
-  -var: string
-  -type: Type
+  -variable: Variable
 }
 
+FunctionCall o-- ASTNode
 class FunctionCall {
-  -name: string
-  -params: list<string>
+  -functionName: string
+  -params: list<ASTNode>
 }
 
+Statement *-- Block
+class Statement {
+  block: Block
+}
+
+Statement <|-- Function
+Function o-- Variable
 class Function {
-  -returnType: Type
-  -returnValue: type_t
   -name: string
+  -params: list<Variable>
+  -returnType: Type
 }
 
+Statement <|-- If
+If o-- ASTNode
 class If {
-  -condition: BooleanOperation
+  -condition: ASTNode
 }
 
+Statement <|-- For
+For *-- ASTNode
 class For {
   -var: string
-  -type: Type
-  -begin: type_t
-  -end: type_t
-  -step: type_t
+  -begin: ASTNode
+  -end: ASTNode
+  -step: ASTNode
 }
 
+Statement <|-- While
+If o-- ASTNode
 class While {
-  -condition: BooleanOperation
+  -condition: ASTNode
+}
+
+ASTNode <|-- BinaryOperation
+BinaryOperation *-- ASTNode
+class BinaryOperation {
+  -left: ASTNode
+  -right: ASTNode
+}
+
+BinaryOperation <|-- AddOP
+BinaryOperation <|-- MnsOP
+BinaryOperation <|-- TmsOP
+BinaryOperation <|-- DivOP
+BinaryOperation <|-- EqlOP
+BinaryOperation <|-- AndOP
+BinaryOperation <|-- OrOP
+BinaryOperation <|-- XorOP
+
+ASTNode <|-- NotOP
+NotOP *-- ASTNode
+class NotOP {
+  -param: ASTNode
 }
 
 ASTNode <|-- Statement
-ASTNode <|-- Command
 ASTNode <|-- Include
 ASTNode <|-- Block
+ASTNode <|-- Assignement
+ASTNode <|-- Declaration
+ASTNode <|-- FunctionCall
+ASTNode <|-- Print
+ASTNode <|-- Read
 
-Command <|-- Assignement
-Command <|-- Declaration
-Command <|-- ArithmeticOperation
-Command <|-- BooleanOperation
-Command <|-- FunctionCall
-Command <|-- IOAction
-
-Statement <|-- Loop
-Statement <|-- If
-
-Statement *-- Block
-Statement <|-- Function
-
-Loop <|-- For
-Loop <|-- Foreach
-Loop <|-- While
-
-IOAction <|-- read
-IOAction <|-- print
 
 Program *-- Include
 Program *-- Function
+class Program {
+  -includes: list<Include>
+  -functions: list<Function>
+}
+
+ProgramBuilder o-- Program
+class ProgramBuilder {
+  -program: program
+  -blocks: stack<stack<Block>>
+  -funParams: list<Variable>
+  -funcallParams: list<list<ASTNode>>
+  -lastFunctionName: string
+  -funcallIds: list<string>
+  +pushBlock(ASTNode): void
+  +pushFuncallParam(ASTNode): void
+  +pushFunctionParam(Variable): void
+  +newFuncall(string): void
+  +newFunctionName(string): void
+  +createBlock(): void
+  +createIf(ASTNode): void
+  +createFor(Variable, ASTNode, ASTNode, ASTNode): void
+  +createWhile(ASTNode): void
+  +createFuncall(): ASTNode
+  +createFunction(): void
+  +addInclude(Include): void
+}
 @enduml
