@@ -6,7 +6,7 @@
 /*                                  program                                   */
 /******************************************************************************/
 
-class Program: public ASTNode
+class Program
 {
   private:
     std::list<std::shared_ptr<Include>> includes;
@@ -16,7 +16,7 @@ class Program: public ASTNode
     Program();
     void addInclude(std::shared_ptr<Include>);
     void addFunction(std::shared_ptr<Function>);
-    void display() override;
+    void display();
 };
 
 #endif
