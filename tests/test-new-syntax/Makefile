@@ -1,4 +1,4 @@
-test: parser.o lexer.o AST.o
+test: parser.o lexer.o AST.o Program.o ProgramBuilder.o
 	g++ -o test $^ -g
 
 # -------------------------------------------------------------- flex and bison
@@ -12,6 +12,12 @@ parser:
 # ---------------------------------------------------------------- Object files
 
 AST.o: AST/AST.cpp
+	g++ -c $^
+
+Program.o: AST/Program.cpp
+	g++ -c $^
+
+ProgramBuilder.o: AST/ProgramBuilder.cpp
 	g++ -c $^
 
 parser.o: parser parser.cpp
