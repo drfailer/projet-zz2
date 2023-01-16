@@ -37,7 +37,7 @@
 %token INTT FLTT CHRT
 %token IF ELSE FOR WHILE FN INCLUDE IN
 %token SEMI COMMA
-%token PRINT READ ADD MNS TMS DIV DDOT SET
+%token PRINT READ ADD MNS TMS DIV RANGE SET
 %token EQL AND OR XOR NOT
 %token <std::string> IDENTIFIER
 %token ERROR
@@ -326,19 +326,16 @@ statement:
          if
          {
            std::cout << "new if" << std::endl;
-           // pb.createIf();
          }
          |
          for
          {
            std::cout << "new for" << std::endl;
-           pb.createFor();
          }
          |
          while
          {
            std::cout << "new for" << std::endl;
-           pb.createWhile();
          }
          ;
 
@@ -369,24 +366,22 @@ for:
    {
       pb.createBlock();
    }
-   IDENTIFIER IN range block
+   IDENTIFIER[v] IN RANGE'('operand[b] COMMA operand[e] COMMA operand[s]')' block
    {
      std::cout << "in for" << std::endl;
+     pb.createFor(Variable($v, VOID), $b, $e, $s);
    }
    ;
-
-range: value DDOT value
-     | value DDOT value DDOT value
-     ;
 
 while:
      WHILE
      {
       pb.createBlock();
      }
-     block
+     '('booleanOperation[cond]')' block
      {
-       std::cout << "in for" << std::endl;
+       std::cout << "in while" << std::endl;
+       pb.createWhile($cond);
      }
      ;
 %%

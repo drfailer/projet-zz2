@@ -179,26 +179,24 @@ class If : public Statement
 class For : public Statement
 {
   private:
-    std::string var;
-    Type type;
-    type_t begin;
-    type_t end;
-    type_t step;
+    Variable var;
+    std::shared_ptr<ASTNode> begin;
+    std::shared_ptr<ASTNode> end;
+    std::shared_ptr<ASTNode> step;
 
   public:
-    For(std::string, std::shared_ptr<Block>);
-    For(std::string, long long, long long, long long, std::shared_ptr<Block>);
-    For(std::string, double, double, double, std::shared_ptr<Block>);
+    For(Variable, std::shared_ptr<ASTNode>, std::shared_ptr<ASTNode>,
+        std::shared_ptr<ASTNode>, std::shared_ptr<Block>);
     void display() override;
 };
 
 class While : public Statement
 {
   private:
-    std::string condition; // TODO: create condition class
+    std::shared_ptr<ASTNode> condition; // TODO: create condition class
 
   public:
-    While(std::string, std::shared_ptr<Block>);
+    While(std::shared_ptr<ASTNode>, std::shared_ptr<Block>);
     void display() override;
 };
 
@@ -341,9 +339,10 @@ class ProgramBuilder
     void newFuncall(std::string);
     void newFunctionName(std::string);
     void createBlock();
-    void createIf(std::shared_ptr<ASTNode>); // TODO: gérer les conditions
-    void createFor(); // TODO: gérer les éléments du for
-    void createWhile(); // TODO: gérer les conditions
+    void createIf(std::shared_ptr<ASTNode>);
+    void createFor(Variable, std::shared_ptr<ASTNode>, std::shared_ptr<ASTNode>,
+        std::shared_ptr<ASTNode>);
+    void createWhile(std::shared_ptr<ASTNode>);
     std::shared_ptr<ASTNode> createFuncall();
     void createFunction(); // TODO: add the return type
     void addInclude(std::shared_ptr<Include>);

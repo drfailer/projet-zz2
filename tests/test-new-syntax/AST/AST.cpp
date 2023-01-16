@@ -225,47 +225,38 @@ void If::display()
 
 /* -------------------------------------------------------------------------- */
 
-For::For(std::string v, std::shared_ptr<Block> b): Statement(b), var(v)
+For::For(Variable v, std::shared_ptr<ASTNode> begin, std::shared_ptr<ASTNode> end,
+    std::shared_ptr<ASTNode> step, std::shared_ptr<Block> b):
+  Statement(b), begin(begin), end(end), step(step), var(v)
 {
-}
-
-For::For(std::string v, long long be, long long e, long long s, std::shared_ptr<Block> b):
-  For(v, b)
-{
-  begin.i = be;
-  end.i = e;
-  step.i = s;
-  type = INT;
-}
-
-For::For(std::string v, double be, double e, double s, std::shared_ptr<Block> b):
-  For(v, b)
-{
-  begin.f = be;
-  end.f = e;
-  step.f = s;
-  type = FLT;
 }
 
 void For::display()
 {
-  if (type == INT)
-    std::cout << "For(" << var << ", " << begin.i << ".." << end.i << ".." << step.i << ", ";
-  else
-    std::cout << "For(" << var << ", " << begin.f << ".." << end.f << ".." << step.f << ", ";
+  std::cout << "For(";
+  var.display();
+  std::cout << ", range(";
+  begin->display();
+  std::cout << ",";
+  end->display();
+  std::cout << ",";
+  step->display();
+  std::cout << "), ";
   Statement::display();
   std::cout << ")" << std::endl;
 }
 
 /* -------------------------------------------------------------------------- */
 
-While::While(std::string c, std::shared_ptr<Block> b): Statement(b), condition(c)
+While::While(std::shared_ptr<ASTNode> c, std::shared_ptr<Block> b): Statement(b), condition(c)
 {
 }
 
 void While::display()
 {
-  std::cout << "While(" << condition << ", ";
+  std::cout << "While(";
+  condition->display();
+  std::cout << ", ";
   Statement::display();
   std::cout << ")" << std::endl;
 }
@@ -451,9 +442,10 @@ void ProgramBuilder::createIf(std::shared_ptr<ASTNode> condition)
  * @brief take the last block, add it to a new For and add the new For to the
  * parent block.
  */
-void ProgramBuilder::createFor()
+void ProgramBuilder::createFor(Variable v, std::shared_ptr<ASTNode> begin,
+    std::shared_ptr<ASTNode> end, std::shared_ptr<ASTNode> step)
 {
-  std::shared_ptr<For> newfor = std::make_shared<For>("n..m..s", blocks.back());
+  std::shared_ptr<For> newfor = std::make_shared<For>(v, begin, end, step, blocks.back());
   blocks.pop_back();
   blocks.back()->addOp(newfor);
 }
@@ -462,9 +454,9 @@ void ProgramBuilder::createFor()
  * @brief take the last block, add it to a new While and add the new If to the
  * parent block.
  */
-void ProgramBuilder::createWhile()
+void ProgramBuilder::createWhile(std::shared_ptr<ASTNode> condition)
 {
-  std::shared_ptr<While> newwhile = std::make_shared<While>("condition", blocks.back());
+  std::shared_ptr<While> newwhile = std::make_shared<While>(condition, blocks.back());
   blocks.pop_back();
   blocks.back()->addOp(newwhile);
 }

@@ -18,4 +18,13 @@ fn main(int p1, flt p2, chr p3) {
     chr c;
     set(c, 'a');
   }
+
+  while (and(eql(a, 4), eql(fonc(a, 5), 5))) {
+    flt f;
+    set(f, div(3,4));
+  }
+
+  for a in range(1, 10, fonc(a)) {
+    set(a, add(a, 1));
+  }
 }

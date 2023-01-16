@@ -22,7 +22,6 @@ semi ;
 comma ,
 equal =
 blanks [\S\s \t\n]
-ddot \.\.
 
 %%
 int          { AFFICHE("L_nbrt"); return Parser::token::INTT; }
@@ -47,6 +46,7 @@ xor          { AFFICHE("L_xor"); return Parser::token::XOR; }
 not          { AFFICHE("L_not"); return Parser::token::NOT; }
 set          { AFFICHE("L_set"); return Parser::token::SET; }
 include      { AFFICHE("L_include"); return Parser::token::INCLUDE; }
+range        { AFFICHE("L_range"); return Parser::token::RANGE; }
 
 {identifier} {
   AFFICHE("L_id");
@@ -74,7 +74,6 @@ include      { AFFICHE("L_include"); return Parser::token::INCLUDE; }
 
 {semi}       { AFFICHE("L_semi"); return Parser::token::SEMI; }
 {comma}      { AFFICHE("L_comma"); return Parser::token::COMMA; }
-{ddot}       { AFFICHE("L_ddot"); return Parser::token::DDOT; }
 {blanks}
 .            { return yytext[0]; }
 %%
