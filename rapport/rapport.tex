@@ -34,18 +34,38 @@
 \textbf{Anglais :} \textit{C++}, \textit{Interpreter}, \textit{Parser},
 \textit{IDE}, \textit{Programming Language}
 
-this is a book \cite{levine2009flex}.
-this is an article \cite{compilerTICH}.
-this is a webpage \cite{cppparsing}.
+
+\clearpage{}
+
+\section{Résumé des références}
+
+\begin{itemize}
+  \item La partie consultable de \cite{flexBisonHandbook} présentent les bases
+    de flex.
+  \item \cite{compilerFlexBison} présente la construction d'un compilateur avec
+    flex et bison. Le compilateur présenté utilise une \textbf{table des
+    symboles} ainsi qu'une sorte de \textbf{byte code}. Nous avons choisi
+    l'autre méthode qui consiste à utiliser un object-ABS plutot que directement
+    du byte code. Article très utilisé au départ pour la mise en place du
+    parseur/lexeur.
+  \item \cite{compilerTICH} explication du fonctionnement d'un compilateur.
+  \item \cite{compilerTILB} première version de l'article précédent.
+  \item \cite{crew1997astlog} création d'un analyser syntaxique pour du C/C++:
+    ASTROLOG. L'article par d'analyse syntaxique et de la construction
+    d'\textbf{ABS}.
+  \item \cite{cppparsing}: nous a permis d'avoir un exemple de code qui allie
+    flex et bison en C++ et non en C.
+  \item \cite{visser2002meta} L'objectif de l'article est de présenter
+    l'utilisation des \textbf{ABS} pour de la méta programmation. Il comporte
+    pas mal d'exemples sur les \textbf{ABS} donc je le trouve pertinant.
+  \item \cite{gagnon1998sablecc}: \textbf{ABS} en java.
+\end{itemize}
 
 \clearpage{}
 
 %------------------------------------------------------------------------------%
 %                                 bibliography                                 %
 %------------------------------------------------------------------------------%
-% \bibliographystyle{ieeetr}{}
-% \bibliography{refs} % refs.bib
-
 \printbibliography[keyword={paper},title={Biliographie}]
 \printbibliography[keyword={web},title={Webographie}]
 \end{document}

@@ -6,5 +6,5 @@ pfd: rapport.tex refs.bib
 
 
 clean:
-	rm -rf *.log *.aux *.dvi *.bbl *.blg *.run.xml *.bcf
+	rm -rf *.log *.aux *.dvi *.bbl *.blg *.run.xml *.bcf *.out
 
