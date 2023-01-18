@@ -11,12 +11,13 @@ collèges.
 ## Syntaxe
 
 ```
-fn add3(nbr a, nbr b, nbr c) -> nbr {
+fn add3(int a, int b, int c) -> int {
   return add(a, add(b, c));
 }
 
 fn main() {
-  print("1 + 2 + 3 = {}\n", add3(1, 2, 3));
+  print("1 + 2 + 3 = {}\n");
+  print(add3(1, 2, 3));
 }
 ```
 

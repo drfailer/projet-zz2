@@ -14,3 +14,16 @@ tests/test-new-syntax/parser.hpp
 tests/test-new-syntax/parser.o
 tests/test-new-syntax/stack.hh
 tests/test-new-syntax/test
+program/AST.o
+program/Program.o
+program/ProgramBuilder.o
+program/lexer.cpp
+program/lexer.o
+program/parser.cpp
+program/parser.hpp
+program/parser.o
+program/stack.hh
+program/test
+tests/test-new-syntax/Program.o
+tests/test-new-syntax/ProgramBuilder.o
+program/vgcore.5461
