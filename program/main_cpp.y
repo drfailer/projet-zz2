@@ -68,25 +68,18 @@ programElt:
          std::cout << "create new include" << std::endl;
        }
        |
-       functions
+       function
        {
          std::cout << "create new function" << std::endl;
        }
        ;
 
-includes: %empty
-       |
-       INCLUDE IDENTIFIER SEMI
-       {
-         std::cout << "new include id: " << $2 << std::endl;
-         pb.addInclude(std::make_shared<Include>($2));
-       }
-       includes
-       ;
-
-functions: %empty
-         | function functions
-         ;
+includes: INCLUDE IDENTIFIER SEMI
+        {
+          std::cout << "new include id: " << $2 << std::endl;
+          pb.addInclude(std::make_shared<Include>($2));
+        }
+        ;
 
 function:
         FN IDENTIFIER[name]'('paramDeclarations')' block[ops]
@@ -125,8 +118,7 @@ param: %empty
      }
      ;
 
-operand: %empty
-     |
+operand:
      IDENTIFIER
      {
         std::cout << "new param variable" << std::endl;

@@ -1,3 +1,7 @@
+include test;
+include list;
+include math;
+
 fn test_1(int a) -> int {
   return tms(a, 3);
 }
