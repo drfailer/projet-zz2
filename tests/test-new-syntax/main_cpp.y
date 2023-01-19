@@ -119,6 +119,9 @@ paramDeclaration: %empty
      ;
 
 params: param
+      {
+        std::cout << "FIN PARAMS" << std::endl;
+      }
       | param COMMA params
       ;
 
