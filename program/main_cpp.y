@@ -52,6 +52,10 @@
 %nterm <std::shared_ptr<ASTNode>> funcall
 %nterm <std::shared_ptr<ASTNode>> operand
 %nterm <std::shared_ptr<Block>> block
+%nterm <std::shared_ptr<If>> if
+%nterm <std::shared_ptr<If>> simpleIf
+%nterm <std::shared_ptr<For>> for
+%nterm <std::shared_ptr<While>> while
 
 %%
 program: %empty
@@ -350,34 +354,43 @@ statement:
          if
          {
            std::cout << "new if" << std::endl;
+           pb.pushBlock($1);
          }
          |
          for
          {
            std::cout << "new for" << std::endl;
+           pb.pushBlock($1);
          }
          |
          while
          {
            std::cout << "new for" << std::endl;
+           pb.pushBlock($1);
          }
          ;
 
 if:
+  simpleIf
+  {
+    $$ = $1;
+  }
+  |
+  simpleIf[sif] ELSE block[ops]
+  {
+    std::cout << "else" << std::endl;
+    std::shared_ptr<If> ifstmt = $sif;
+    // adding else block
+    ifstmt->createElse($ops);
+    $$ = ifstmt;
+  }
+  ;
+
+simpleIf:
   IF '('booleanOperation[cond]')' block[ops]
   {
     std::cout << "if" << std::endl;
-    pb.createIf($cond, $ops);
-  }
-  |
-  if ELSE if
-  {
-    std::cout << "else if" << std::endl;
-  }
-  |
-  if ELSE block
-  {
-    std::cout << "else" << std::endl;
+    $$ = pb.createIf($cond, $ops);
   }
   ;
 
@@ -385,7 +398,7 @@ for:
    FOR IDENTIFIER[v] IN RANGE'('operand[b] COMMA operand[e] COMMA operand[s]')' block[ops]
    {
      std::cout << "in for" << std::endl;
-     pb.createFor(Variable($v, VOID), $b, $e, $s, $ops);
+     $$ = pb.createFor(Variable($v, VOID), $b, $e, $s, $ops);
    }
    ;
 
@@ -393,7 +406,7 @@ while:
      WHILE '('booleanOperation[cond]')' block[ops]
      {
        std::cout << "in while" << std::endl;
-       pb.createWhile($cond, $ops);
+       $$ = pb.createWhile($cond, $ops);
      }
      ;
 %%

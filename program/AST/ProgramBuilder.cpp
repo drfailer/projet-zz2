@@ -56,34 +56,31 @@ std::shared_ptr<Block> ProgramBuilder::endBlock()
  * @brief take the last block, add it to a new If and add the new If to the
  * parent block.
  */
-void ProgramBuilder::createIf(std::shared_ptr<ASTNode> condition,
+std::shared_ptr<If> ProgramBuilder::createIf(std::shared_ptr<ASTNode> condition,
     std::shared_ptr<Block> block)
 {
-  std::shared_ptr<If> newif = std::make_shared<If>(condition, block);
-  blocks.back()->addOp(newif);
+  return std::make_shared<If>(condition, block);
 }
 
 /**
  * @brief take the last block, add it to a new For and add the new For to the
  * parent block.
  */
-void ProgramBuilder::createFor(Variable v, std::shared_ptr<ASTNode> begin,
-    std::shared_ptr<ASTNode> end, std::shared_ptr<ASTNode> step,
-    std::shared_ptr<Block> block)
+std::shared_ptr<For> ProgramBuilder::createFor(Variable v,
+    std::shared_ptr<ASTNode> begin, std::shared_ptr<ASTNode> end,
+    std::shared_ptr<ASTNode> step, std::shared_ptr<Block> block)
 {
-  std::shared_ptr<For> newfor = std::make_shared<For>(v, begin, end, step, block);
-  blocks.back()->addOp(newfor);
+  return std::make_shared<For>(v, begin, end, step, block);
 }
 
 /**
  * @brief take the last block, add it to a new While and add the new If to the
  * parent block.
  */
-void ProgramBuilder::createWhile(std::shared_ptr<ASTNode> condition,
+std::shared_ptr<While> ProgramBuilder::createWhile(std::shared_ptr<ASTNode> condition,
     std::shared_ptr<Block> block)
 {
-  std::shared_ptr<While> newwhile = std::make_shared<While>(condition, block);
-  blocks.back()->addOp(newwhile);
+  return std::make_shared<While>(condition, block);
 }
 
 

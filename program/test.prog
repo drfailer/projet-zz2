@@ -19,8 +19,16 @@ fn main(int p1, flt p2, chr p3) {
     set(c, 'a');
   }
 
-  while (and(eql(a, 4), eql(fonc(a, 5), 5))) {
+  if (and(eql(a, b), or(eql(a, 0), eql(add(a, b), 4)))) {
+    chr c;
+    set(c, 'a');
+  }
+  else {
     flt f;
+    set(f, div(3,4));
+  }
+
+  while (and(eql(a, 4), eql(fonc(a, 5), 5))) {
     set(f, div(3,4));
   }
 

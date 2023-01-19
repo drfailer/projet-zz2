@@ -210,9 +210,11 @@ class If : public Statement
 {
   private:
     std::shared_ptr<ASTNode> condition; // TODO: put real conditions
+    std::shared_ptr<Block> elseBlock;
 
   public:
     If(std::shared_ptr<ASTNode>, std::shared_ptr<Block>);
+    void createElse(std::shared_ptr<Block>);
     void display() override;
 };
 

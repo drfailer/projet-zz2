@@ -194,8 +194,14 @@ void Statement::display()
 /* -------------------------------------------------------------------------- */
 
 If::If(std::shared_ptr<ASTNode> c, std::shared_ptr<Block> b):
-  Statement(b), condition(c)
+  Statement(b), condition(c), elseBlock(nullptr)
 {}
+
+
+void If::createElse(std::shared_ptr<Block> block)
+{
+  elseBlock = block;
+}
 
 void If::display()
 {
@@ -203,6 +209,11 @@ void If::display()
   condition->display();
   std::cout << ", ";
   Statement::display();
+  if (elseBlock != nullptr) { // print else block if needed
+    std::cout << ", Else(";
+    elseBlock->display();
+    std::cout << ")" << std::endl;
+  }
   std::cout << ")" << std::endl;
 }
 

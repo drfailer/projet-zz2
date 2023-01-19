@@ -30,10 +30,10 @@ class ProgramBuilder
 
     std::shared_ptr<ASTNode> createFuncall();
 
-    void createIf(std::shared_ptr<ASTNode>, std::shared_ptr<Block>);
-    void createFor(Variable, std::shared_ptr<ASTNode>, std::shared_ptr<ASTNode>,
-        std::shared_ptr<ASTNode>, std::shared_ptr<Block>);
-    void createWhile(std::shared_ptr<ASTNode>, std::shared_ptr<Block>);
+    std::shared_ptr<If> createIf(std::shared_ptr<ASTNode>, std::shared_ptr<Block>);
+    std::shared_ptr<For>  createFor(Variable, std::shared_ptr<ASTNode>,
+        std::shared_ptr<ASTNode>, std::shared_ptr<ASTNode>, std::shared_ptr<Block>);
+    std::shared_ptr<While> createWhile(std::shared_ptr<ASTNode>, std::shared_ptr<Block>);
 
 
     void pushFuncallParam(std::shared_ptr<ASTNode>);
