@@ -30,7 +30,6 @@
     ProgramBuilder pb;
 }
 
-%token              EOL LPAREN RPAREN
 %token <long long>  INT
 %token <double>     FLOAT
 %token <char>       CHAR
@@ -44,6 +43,7 @@
 %token <std::string> STRING
 %token ERROR
 %token RETURN
+%token HASH EOL TEXT COMMENT
 
 %nterm <Type> type
 %nterm <Value> value
@@ -72,6 +72,8 @@ programElt:
        {
          std::cout << "create new function" << std::endl;
        }
+       |
+       comment
        ;
 
 includes: INCLUDE IDENTIFIER SEMI
@@ -168,6 +170,7 @@ code: %empty
     {
       pb.pushBlock(std::make_shared<Return>($rs));
     }
+    | comment code
     ;
 
 commands: %empty
@@ -407,6 +410,8 @@ while:
        $$ = pb.createWhile($cond, $ops);
      }
      ;
+
+comment: COMMENT;
 %%
 
 void interpreter::Parser::error(const std::string& msg) {

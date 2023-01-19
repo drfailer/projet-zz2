@@ -23,7 +23,7 @@ comma ,
 equal =
 blanks [\S\s \t\n]
 str \"(\\.|[^"\\])*\"
-
+comment #.*$
 
 %%
 int          { AFFICHE("L_nbrt"); return Parser::token::INTT; }
@@ -49,8 +49,8 @@ not          { AFFICHE("L_not"); return Parser::token::NOT; }
 set          { AFFICHE("L_set"); return Parser::token::SET; }
 include      { AFFICHE("L_include"); return Parser::token::INCLUDE; }
 range        { AFFICHE("L_range"); return Parser::token::RANGE; }
-"->"         { AFFICHE("L_arrow"); return Parser::token::ARROW; }
-"return"     { AFFICHE("L_return"); return Parser::token::RETURN; }
+->           { AFFICHE("L_arrow"); return Parser::token::ARROW; }
+return       { AFFICHE("L_return"); return Parser::token::RETURN; }
 
 {identifier} {
   AFFICHE("L_id");
@@ -84,8 +84,9 @@ range        { AFFICHE("L_range"); return Parser::token::RANGE; }
 
 {semi}       { AFFICHE("L_semi"); return Parser::token::SEMI; }
 {comma}      { AFFICHE("L_comma"); return Parser::token::COMMA; }
+{comment}    { AFFICHE("L_comment"); return Parser::token::COMMENT; }
 {blanks}
-.            { return yytext[0]; }
+.            { return yytext[0]; return Parser::token::TEXT; }
 %%
 
 int yyFlexLexer::yylex() {
