@@ -125,6 +125,11 @@ void Block::addOp(std::shared_ptr<ASTNode> operation)
   operations.push_back(operation);
 }
 
+std::shared_ptr<ASTNode> Block::getLastNode()
+{
+  return operations.back();
+}
+
 void Block::display()
 {
   std::cout << "Block(" << std::endl;

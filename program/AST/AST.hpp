@@ -45,6 +45,7 @@ class Block : public ASTNode
 
   public:
     void addOp(std::shared_ptr<ASTNode>);
+    std::shared_ptr<ASTNode> getLastNode();
     void display() override;
     Block();
 };
