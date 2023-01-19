@@ -119,13 +119,6 @@ params: param
 
 param: %empty
      |
-     IDENTIFIER
-     {
-        std::cout << "new param variable" << std::endl;
-        // TODO: use symTable to get the type
-        pb.pushFuncallParam(std::make_shared<Variable>($1, VOID));
-     }
-     |
      inlineSymbol
      {
         pb.pushFuncallParam($1);
@@ -224,6 +217,13 @@ inlineSymbol:
              arithmeticOperations { $$ = $1; }
             | funcall { $$ = $1; }
             | value { $$ = std::make_shared<Value>($1); }
+            |
+            IDENTIFIER
+            {
+               std::cout << "new param variable" << std::endl;
+               // TODO: use symTable to get the type
+               $$ = std::make_shared<Variable>($1, VOID);
+            }
             ;
 
 arithmeticOperations:
