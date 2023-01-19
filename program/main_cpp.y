@@ -37,7 +37,7 @@
 /* %nonassoc           ASSIGN */
 %token INTT FLTT CHRT
 %token IF ELSE FOR WHILE FN INCLUDE IN
-%token SEMI COMMA
+%token SEMI COMMA ARROW
 %token PRINT READ ADD MNS TMS DIV RANGE SET
 %token EQL AND OR XOR NOT
 %token <std::string> IDENTIFIER
@@ -51,6 +51,7 @@
 %nterm <std::shared_ptr<ASTNode>> booleanOperation
 %nterm <std::shared_ptr<ASTNode>> funcall
 %nterm <std::shared_ptr<ASTNode>> operand
+%nterm <std::shared_ptr<Block>> block
 
 %%
 program: %empty
@@ -83,26 +84,14 @@ functions: %empty
          ;
 
 function:
-        FN IDENTIFIER'('paramDeclarations')'
+        FN IDENTIFIER[name]'('paramDeclarations')' block[ops]
         {
-          std::cout << "new function id: " << $2 << std::endl;
-          pb.createBlock();
-          pb.newFunctionName($2);
-        }
-        block
-        {
-          pb.createFunction();
+          pb.createFunction($name, $ops, VOID);
         }
         |
-        FN IDENTIFIER'('params')'
+        FN IDENTIFIER[name]'('paramDeclarations')' ARROW type[rt] block[ops]
         {
-          std::cout << "new function id: " << $2 << std::endl;
-          pb.createBlock();
-          pb.newFunctionName($2);
-        }
-        block
-        {
-          pb.createFunction();
+          pb.createFunction($name, $ops, $rt);
         }
         ;
 
@@ -169,7 +158,16 @@ type:
     }
     ;
 
-block: '{' code '}' { std::cout << "new block" << std::endl; }
+block:
+     '{'
+     {
+        pb.beginBlock();
+     }
+     code '}'
+     {
+       std::cout << "new block" << std::endl;
+       $$ = pb.endBlock();
+     }
      ;
 
 code: %empty
@@ -365,15 +363,11 @@ statement:
          }
          ;
 
-if: IF
-  {
-    std::cout << "---- if ----" << std::endl;
-    pb.createBlock();
-  }
-  '('booleanOperation[cond]')' block
+if:
+  IF '('booleanOperation[cond]')' block[ops]
   {
     std::cout << "if" << std::endl;
-    pb.createIf($cond);
+    pb.createIf($cond, $ops);
   }
   |
   if ELSE if
@@ -388,26 +382,18 @@ if: IF
   ;
 
 for:
-   FOR
-   {
-      pb.createBlock();
-   }
-   IDENTIFIER[v] IN RANGE'('operand[b] COMMA operand[e] COMMA operand[s]')' block
+   FOR IDENTIFIER[v] IN RANGE'('operand[b] COMMA operand[e] COMMA operand[s]')' block[ops]
    {
      std::cout << "in for" << std::endl;
-     pb.createFor(Variable($v, VOID), $b, $e, $s);
+     pb.createFor(Variable($v, VOID), $b, $e, $s, $ops);
    }
    ;
 
 while:
-     WHILE
-     {
-      pb.createBlock();
-     }
-     '('booleanOperation[cond]')' block
+     WHILE '('booleanOperation[cond]')' block[ops]
      {
        std::cout << "in while" << std::endl;
-       pb.createWhile($cond);
+       pb.createWhile($cond, $ops);
      }
      ;
 %%

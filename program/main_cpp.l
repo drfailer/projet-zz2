@@ -49,6 +49,7 @@ not          { AFFICHE("L_not"); return Parser::token::NOT; }
 set          { AFFICHE("L_set"); return Parser::token::SET; }
 include      { AFFICHE("L_include"); return Parser::token::INCLUDE; }
 range        { AFFICHE("L_range"); return Parser::token::RANGE; }
+"->"         { AFFICHE("L_arrow"); return Parser::token::ARROW; }
 
 {identifier} {
   AFFICHE("L_id");

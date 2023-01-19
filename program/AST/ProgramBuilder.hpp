@@ -1,6 +1,7 @@
 #ifndef __PROGRAMBUILDER__
 #define __PROGRAMBUILDER__
 #include "Program.hpp"
+#include <memory>
 
 // TODO: cette classe doit être utilisée pour construire l'abre avec le parser.
 // elle doit contenir des piles tampons pour pouvoir ajouter les opération, les
@@ -18,26 +19,31 @@ class ProgramBuilder
     std::list<Variable> funParams;        // parameters of the last function
     std::list<std::list<std::shared_ptr<ASTNode>>> funcallParams;    // parameters of the last funcall
     // NOTE: maybe move this to the .y file as global variable:
-    std::string lastFunctionName;      // the name of the last function parsed
     std::list<std::string> funcallIds;
 
   public:
     void display();
-    void pushBlock(std::shared_ptr<ASTNode>);
+
+    void beginBlock(); // create an empty block on the top of the blocks stack
+    std::shared_ptr<Block> endBlock(); // pop the last block of the blocks stack
+    void pushBlock(std::shared_ptr<ASTNode>); // add command to the last block
+
+    std::shared_ptr<ASTNode> createFuncall();
+
+    void createIf(std::shared_ptr<ASTNode>, std::shared_ptr<Block>);
+    void createFor(Variable, std::shared_ptr<ASTNode>, std::shared_ptr<ASTNode>,
+        std::shared_ptr<ASTNode>, std::shared_ptr<Block>);
+    void createWhile(std::shared_ptr<ASTNode>, std::shared_ptr<Block>);
+
+
     void pushFuncallParam(std::shared_ptr<ASTNode>);
     void pushFunctionParam(Variable);
     void newFuncall(std::string);
-    void newFunctionName(std::string);
-    void createBlock();
-    void createIf(std::shared_ptr<ASTNode>);
-    void createFor(Variable, std::shared_ptr<ASTNode>, std::shared_ptr<ASTNode>,
-        std::shared_ptr<ASTNode>);
-    void createWhile(std::shared_ptr<ASTNode>);
-    std::shared_ptr<ASTNode> createFuncall();
-    void createFunction(); // TODO: add the return type
+
+    void createFunction(std::string, std::shared_ptr<Block>, Type); // TODO: add the return type
+
     void addInclude(std::shared_ptr<Include>);
     ProgramBuilder();
 };
-
 
 #endif

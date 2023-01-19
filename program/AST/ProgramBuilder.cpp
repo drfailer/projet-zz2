@@ -22,15 +22,30 @@ void ProgramBuilder::addInclude(std::shared_ptr<Include> i)
 /*                                   blocks                                   */
 /******************************************************************************/
 
+/**
+ * @brief  Add `command` to the last block of the block stack.
+ */
 void ProgramBuilder::pushBlock(std::shared_ptr<ASTNode> command)
 {
   blocks.back()->addOp(command);
 }
 
-// FIXME: unsafe operations
-void ProgramBuilder::createBlock()
+/**
+ * @brief  create an empty block on the top of the blocks stack
+ */
+void ProgramBuilder::beginBlock()
 {
   blocks.push_back(std::make_shared<Block>());
+}
+
+/**
+ * @brief  pop the last block of the blocks stack
+ */
+std::shared_ptr<Block> ProgramBuilder::endBlock()
+{
+  std::shared_ptr<Block> lastBlock = blocks.back();
+  blocks.pop_back();
+  return lastBlock;
 }
 
 /******************************************************************************/
@@ -41,10 +56,10 @@ void ProgramBuilder::createBlock()
  * @brief take the last block, add it to a new If and add the new If to the
  * parent block.
  */
-void ProgramBuilder::createIf(std::shared_ptr<ASTNode> condition)
+void ProgramBuilder::createIf(std::shared_ptr<ASTNode> condition,
+    std::shared_ptr<Block> block)
 {
-  std::shared_ptr<If> newif = std::make_shared<If>(condition, blocks.back());
-  blocks.pop_back();
+  std::shared_ptr<If> newif = std::make_shared<If>(condition, block);
   blocks.back()->addOp(newif);
 }
 
@@ -53,10 +68,10 @@ void ProgramBuilder::createIf(std::shared_ptr<ASTNode> condition)
  * parent block.
  */
 void ProgramBuilder::createFor(Variable v, std::shared_ptr<ASTNode> begin,
-    std::shared_ptr<ASTNode> end, std::shared_ptr<ASTNode> step)
+    std::shared_ptr<ASTNode> end, std::shared_ptr<ASTNode> step,
+    std::shared_ptr<Block> block)
 {
-  std::shared_ptr<For> newfor = std::make_shared<For>(v, begin, end, step, blocks.back());
-  blocks.pop_back();
+  std::shared_ptr<For> newfor = std::make_shared<For>(v, begin, end, step, block);
   blocks.back()->addOp(newfor);
 }
 
@@ -64,10 +79,10 @@ void ProgramBuilder::createFor(Variable v, std::shared_ptr<ASTNode> begin,
  * @brief take the last block, add it to a new While and add the new If to the
  * parent block.
  */
-void ProgramBuilder::createWhile(std::shared_ptr<ASTNode> condition)
+void ProgramBuilder::createWhile(std::shared_ptr<ASTNode> condition,
+    std::shared_ptr<Block> block)
 {
-  std::shared_ptr<While> newwhile = std::make_shared<While>(condition, blocks.back());
-  blocks.pop_back();
+  std::shared_ptr<While> newwhile = std::make_shared<While>(condition, block);
   blocks.back()->addOp(newwhile);
 }
 
@@ -76,12 +91,13 @@ void ProgramBuilder::createWhile(std::shared_ptr<ASTNode> condition)
 /*                                  funcalls                                  */
 /******************************************************************************/
 
-std::shared_ptr<ASTNode> ProgramBuilder::createFuncall()
+std::shared_ptr<ASTNode>
+ProgramBuilder::createFuncall()
 {
   std::shared_ptr<Funcall> newFuncall =
     std::make_shared<Funcall>(funcallIds.back(), funcallParams.back());
-  funcallParams.pop_back();
   funcallIds.pop_back();
+  funcallParams.pop_back();
   return newFuncall;
 }
 
@@ -91,14 +107,13 @@ void ProgramBuilder::newFuncall(std::string name)
   funcallParams.push_back(std::list<std::shared_ptr<ASTNode>>());
 }
 
-void ProgramBuilder::createFunction()
+void ProgramBuilder::createFunction(std::string name, std::shared_ptr<Block>
+    operations, Type returnType)
 {
   std::shared_ptr<Function> newfun =
-    std::make_shared<Function>(lastFunctionName, funParams, VOID, blocks.back());
-  blocks.pop_back(); // NOTE: should be empty at this point
-                     // TODO: throw error if not empty
+    std::make_shared<Function>(name, funParams, returnType, operations);
   program->addFunction(newfun);
-  funcallParams.clear();
+  funParams.clear();
 }
 
 void ProgramBuilder::pushFuncallParam(std::shared_ptr<ASTNode> newParam)
@@ -109,11 +124,6 @@ void ProgramBuilder::pushFuncallParam(std::shared_ptr<ASTNode> newParam)
 /******************************************************************************/
 /*                                 functions                                  */
 /******************************************************************************/
-
-void ProgramBuilder::newFunctionName(std::string name)
-{
-  lastFunctionName = name;
-}
 
 void ProgramBuilder::pushFunctionParam(Variable newParam)
 {
