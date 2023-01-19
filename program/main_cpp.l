@@ -17,7 +17,7 @@ digit [0-9]
 int [+-]?{digit}+
 float [+-]?{digit}+\.{digit}+
 char '{alpha}'
-identifier [a-z]({alpha}|{digit})*
+identifier [a-z]({alpha}|{digit}|_)*
 semi ;
 comma ,
 equal =
@@ -50,6 +50,7 @@ set          { AFFICHE("L_set"); return Parser::token::SET; }
 include      { AFFICHE("L_include"); return Parser::token::INCLUDE; }
 range        { AFFICHE("L_range"); return Parser::token::RANGE; }
 "->"         { AFFICHE("L_arrow"); return Parser::token::ARROW; }
+"return"     { AFFICHE("L_return"); return Parser::token::RETURN; }
 
 {identifier} {
   AFFICHE("L_id");

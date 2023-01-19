@@ -163,6 +163,7 @@ class Funcall : public ASTNode
     void display() override;
 };
 
+// TODO: change this name
 /******************************************************************************/
 /*                                 statements                                 */
 /******************************************************************************/
@@ -199,13 +200,9 @@ class Function : public Statement
     Function(std::string, std::list<Variable>, Type, std::shared_ptr<Block>);
 };
 
-// TODO: else | else if
-
 /**
  * @brief  If declaration. It has a condition which is a boolean operation (ref:
  *         parser).
- *
- * TODO: else | else if ?
  */
 class If : public Statement
 {
@@ -372,4 +369,18 @@ class Read: public ASTNode
   public:
     void display() override;
     Read(Variable);
+};
+
+/******************************************************************************/
+/*                                   return                                   */
+/******************************************************************************/
+
+class Return: public ASTNode
+{
+  private:
+    std::shared_ptr<ASTNode> returnExpr;
+
+  public:
+    void display() override;
+    Return(std::shared_ptr<ASTNode>);
 };

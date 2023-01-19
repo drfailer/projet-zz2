@@ -1,3 +1,13 @@
+fn test_1(int a) -> int {
+  return tms(a, 3);
+}
+
+fn test_2(int a, flt b, chr c) {
+  print(c);
+  read(a);
+  set(b, test_1(a));
+}
+
 fn main(int p1, flt p2, chr p3) {
   int a;
   set(a, 4);

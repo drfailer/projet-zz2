@@ -409,3 +409,18 @@ void Read::display()
   variable.display();
   std::cout << ")" << std::endl;
 }
+
+/******************************************************************************/
+/*                                   return                                   */
+/******************************************************************************/
+
+Return::Return(std::shared_ptr<ASTNode> returnExpr): returnExpr(returnExpr)
+{
+}
+
+void Return::display()
+{
+  std::cout << "Return(";
+  returnExpr->display();
+  std::cout << ")";
+}

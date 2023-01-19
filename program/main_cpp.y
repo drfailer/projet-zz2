@@ -43,6 +43,7 @@
 %token <std::string> IDENTIFIER
 %token <std::string> STRING
 %token ERROR
+%token RETURN
 
 %nterm <Type> type
 %nterm <Value> value
@@ -95,6 +96,7 @@ function:
         |
         FN IDENTIFIER[name]'('paramDeclarations')' ARROW type[rt] block[ops]
         {
+          // TODO: look for return stmt in $ops
           pb.createFunction($name, $ops, $rt);
         }
         ;
@@ -177,6 +179,10 @@ block:
 code: %empty
     | statements code
     | commands code
+    | RETURN inlineSymbol[rs] SEMI
+    {
+      pb.pushBlock(std::make_shared<Return>($rs));
+    }
     ;
 
 commands: %empty
