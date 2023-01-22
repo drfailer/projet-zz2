@@ -325,24 +325,21 @@ value:
      INT
      {
        std::cout << "new int: " << $1 << std::endl;
-       type_t v;
-       v.i = $1;
+       type_t v = { .i = $1 };
        $$ = Value(v, INT);
      }
      |
      FLOAT
      {
        std::cout << "new double: " << $1 << std::endl;
-       type_t v;
-       v.f = $1;
+       type_t v = { .f = $1 };
        $$ = Value(v, FLT);
      }
      |
      CHAR
      {
        std::cout << "new char: " << $1 << std::endl;
-       type_t v;
-       v.c = $1;
+       type_t v = { .c = $1 };
        $$ = Value(v, CHR);
      }
      ;
