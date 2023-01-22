@@ -4,19 +4,17 @@
 
 <identifier> ::= 'a'-'z'( <alpha> | '0'-'9' )*
 
-<range> ::= <number>".."<number>[ ".."<number> ]
-
-<nbr> ::= "nbr"
+<int> ::= "int"
 
 <flt> ::= "flt"
 
 <chr> ::= "chr"
 
-<type> ::= <nbr> | <flt> | <chr>
+<type> ::= <int> | <flt> | <chr>
 
-<declaration> ::= <type> <identifier> [ "=" <value> ] ";"
+<declaration> ::= <type> <identifier> ";"
 
-<affectation> ::=  <identifier> "=" <value> ";"
+<affectation> ::= "set(" <identifier>"," <value>")" ";"
 
 <fncall> ::= <identifier>"(" [ <identifier>  ("," <identifier>)* ] ")" ";"
 
@@ -37,6 +35,7 @@
   | <for>
   | <while>
   | <fncall>
+  | <builtinfncall>
 
 <instructions> ::= <instruction>+
 

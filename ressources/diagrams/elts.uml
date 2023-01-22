@@ -1,0 +1,14 @@
+@startuml
+skinparam classAttributeIconSize 0
+skinparam groupInheritance 3
+
+BinaryOperation *-- ASTNode
+class BinaryOperation {
+  -left: ASTNode
+  -right: ASTNode
+}
+BinaryOperation <|-- AddOP
+ASTNode <|-- BinaryOperation
+
+@enduml
+

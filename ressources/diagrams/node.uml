@@ -1,0 +1,9 @@
+@startuml
+skinparam classAttributeIconSize 0
+AST *-- ASTNode
+
+abstract class ASTNode {
+  +abstract compile(): void
+  +abstract display(): void
+}
+@enduml

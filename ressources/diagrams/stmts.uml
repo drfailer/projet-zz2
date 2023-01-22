@@ -1,0 +1,42 @@
+@startuml
+skinparam classAttributeIconSize 0
+skinparam groupInheritance 3
+
+Statement *-- Block
+class Statement {
+  block: Block
+}
+
+Statement <|-- Function
+Function o-- Variable
+class Function {
+  -name: string
+  -params: list<Variable>
+  -returnType: Type
+}
+
+Statement <|-- If
+If o-- ASTNode
+class If {
+  -condition: ASTNode
+}
+
+Statement <|-- For
+For *-- ASTNode
+class For {
+  -var: string
+  -begin: ASTNode
+  -end: ASTNode
+  -step: ASTNode
+}
+
+Statement <|-- While
+If o-- ASTNode
+class While {
+  -condition: ASTNode
+}
+
+ASTNode <|-- Statement
+ASTNode <|-- Block
+
+@enduml
