@@ -112,4 +112,34 @@ ASTNode <|-- Declaration
 ASTNode <|-- FunctionCall
 ASTNode <|-- Print
 ASTNode <|-- Read
+
+
+Program *-- Include
+Program *-- Function
+class Program {
+  -includes: list<Include>
+  -functions: list<Function>
+}
+
+ProgramBuilder o-- Program
+class ProgramBuilder {
+  -program: Program
+  -blocks: list<Block>
+  -funParams: list<Variable>
+  -funcallParams: list<list<ASTNode>>
+  -funcallIds: list<string>
+  +display(): void
+  +beginBlock(): void
+  +endBlock(): Block
+  +pushBlock(ASTNode): void
+  +createFuncall(): ASTNode
+  +createIf(ASTNode, Block): If
+  +createFor(Variable, ASTNode, ASTNode, ASTNode, Block): For
+  +createWhile(ASTNode, Block): While
+  +pushFuncallParam(ASTNode): void
+  +pushFunctionParam(Variable): void
+  +newFuncall(string): void
+  +createFunction(string, Block, Type): void
+  +addInclude(Include): void
+}
 @enduml
