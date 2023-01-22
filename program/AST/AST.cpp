@@ -31,6 +31,10 @@ std::string typToString(Type type)
 
 /* -------------------------------------------------------------------------- */
 
+ASTNode::~ASTNode() {}
+
+/* -------------------------------------------------------------------------- */
+
 Value::Value(type_t value, Type type): value(value), type(type)
 {
 }

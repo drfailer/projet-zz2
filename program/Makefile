@@ -1,5 +1,5 @@
 test: parser.o lexer.o AST.o Program.o ProgramBuilder.o
-	g++ -o test $^ -g
+	g++ -Wall -Wextra -o test $^ -g
 
 # -------------------------------------------------------------- flex and bison
 

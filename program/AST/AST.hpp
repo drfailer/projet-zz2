@@ -26,7 +26,9 @@ enum Type
 class ASTNode
 {
   public:
+    /* virtual void compile() = 0; */
     virtual void display() = 0;
+    virtual ~ASTNode() = 0;
 };
 
 /******************************************************************************/
