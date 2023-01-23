@@ -4,10 +4,14 @@
 \usepackage[T1]{fontenc}
 \usepackage{textcomp}
 \usepackage{url}
+\usepackage{hyperref}
 \usepackage[top=2.5cm,bottom=2.5cm,right=2.5cm,left=2.5cm]{geometry}
 \usepackage[french]{babel}
 \usepackage[backend=biber,style=ieee]{biblatex}
+%\usepackage{titletoc}% http://ctan.org/pkg/titletoc
+\usepackage{qtree}
 \addbibresource{refs.bib}
+
 
 %================infos=================
 \title{Création d'un langage interprété}
@@ -24,9 +28,9 @@
 %------------------------------------------------------------------------------%
 %                                 Introduction                                 %
 %------------------------------------------------------------------------------%
-\section{Introduction}
+\section*{Introduction}
 
-\section{Mots clés}
+\section*{Mots clés}
 
 \textbf{Français :} \textit{C++}, \textit{interpréteur}, \textit{parser},
 \textit{IDE}, \textit{langage de programmation}
@@ -35,9 +39,13 @@
 \textit{IDE}, \textit{Programming Language}
 
 
+\tableofcontents
+
+
+
 \clearpage{}
 
-\section{Résumé des références}
+\section*{Résumé des références}
 
 \begin{itemize}
   \item La partie consultable de \cite{flexBisonHandbook} présentent les bases
@@ -60,6 +68,83 @@
     pas mal d'exemples sur les \textbf{ABS} donc je le trouve pertinant.
   \item \cite{gagnon1998sablecc}: \textbf{ABS} en java.
 \end{itemize}
+
+
+
+\clearpage{}
+
+\section{Le lexeur}
+
+\subsection{Définition}
+
+ Le lexeur, ou encore appelé analyseur lexical, a pour but de transformer le texte du code source en des unités lexicales, appelées \textit{tokens}. \\
+ 
+    \textbf{Exemple} \\
+    Pour l'expression simple \textbf{a = 2 * b} \\
+    Les tokens apparaissant sont : \\
+    \begin{center}
+    \begin{tabular}{ | c | c | }
+    \hline
+    \textbf{Token} & \textbf{Sa nature} \\ 
+    \hline
+    a & Identificateur de variable \\ 
+    \hline
+    = & Symbole d'affectation \\  
+    \hline
+    2 & Valeur entière \\
+    \hline
+    * & Opérateur de multiplication \\
+    \hline
+    b & Identificateur de variable \\
+    \hline
+\end{tabular}
+\end{center}
+
+Le lexeur a également pour rôle de supprimer les informations inutiles, généralement du caractère espace et des commentaires.
+
+\subsection{Implémentation}
+
+Le fichier \textbf{main\_cpp.l} contient le code qui permet de générer le lexeur avec flex. Les token doivent-être définis dans \textbf{main\_cpp.y} au préalable.
+À noter que l'on peut utiliser la variable `yylval` pour transmettre des
+éléments au parser.
+
+%------------------------------------------------------------------------------%
+%                     Mettre un peu de code peut-être?                         %
+%------------------------------------------------------------------------------%
+
+\clearpage{}
+
+\section{Le parseur}
+
+\subsection{Définition}
+
+Également appelé analyseur syntaxique, son rôle principal est la vérification de la syntaxe du code en regroupant les tokens selon une structure suivant des rêgles syntaxiques. \\
+
+
+    \textbf{Exemple} \\
+    Pour l'expression simple \textbf{a = 2 * b} \\
+    Les tokens apparaissant sont : \\
+    \begin{center}
+    \begin{tabular}{ | c | c | c | }
+    \hline
+    \textbf{Arbre syntaxique} & \textbf{Évaluation de 2 * b} & \textbf{Affectation de a} \\ 
+    \hline
+    \Tree[.= a  [.* 2 b ]] & 
+        \Tree[.= a  2*b ] &             
+            a = 2 * b\\
+    \hline
+    \end{tabular}
+    \end{center}
+
+\subsection{Implémentation}
+ Le fichier \textbf{main\_cpp.y} contient le code qui permet de générer le parseur avec bison. Toutes les règles syntaxiques qui définissent la grammaire du langage y sont comprises.
+Chaque règle va contenir des blocks de code qui seront exécutés au moment où le parseur la reconnait, ce code permet de créer des objets qui formeront l'ABS (Abstract Syntaxic Tree) du programme.
+
+
+
+
+
+
 
 \clearpage{}
 
