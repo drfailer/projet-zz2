@@ -10,8 +10,34 @@
 \usepackage[backend=biber,style=ieee]{biblatex}
 %\usepackage{titletoc}% http://ctan.org/pkg/titletoc
 \usepackage{qtree}
+\usepackage{listings}
+\usepackage{xcolor}
 \addbibresource{refs.bib}
 
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+
+\lstdefinestyle{mystyle}{
+    backgroundcolor=\color{backcolour},   
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{magenta},
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{teal},
+    basicstyle=\ttfamily\footnotesize,
+    breakatwhitespace=false,         
+    breaklines=true,                 
+    captionpos=b,                    
+    keepspaces=true,                 
+    %numbers=left,                    
+    %numbersep=5pt,                  
+    showspaces=false,                
+    showstringspaces=false,
+    showtabs=false,                  
+    tabsize=2
+}
+
+\lstset{style=mystyle}
 
 %================infos=================
 \title{Création d'un langage interprété}
@@ -28,7 +54,8 @@
 %------------------------------------------------------------------------------%
 %                                 Introduction                                 %
 %------------------------------------------------------------------------------%
-\section*{Introduction}
+\setcounter{secnumdepth}{0}
+\section{Introduction}
 
 \section*{Mots clés}
 
@@ -44,8 +71,8 @@
 
 
 \clearpage{}
-
-\section*{Résumé des références}
+\setcounter{secnumdepth}{0}
+\section{Résumé des références}
 
 \begin{itemize}
   \item La partie consultable de \cite{flexBisonHandbook} présentent les bases
@@ -69,10 +96,12 @@
   \item \cite{gagnon1998sablecc}: \textbf{ABS} en java.
 \end{itemize}
 
-
+%------------------------------------------------------------------------------%
+%                                      LEXER                                   %
+%------------------------------------------------------------------------------%
 
 \clearpage{}
-
+\setcounter{secnumdepth}{1}
 \section{Le lexeur}
 
 \subsection{Définition}
@@ -100,16 +129,86 @@
 \end{tabular}
 \end{center}
 
-Le lexeur a également pour rôle de supprimer les informations inutiles, généralement du caractère espace et des commentaires.
+Le lexeur a également pour rôle de supprimer les informations inutiles, généralement du caractère espace et des commentaires.\\~\\
 
 \subsection{Implémentation}
-
-Le fichier \textbf{main\_cpp.l} contient le code qui permet de générer le lexeur avec flex. Les token doivent-être définis dans \textbf{main\_cpp.y} au préalable.
+L'outil utilisé pour générer un lexeur à partir du code précédent est FLEX (Fast LEXical analyser generator). Au lieu d'écrire un lexeur à partir de zéro, FLEX permet d'avoir un lexeur en donnant seulement les modèles des expressions régulières ainsi que le langage de travail (c++ dans notre cas).\\~\\
+\noindent
+Le fichier \textbf{main\_cpp.l} contient le code qui permet de générer le lexeur avec FLEX. Les token doivent-être définis dans \textbf{main\_cpp.y} au préalable.
 À noter que l'on peut utiliser la variable `yylval` pour transmettre des
-éléments au parser.
+éléments au parser.\\
+
+La structure du fichier \textbf{main\_cpp.l} est la suivante :
+
+\begin{lstlisting}
+C and parser declaration
+
+%%
+Grammar rules and actions
+
+%%
+C subroutings
+\end{lstlisting}\leavevmode\newline
+
+
+\noindent
+On peut definir des règles dans les déclarations du lexeur :
+
+\begin{lstlisting}
+%option c++ interactive noyywrap noyylineno nodefault outfile="lexer.cpp"
+
+alpha [a-zA-Z]
+digit [0-9]
+int [+-]?{digit}+
+float [+-]?{digit}+\.{digit}+
+char '{alpha}'
+identifier [a-z]({alpha}|{digit}|_)*
+\end{lstlisting}\leavevmode\newline
+
+\noindent
+Concernant la ligne d'option :
+\begin{itemize}
+\item \textbf{c++} : indique qu'on travail avec du cpp et non du c
+\item \textbf{interactive} : utile quand on utlise \textbf{std::in}. Le scanner interactif regarde plus de caractères avant de générer un token (plus lent mais permet de lutter contre les ambiguitées)
+\item \textbf{noyywrap} : ne pas appeler \textbf{yywrap()} qui permet de parser plusieurs fichiers
+\item \textbf{noyylineno}: désactive l'enregistrement des lignes (\textbf{yylineno})
+\item \textbf{nodefault} : pas de scanner par défaut (=> on doit tout implémenter)
+\item \textbf{outfile:"file.cpp"} : permet de definir le fichier de sortie
+\end{itemize}\leavevmode\\[3\baselineskip]
+
+
+\noindent
+Dans les règles, on suit toujours le même principe, on indique les caractères à reconaitre puis on exécute du code :\\
+
+\begin{lstlisting}
+for          { AFFICHE("L_for"); return Parser::token::FOR; }
+{identifier} {
+  AFFICHE("L_id");
+  yylval->build<std::string>(yytext);
+  return Parser::token::IDENTIFIER;
+}
+\end{lstlisting}\leavevmode\newline
+
+\noindent
+Ici on a accès à la variable \textbf{yylval} qui est un \textbf{Parser::semantic\_type*} et qui possède une méthode \textbf{build} qui nous permet de transmettre des valeurs à bison.\\
+Ces valeurs sont accessible via les variables de bison: \textbf{\$2}. La variable
+\textbf{yytext} contient le text traité par flex. De plus, dans le code, on retourne
+les \textit{tokens}. Ces \textbf{tokens} sont définis dans le fichier de bison.
+\newline
+
+La fonction appelée par défaut est \textbf{yylex}, cependant, pour pouvoir travailler avec bison, nous devons fournir nos propres fonctions, pour ce faire on utilise la macro \textbf{YY\_DECL} (cf: **The generated scanner** dans la doc).
+
+\begin{lstlisting}
+#define YY_DECL int interpreter::Scanner::lex(interpreter::Parser::semantic_type *yylval)
+\end{lstlisting}\leavevmode\\~\\
+
+
+
+
+
 
 %------------------------------------------------------------------------------%
-%                     Mettre un peu de code peut-être?                         %
+%                                      PARSER                                  %
 %------------------------------------------------------------------------------%
 
 \clearpage{}
@@ -137,13 +236,97 @@ Le fichier \textbf{main\_cpp.l} contient le code qui permet de générer le lexe
     \end{center}
 
 \subsection{Implémentation}
- Le fichier \textbf{main\_cpp.y} contient le code qui permet de générer le parseur avec bison. Toutes les règles syntaxiques qui définissent la grammaire du langage y sont comprises.
-Chaque règle va contenir des blocks de code qui seront exécutés au moment où le parseur la reconnait, ce code permet de créer des objets qui formeront l'ABS (Abstract Syntaxic Tree) du programme.
+À l'instar de FLEX pour le lexeur, Bison est un générateur de grammaire qui convertit une description de grammaire en un programme c++ qui analyse cette même grammaire.\\~\\
+ Le fichier \textbf{main\_cpp.y} contient le code qui permet de générer le parseur avec Bison. Toutes les règles syntaxiques qui définissent la grammaire du langage y sont comprises.
+Chaque règle va contenir des blocks de code qui seront exécutés au moment où le parseur la reconnait, ce code permet de créer des objets qui formeront l'ABS (Abstract Syntaxic Tree) du programme.\\
 
 
+La structure du fichier \textbf{main\_cpp.y} est identique au lexeur :
+
+\begin{lstlisting}
+C and parser declaration
+
+%%
+Grammar rules and actions
+
+%%
+C subroutings
+\end{lstlisting}\leavevmode\newline
+
+Les tokens sont définis en début de fichier avec la syntaxe suivante:
+
+\begin{lstlisting}
+%token IF ELSE FOR WHILE FN INCLUDE IN
+%token <long long>  INT
+%token <double>     FLOAT
+%token <char>       CHAR
+%token <std::string> IDENTIFIER
+\end{lstlisting}\leavevmode\newline
+
+À noter que l'on peut spécifier le type de l'élément, ce qui sera utile pour
+récupérer les valeurs retournées par le lexeur.\\~\\
 
 
+Bison permet de construire le parser, qui va reconnaître des éléments de syntaxe
+et non pas juste des mots clés. Par exemple, on peut définir une règle pour
+reconnaître une suite d'inclusion de fichiers :\\
 
+\begin{lstlisting}[language=c++]
+includes: %empty
+       | INCLUDE IDENTIFIER SEMI includes
+       ;
+\end{lstlisting}\leavevmode\newline
+
+Ici, on définie une règle \textbf{includes} qui décrit la syntaxe des \textit{includes}. Selon cette règle, une suite d'inclusions est soit vide, soit elle comporte une inclusion, suivit d'une suite d'inclusion (`|` signifie "ou"). Il faut noter que la syntaxe est "récursive", ce qui nous permet de définir une suite d'éléments.
+Enfin, les mots en majuscule sont les tokens retournés par le lexeur.\\
+
+On peut ajouter des blocks de codes qui seront exécutés au moment où le parseur
+atteint l'élément qui précède le block. Dans l'exemple ci-dessous, le block sera appelé une fois que Bison aura parser le \textcolor{red}{;}. À noter que l'on peut accéder aux éléments retournés par FLEX ; ici, \textcolor{blue}{\$2} fait référence au second élément de la règle qui est \textcolor{cyan}{IDENTIFIER}. Le type de \textcolor{orange}{IDENTIFIER} a été défini comme étant une \textcolor{teal}{std::string}. Le block de code nous permet donc de créer une nouvelle inclusion et de récupérer le nom de la bibliothèque.\\
+
+\begin{lstlisting}[language=c++]
+includes: %empty
+       |
+       INCLUDE IDENTIFIER SEMI
+       {
+         std::cout << "new include id: " << $2 << std::endl;
+         pb.addInclude(std::make_shared<Include>($2));
+       }
+       includes
+       ;
+\end{lstlisting}\leavevmode\newline
+
+
+Comme dit plus haut, on peut définir des types pour les tokens, ce qui permet de
+récupérer des valeurs:
+
+\begin{lstlisting}[language=c++]
+value: INT {
+       std::cout << "new int: " << $1 << std::endl;
+       lastValue.i = $1;
+       lastValueType = INT;
+     } | FLOAT {
+       std::cout << "new double: " << $1 << std::endl;
+       lastValue.f = $1;
+       lastValueType = FLT;
+     } | CHAR {
+       std::cout << "new char: " << $1 << std::endl;
+       lastValue.c = $1;
+       lastValueType = CHR;
+     }
+     ;
+\end{lstlisting}\leavevmode\newline
+
+Pour la génération du code, on a deux options :
+\begin{itemize}
+\item utiliser des instruction très simples => sorte de bytecode
+\item créer un code objet où tous les éléments sont des objets.
+\end{itemize}\leavevmode\\
+
+\underline{Choix de la représentation objet} :
+\begin{itemize}
+\item plus simple à comprendre et à visualiser
+\item plus compliqué à générer: on peut générer du bytecode au fil de l'exécution du parseur, en utilisant des \textcolor{orange}{goto} pour sauter de block d'instruction en block d'instruction. Pour le code objet, les éléments à l'intérieurs des blocks doivent être créés avant le block, et le block est détecté avant les instructions, il faut donc stocker les instructions.
+\end{itemize}
 
 
 \clearpage{}
