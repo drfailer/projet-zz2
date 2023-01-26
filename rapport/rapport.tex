@@ -12,6 +12,8 @@
 \usepackage{qtree}
 \usepackage{listings}
 \usepackage{xcolor}
+\usepackage{setspace}
+\usepackage{graphicx}
 \addbibresource{refs.bib}
 
 \definecolor{codegreen}{rgb}{0,0.6,0}
@@ -40,38 +42,87 @@
 \lstset{style=mystyle}
 
 %================infos=================
+\pagenumbering{gobble}
+\begin{titlepage}
+
 \title{Création d'un langage interprété}
 \author{Franck ALONSO, CHASSAGNOL Rémi}
 \date{\today}
+\end{titlepage}
+
 
 %------------------------------------------------------------------------------%
-%                                  title page                                  %
+%                                  Title page                                  %
 %------------------------------------------------------------------------------%
-
 \begin{document}
-\maketitle
+\input{titlepage.tex}
+\clearpage{}
+
+
+%------------------------------------------------------------------------------%
+%                                Remerciements                                 %
+%------------------------------------------------------------------------------%
+\section*{Remerciements}
+
+\doublespacing
+\large
+Nous tenons à exprimer notre profonde gratitude à :\\
+- Notre encadrant et cher professeur M. Loïc YON pour al qualité de son encadrement, et pour nous avoir guidées durant toute la période du projet.\\
+- Mme Murielle MOUZAT, notre professeur de communication pour son aide précieuse et indispensable pour la réussite de notre projet de 2\up{ème} année.\\
+
+\noindent Finalement, nous exprimons nos vifs remerciements à toute personne ayant participée de près ou de loin au bon déroulement de ce projet.
+
+\normalsize
+\onehalfspacing
+
+\clearpage{}
+
+%------------------------------------------------------------------------------%
+%                               Table of contents                              %
+%------------------------------------------------------------------------------%
+\pagenumbering{arabic}
+\thispagestyle{empty}
+\tableofcontents
+\clearpage{}
+
+
+%------------------------------------------------------------------------------%
+%                              Résumé et Abstract                              %
+%------------------------------------------------------------------------------%
+
+\setcounter{secnumdepth}{0}
+\section{Résumé}
+L'objectif de ce projet est la création d'un langage \textbf{interprété} en \textbf{C++} dans le but de faire découvrir l'informatique et la programmation à des collégiens et lycéens. Ce projet rentre dans le cadre du sujet commun de la filière F2, qui concerne la conception d’outils et plus généralement en développement logiciel.\\
+
+Le projet, réalisé sous Visual Studio Code, utilisera un \textbf{lexeur} et \textbf{parseur} pour pouvoir reconnaitre notre \textbf{}{langage de programmation} voulu.
+\\~\\
+
+\noindent
+Mots-clés : \textbf{C++}, \textbf{interpréteur}, \textbf{lexeur}, \textbf{parseur},  \textbf{langage de programmation}
+\\[2\baselineskip]
+
+\section{Abstract}
+The objective of this project is the creation of an \textbf{interpreted} language  in \textbf{C++} in order to introduce computer science and programming to middle and high school students. This project falls within the framework of the common subject of the F2 major, which relates to the design of tools and more generally in software development.\\
+
+The project, coded with Visual Studio Code, uses a \textbf{lexeur} and \textbf{parser} to be able to recognize our desired \textbf{}{programming language}.
+\\~\\
+
+\noindent
+Keywords : \textbf{C++}, \textbf{interpreter}, \textbf{lexer}, \textbf{parser},  \textbf{programming language}
+
+\clearpage
+
 
 %------------------------------------------------------------------------------%
 %                                 Introduction                                 %
 %------------------------------------------------------------------------------%
-\setcounter{secnumdepth}{0}
 \section{Introduction}
 
-\section*{Mots clés}
-
-\textbf{Français :} \textit{C++}, \textit{interpréteur}, \textit{parser},
-\textit{IDE}, \textit{langage de programmation}
-
-\textbf{Anglais :} \textit{C++}, \textit{Interpreter}, \textit{Parser},
-\textit{IDE}, \textit{Programming Language}
-
-
-\tableofcontents
 
 
 
-\clearpage{}
-\setcounter{secnumdepth}{0}
+
+
 \section{Résumé des références}
 
 \begin{itemize}
