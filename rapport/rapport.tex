@@ -14,6 +14,8 @@
 \usepackage{xcolor}
 \usepackage{setspace}
 \usepackage{graphicx}
+\usepackage{geometry}
+
 \addbibresource{refs.bib}
 
 \definecolor{codegreen}{rgb}{0,0.6,0}
@@ -38,8 +40,16 @@
     showtabs=false,                  
     tabsize=2
 }
-
+%===========style & geometry===========
 \lstset{style=mystyle}
+
+ \geometry{
+ a4paper,
+  left=30mm,
+  right=20mm,
+  top=25mm,
+  bottom=25mm,
+ }
 
 %================infos=================
 \pagenumbering{gobble}
@@ -87,6 +97,13 @@ Nous tenons à exprimer notre profonde gratitude à :\\
 
 
 %------------------------------------------------------------------------------%
+%                               Table of figures                               %
+%------------------------------------------------------------------------------%
+\listoffigures
+\clearpage{}
+
+
+%------------------------------------------------------------------------------%
 %                              Résumé et Abstract                              %
 %------------------------------------------------------------------------------%
 
@@ -110,16 +127,24 @@ The project, coded with Visual Studio Code, uses a \textbf{lexeur} and \textbf{p
 \noindent
 Keywords : \textbf{C++}, \textbf{interpreter}, \textbf{lexer}, \textbf{parser},  \textbf{programming language}
 
-\clearpage
+\clearpage{}
 
 
 %------------------------------------------------------------------------------%
 %                                 Introduction                                 %
 %------------------------------------------------------------------------------%
 \section{Introduction}
+\large
+Dans le cardre du projet de 2\up{ème} année à l'ISIMA, nous avons choisi de réalisé un travail concernant le sujet commun de la filière F2, Génie Logiciel et Systèmes d'Informations. Le but du projet est de pouvoir montrer à des élèves de collèges et lycées ce que la filière ingénieur permet de faire. \\
 
+Le domaine étant vaste, nous avons choisi de concevoir un langage informatique simple en C++ avec comme principal objectif de faire comprendre aux élèves la notion de fonction. Ce langage devait posséder une interface graphique, mais cette tâche s'est avérée trop ambitieuse pour un travail de 60 heures.\\
 
+Le projet, en plus de sa valeur pédagogique, nous permet de nous familiariser avec les concepts de compilateur, interpreteur et arbre syntaxique.\\
 
+Pour présenter ce projet, nous commencerons par la forme du langage à créer souhaité, puis nous détaillerons sa structure. Une fois familier avec les différentes étapes de son implémentation,  nous introduirons les concepts et outils informatiques qui permettent la réalisation de notre langage.\\
+
+\normalsize
+\clearpage{}
 
 
 
