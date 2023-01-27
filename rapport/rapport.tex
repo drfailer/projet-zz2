@@ -15,14 +15,16 @@
 \usepackage{setspace}
 \usepackage{graphicx}
 \usepackage{geometry}
+\usepackage{titlesec}
 
 \addbibresource{refs.bib}
 
 \definecolor{codegreen}{rgb}{0,0.6,0}
 \definecolor{codegray}{rgb}{0.5,0.5,0.5}
 \definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+\definecolor{backpink}{rgb}{1,0.94,0.95}
 
-\lstdefinestyle{mystyle}{
+\lstdefinestyle{codestyle}{
     backgroundcolor=\color{backcolour},   
     commentstyle=\color{codegreen},
     keywordstyle=\color{magenta},
@@ -40,8 +42,42 @@
     showtabs=false,                  
     tabsize=2
 }
+
+\lstdefinestyle{grammarstyle}{
+    backgroundcolor=\color{backpink},   
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{purple},
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{teal},
+    basicstyle=\ttfamily\footnotesize,
+    breakatwhitespace=false,         
+    breaklines=true,                 
+    captionpos=b,                    
+    keepspaces=true,                 
+    %numbers=left,                    
+    %numbersep=5pt,                  
+    showspaces=false,                
+    showstringspaces=false,
+    showtabs=false,                  
+    tabsize=2
+}
+
+\lstnewenvironment{code}[1][]
+  {\noindent\minipage{\linewidth}\medskip 
+   \lstset{basicstyle=\ttfamily\footnotesize,frame=single,#1,upquote=true}
+    \lstset{style=codestyle}
+     }
+  {\endminipage}
+
+ \lstnewenvironment{grammar}[1][]
+  {\noindent\minipage{\linewidth}\medskip 
+   \lstset{basicstyle=\ttfamily\footnotesize,frame=single,#1,upquote=true}
+   \lstset{style=grammarstyle}
+   }
+  {\endminipage}
+
 %===========style & geometry===========
-\lstset{style=mystyle}
+%\lstset{style=mystyle}
 
  \geometry{
  a4paper,
@@ -50,6 +86,9 @@
   top=25mm,
   bottom=25mm,
  }
+
+ \titleformat*{\section}{\LARGE\bfseries}
+ \titleformat*{\subsection}{\Large\bfseries}
 
 %================infos=================
 \pagenumbering{gobble}
@@ -99,7 +138,7 @@ Nous tenons à exprimer notre profonde gratitude à :\\
 %------------------------------------------------------------------------------%
 %                               Table of figures                               %
 %------------------------------------------------------------------------------%
-\listoffigures
+%\listoffigures
 \clearpage{}
 
 
@@ -135,7 +174,7 @@ Keywords : \textbf{C++}, \textbf{interpreter}, \textbf{lexer}, \textbf{parser}, 
 %------------------------------------------------------------------------------%
 \section{Introduction}
 \large
-Dans le cardre du projet de 2\up{ème} année à l'ISIMA, nous avons choisi de réalisé un travail concernant le sujet commun de la filière F2, Génie Logiciel et Systèmes d'Informations. Le but du projet est de pouvoir montrer à des élèves de collèges et lycées ce que la filière ingénieur permet de faire. \\
+Dans le cardre du projet de 2\up{ème} année à l'ISIMA, nous avons choisi de réalisé un travail concernant le sujet commun de la filière F2, Génie Logiciel et Systèmes d'Informations. Le but du projet est de pouvoir montrer à des élèves de collèges et lycées ce que la filière ingénieur permet de faire.\\
 
 Le domaine étant vaste, nous avons choisi de concevoir un langage informatique simple en C++ avec comme principal objectif de faire comprendre aux élèves la notion de fonction. Ce langage devait posséder une interface graphique, mais cette tâche s'est avérée trop ambitieuse pour un travail de 60 heures.\\
 
@@ -172,19 +211,77 @@ Pour présenter ce projet, nous commencerons par la forme du langage à créer s
   \item \cite{gagnon1998sablecc}: \textbf{ABS} en java.
 \end{itemize}
 
+
+\clearpage{}
+\setcounter{secnumdepth}{1}
+
+%------------------------------------------------------------------------------%
+%                        GRAMMAIRE DE NOTRE LANGAGE                            %
+%------------------------------------------------------------------------------%
+\section{Conception d'un langage informatique}
+
+\phantomsection
+\subsection{Grammaire de notre langage}
+
+Avant d'implémenter notre langage informatique, il faut avoir une idée de sa grammaire, c'est-à-dire son fonctionnement. Un de ces objectifs est d'initier les élèves de collèges et lycées à la notion de fonction informatique.\\
+C'est la raison pour laquelle les opérations permises par notre langage ne seront que des fonctions.\\
+
+\textbf{Exemple} \\
+Nous disposons de 2 variables \textbf{a} et \textbf{b}.\\
+La variable \textbf{a} est lue par commande de l'utilisateur tandis que la valeur 4 est assignée à \textbf{b}.\\
+Nous cherchons ensuite à additionner les 2 variables avec la valeur 5. Nous avons alors la syntaxe suivante :\\
+- une fonction \textit{add3} qui additionne les valeurs de ses 3 paramètres\\
+- une fonction \textit{affiche} qui affiche sur l'écran le nombre passé en paramètre\\
+- une fonction \textit{main}, où se trouve toutes les commandes voulues de notre programme\\
+
+\begin{grammar}[language=C++]
+fn add3(int a, int b, int c) -> int {
+    return add(a, add(b, c));
+}
+
+fn affiche(int n) {
+    print("nombre : ");
+    print(n);
+}
+
+fn main() {
+    int a;
+    int b;
+    read(a);
+    set(b, 4);
+    affiche(add3(a, b, 5));
+\end{grammar}\leavevmode\newline
+
+La particularité de cette grammaire est que les opérations arithmétiques de base sont remplacées par des fonctions :\\
+\begin{center}
+\begin{tabular}{ | c | }
+    \hline
+    \textbf{a} + \textbf{b} devient \textit{add}(\textbf{a}, \textbf{b})\\
+    \hline
+    \textbf{a} - \textbf{b} devient \textit{mns}(\textbf{a}, \textbf{b})\\
+    \hline
+    \textbf{a} x \textbf{b} devient \textit{tms}(\textbf{a}, \textbf{b})\\
+    \hline
+    \textbf{a} / \textbf{b} devient \textit{div}(\textbf{a}, \textbf{b})\\
+    \hline
+\end{tabular}
+\end{center}
+
+
+\clearpage{}
+
 %------------------------------------------------------------------------------%
 %                                      LEXER                                   %
 %------------------------------------------------------------------------------%
 
-\clearpage{}
-\setcounter{secnumdepth}{1}
 \section{Le lexeur}
 
+\phantomsection
 \subsection{Définition}
 
  Le lexeur, ou encore appelé analyseur lexical, a pour but de transformer le texte du code source en des unités lexicales, appelées \textit{tokens}. \\
  
-    \textbf{Exemple} \\
+\textbf{Exemple} \\
     Pour l'expression simple \textbf{a = 2 * b} \\
     Les tokens apparaissant sont : \\
     \begin{center}
@@ -207,7 +304,10 @@ Pour présenter ce projet, nous commencerons par la forme du langage à créer s
 
 Le lexeur a également pour rôle de supprimer les informations inutiles, généralement du caractère espace et des commentaires.\\~\\
 
+
+\phantomsection
 \subsection{Implémentation}
+
 L'outil utilisé pour générer un lexeur à partir du code précédent est FLEX (Fast LEXical analyser generator). Au lieu d'écrire un lexeur à partir de zéro, FLEX permet d'avoir un lexeur en donnant seulement les modèles des expressions régulières ainsi que le langage de travail (c++ dans notre cas).\\~\\
 \noindent
 Le fichier \textbf{main\_cpp.l} contient le code qui permet de générer le lexeur avec FLEX. Les token doivent-être définis dans \textbf{main\_cpp.y} au préalable.
@@ -216,7 +316,7 @@ Le fichier \textbf{main\_cpp.l} contient le code qui permet de générer le lexe
 
 La structure du fichier \textbf{main\_cpp.l} est la suivante :
 
-\begin{lstlisting}
+\begin{code}
 C and parser declaration
 
 %%
@@ -224,13 +324,13 @@ Grammar rules and actions
 
 %%
 C subroutings
-\end{lstlisting}\leavevmode\newline
+\end{code}\leavevmode\newline
 
 
 \noindent
 On peut definir des règles dans les déclarations du lexeur :
 
-\begin{lstlisting}
+\begin{code}
 %option c++ interactive noyywrap noyylineno nodefault outfile="lexer.cpp"
 
 alpha [a-zA-Z]
@@ -239,7 +339,7 @@ int [+-]?{digit}+
 float [+-]?{digit}+\.{digit}+
 char '{alpha}'
 identifier [a-z]({alpha}|{digit}|_)*
-\end{lstlisting}\leavevmode\newline
+\end{code}\leavevmode\newline
 
 \noindent
 Concernant la ligne d'option :
@@ -256,14 +356,14 @@ Concernant la ligne d'option :
 \noindent
 Dans les règles, on suit toujours le même principe, on indique les caractères à reconaitre puis on exécute du code :\\
 
-\begin{lstlisting}
+\begin{code}
 for          { AFFICHE("L_for"); return Parser::token::FOR; }
 {identifier} {
   AFFICHE("L_id");
   yylval->build<std::string>(yytext);
   return Parser::token::IDENTIFIER;
 }
-\end{lstlisting}\leavevmode\newline
+\end{code}\leavevmode\newline
 
 \noindent
 Ici on a accès à la variable \textbf{yylval} qui est un \textbf{Parser::semantic\_type*} et qui possède une méthode \textbf{build} qui nous permet de transmettre des valeurs à bison.\\
@@ -274,11 +374,11 @@ les \textit{tokens}. Ces \textbf{tokens} sont définis dans le fichier de bison.
 
 La fonction appelée par défaut est \textbf{yylex}, cependant, pour pouvoir travailler avec bison, nous devons fournir nos propres fonctions, pour ce faire on utilise la macro \textbf{YY\_DECL} (cf: **The generated scanner** dans la doc).
 
-\begin{lstlisting}
+\begin{code}
 #define YY_DECL int interpreter::Scanner::lex(interpreter::Parser::semantic_type *yylval)
-\end{lstlisting}\leavevmode\\~\\
+\end{code}\leavevmode\\~\\
 
-
+\clearpage{}
 
 
 
@@ -287,10 +387,9 @@ La fonction appelée par défaut est \textbf{yylex}, cependant, pour pouvoir tra
 %                                      PARSER                                  %
 %------------------------------------------------------------------------------%
 
-\clearpage{}
-
 \section{Le parseur}
 
+\phantomsection
 \subsection{Définition}
 
 Également appelé analyseur syntaxique, son rôle principal est la vérification de la syntaxe du code en regroupant les tokens selon une structure suivant des rêgles syntaxiques. \\
@@ -311,7 +410,9 @@ La fonction appelée par défaut est \textbf{yylex}, cependant, pour pouvoir tra
     \end{tabular}
     \end{center}
 
+\phantomsection
 \subsection{Implémentation}
+
 À l'instar de FLEX pour le lexeur, Bison est un générateur de grammaire qui convertit une description de grammaire en un programme c++ qui analyse cette même grammaire.\\~\\
  Le fichier \textbf{main\_cpp.y} contient le code qui permet de générer le parseur avec Bison. Toutes les règles syntaxiques qui définissent la grammaire du langage y sont comprises.
 Chaque règle va contenir des blocks de code qui seront exécutés au moment où le parseur la reconnait, ce code permet de créer des objets qui formeront l'ABS (Abstract Syntaxic Tree) du programme.\\
@@ -319,7 +420,7 @@ Chaque règle va contenir des blocks de code qui seront exécutés au moment où
 
 La structure du fichier \textbf{main\_cpp.y} est identique au lexeur :
 
-\begin{lstlisting}
+\begin{code}
 C and parser declaration
 
 %%
@@ -327,17 +428,17 @@ Grammar rules and actions
 
 %%
 C subroutings
-\end{lstlisting}\leavevmode\newline
+\end{code}\leavevmode\newline
 
 Les tokens sont définis en début de fichier avec la syntaxe suivante:
 
-\begin{lstlisting}
+\begin{code}
 %token IF ELSE FOR WHILE FN INCLUDE IN
 %token <long long>  INT
 %token <double>     FLOAT
 %token <char>       CHAR
 %token <std::string> IDENTIFIER
-\end{lstlisting}\leavevmode\newline
+\end{code}\leavevmode\newline
 
 À noter que l'on peut spécifier le type de l'élément, ce qui sera utile pour
 récupérer les valeurs retournées par le lexeur.\\~\\
@@ -347,11 +448,11 @@ Bison permet de construire le parser, qui va reconnaître des éléments de synt
 et non pas juste des mots clés. Par exemple, on peut définir une règle pour
 reconnaître une suite d'inclusion de fichiers :\\
 
-\begin{lstlisting}[language=c++]
+\begin{code}[language=c++]
 includes: %empty
        | INCLUDE IDENTIFIER SEMI includes
        ;
-\end{lstlisting}\leavevmode\newline
+\end{code}\leavevmode\newline
 
 Ici, on définie une règle \textbf{includes} qui décrit la syntaxe des \textit{includes}. Selon cette règle, une suite d'inclusions est soit vide, soit elle comporte une inclusion, suivit d'une suite d'inclusion (`|` signifie "ou"). Il faut noter que la syntaxe est "récursive", ce qui nous permet de définir une suite d'éléments.
 Enfin, les mots en majuscule sont les tokens retournés par le lexeur.\\
@@ -359,7 +460,7 @@ Enfin, les mots en majuscule sont les tokens retournés par le lexeur.\\
 On peut ajouter des blocks de codes qui seront exécutés au moment où le parseur
 atteint l'élément qui précède le block. Dans l'exemple ci-dessous, le block sera appelé une fois que Bison aura parser le \textcolor{red}{;}. À noter que l'on peut accéder aux éléments retournés par FLEX ; ici, \textcolor{blue}{\$2} fait référence au second élément de la règle qui est \textcolor{cyan}{IDENTIFIER}. Le type de \textcolor{orange}{IDENTIFIER} a été défini comme étant une \textcolor{teal}{std::string}. Le block de code nous permet donc de créer une nouvelle inclusion et de récupérer le nom de la bibliothèque.\\
 
-\begin{lstlisting}[language=c++]
+\begin{code}[language=c++]
 includes: %empty
        |
        INCLUDE IDENTIFIER SEMI
@@ -369,13 +470,13 @@ includes: %empty
        }
        includes
        ;
-\end{lstlisting}\leavevmode\newline
+\end{code}\leavevmode\newline
 
 
 Comme dit plus haut, on peut définir des types pour les tokens, ce qui permet de
 récupérer des valeurs:
 
-\begin{lstlisting}[language=c++]
+\begin{code}[language=c++]
 value: INT {
        std::cout << "new int: " << $1 << std::endl;
        lastValue.i = $1;
@@ -390,7 +491,7 @@ value: INT {
        lastValueType = CHR;
      }
      ;
-\end{lstlisting}\leavevmode\newline
+\end{code}\leavevmode\newline
 
 Pour la génération du code, on a deux options :
 \begin{itemize}
