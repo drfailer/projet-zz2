@@ -3,21 +3,7 @@
 #include <list>
 #include <string>
 #include <memory>
-
-union type_t
-{
-  long long i;
-  double f;
-  char c;
-};
-
-enum Type
-{
-  INT,
-  FLT,
-  CHR,
-  VOID
-};
+#include "Types.hpp"
 
 /******************************************************************************/
 /*                                    node                                    */
@@ -102,13 +88,12 @@ class Variable : public ASTNode
 {
   private:
     std::string id;
-    Type type;
 
   public:
     void display() override;
     std::string getId();
     Type getType();
-    Variable(std::string, Type);
+    Variable(std::string);
 };
 
 /******************************************************************************/
@@ -195,11 +180,10 @@ class Function : public Statement
   private:
     std::string id;
     std::list<Variable> params;
-    Type returnType; // TODO: unsused yet
 
   public:
     void display() override;
-    Function(std::string, std::list<Variable>, Type, std::shared_ptr<Block>);
+    Function(std::string, std::list<Variable>, std::shared_ptr<Block>);
 };
 
 /**
@@ -296,16 +280,38 @@ class DivOP: public BinaryOperation
 /*                             boolean operations                             */
 /******************************************************************************/
 
-// TODO:
-// - inf
-// - sup
-// - ieq
-// - seq
-
 class EqlOP: public BinaryOperation
 {
   public:
     EqlOP(std::shared_ptr<ASTNode>, std::shared_ptr<ASTNode>);
+    void display() override; // left == right
+};
+
+class SupOP: public BinaryOperation
+{
+  public:
+    SupOP(std::shared_ptr<ASTNode>, std::shared_ptr<ASTNode>);
+    void display() override; // left == right
+};
+
+class InfOP: public BinaryOperation
+{
+  public:
+    InfOP(std::shared_ptr<ASTNode>, std::shared_ptr<ASTNode>);
+    void display() override; // left == right
+};
+
+class SeqOP: public BinaryOperation
+{
+  public:
+    SeqOP(std::shared_ptr<ASTNode>, std::shared_ptr<ASTNode>);
+    void display() override; // left == right
+};
+
+class IeqOP: public BinaryOperation
+{
+  public:
+    IeqOP(std::shared_ptr<ASTNode>, std::shared_ptr<ASTNode>);
     void display() override; // left == right
 };
 

@@ -6,29 +6,6 @@
 #include <string>
 #include <type_traits>
 
-// TODO: create multiple files
-
-std::string typToString(Type type)
-{
-  std::string output;
-
-  switch (type) {
-    case INT:
-      output = "int";
-      break;
-    case FLT:
-      output = "flt";
-      break;
-    case CHR:
-      output = "chr";
-      break;
-    default:
-      output = "void";
-      break;
-  }
-  return output;
-}
-
 /* -------------------------------------------------------------------------- */
 
 ASTNode::~ASTNode() {}
@@ -68,7 +45,7 @@ void Value::display()
 
 /* -------------------------------------------------------------------------- */
 
-Variable::Variable(std::string id, Type type): id(id), type(type)
+Variable::Variable(std::string id): id(id)
 {
 }
 
@@ -77,20 +54,15 @@ std::string Variable::getId()
   return id;
 }
 
-Type Variable::getType()
-{
-  return type;
-}
-
 void Variable::display()
 {
-  std::cout << id << " " << typToString(type);
+  std::cout << id;
 }
 
 /* -------------------------------------------------------------------------- */
 
 void Function::display() {
-  std::cout << "Function(" << id << ", " << typToString(returnType) << ", [";
+  std::cout << "Function(" << id << ", [";
   for (Variable p: params) {
     p.display();
     std::cout << ", ";
@@ -100,9 +72,9 @@ void Function::display() {
   std::cout << ")" << std::endl;
 }
 
-Function::Function(std::string id, std::list<Variable> params, Type returnType,
+Function::Function(std::string id, std::list<Variable> params,
     std::shared_ptr<Block> instructions):
-  Statement(instructions), id(id), params(params), returnType(returnType)
+  Statement(instructions), id(id), params(params)
 {
 }
 
@@ -335,6 +307,46 @@ EqlOP::EqlOP(std::shared_ptr<ASTNode> left, std::shared_ptr<ASTNode> right)
 void EqlOP::display()
 {
   std::cout << "EqlOP(";
+  BinaryOperation::display();
+}
+
+SupOP::SupOP(std::shared_ptr<ASTNode> left, std::shared_ptr<ASTNode> right)
+  : BinaryOperation(left, right)
+{}
+
+void SupOP::display()
+{
+  std::cout << "SupOP(";
+  BinaryOperation::display();
+}
+
+InfOP::InfOP(std::shared_ptr<ASTNode> left, std::shared_ptr<ASTNode> right)
+  : BinaryOperation(left, right)
+{}
+
+void InfOP::display()
+{
+  std::cout << "InfOP(";
+  BinaryOperation::display();
+}
+
+SeqOP::SeqOP(std::shared_ptr<ASTNode> left, std::shared_ptr<ASTNode> right)
+  : BinaryOperation(left, right)
+{}
+
+void SeqOP::display()
+{
+  std::cout << "SeqOP(";
+  BinaryOperation::display();
+}
+
+IeqOP::IeqOP(std::shared_ptr<ASTNode> left, std::shared_ptr<ASTNode> right)
+  : BinaryOperation(left, right)
+{}
+
+void IeqOP::display()
+{
+  std::cout << "IeqOP(";
   BinaryOperation::display();
 }
 

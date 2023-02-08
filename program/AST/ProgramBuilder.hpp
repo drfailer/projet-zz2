@@ -40,7 +40,10 @@ class ProgramBuilder
     void pushFunctionParam(Variable);
     void newFuncall(std::string);
 
-    void createFunction(std::string, std::shared_ptr<Block>, Type); // TODO: add the return type
+    void createFunction(std::string, std::shared_ptr<Block>); // the return type
+                                                              // can be found
+                                                              // using the
+                                                              // symtable
 
     void addInclude(std::shared_ptr<Include>);
     ProgramBuilder();
