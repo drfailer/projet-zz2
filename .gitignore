@@ -27,3 +27,12 @@ program/test
 tests/test-new-syntax/Program.o
 tests/test-new-syntax/ProgramBuilder.o
 program/vgcore.5461
+rapport/rapport.aux
+rapport/rapport.bbl
+rapport/rapport.bcf
+rapport/rapport.blg
+rapport/rapport.log
+rapport/rapport.out
+rapport/rapport.run.xml
+rapport/rapport.toc
+program/Types.o
