@@ -38,12 +38,12 @@ fn main(int p1, flt p2, chr p3) {
   myFun(a, add(3,3), fonction(a, b), 4);
   myFun(a, fonc(a), fonction(a, b), 4);
 
-  if (and(eql(a, b), or(eql(a, 0), eql(add(a, b), 4)))) {
+  if (and(sup(a, b), or(eql(a, 0), ieq(add(a, b), 4)))) {
     chr c;
     set(c, 'a');
   }
 
-  if (and(eql(a, b), or(eql(a, 0), eql(add(a, b), 4)))) {
+  if (and(eql(a, b), or(eql(a, 0), seq(add(a, b), 4)))) {
     # comment in if
     chr c;
     set(c, 'a');

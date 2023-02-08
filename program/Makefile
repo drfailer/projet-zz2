@@ -1,4 +1,4 @@
-test: parser.o lexer.o AST.o Program.o ProgramBuilder.o
+test: parser.o lexer.o AST.o Program.o ProgramBuilder.o Types.o
 	g++ -Wall -Wextra -o test $^ -g
 
 # -------------------------------------------------------------- flex and bison
@@ -15,6 +15,9 @@ AST.o: AST/AST.cpp
 	g++ -c $^
 
 Program.o: AST/Program.cpp
+	g++ -c $^
+
+Types.o: AST/Types.cpp
 	g++ -c $^
 
 ProgramBuilder.o: AST/ProgramBuilder.cpp

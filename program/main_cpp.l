@@ -42,6 +42,10 @@ mns          { AFFICHE("L_mns"); return Parser::token::MNS; }
 tms          { AFFICHE("L_tms"); return Parser::token::TMS; }
 div          { AFFICHE("L_div"); return Parser::token::DIV; }
 eql          { AFFICHE("L_eql"); return Parser::token::EQL; }
+sup          { AFFICHE("L_sup"); return Parser::token::SUP; }
+inf          { AFFICHE("L_inf"); return Parser::token::INF; }
+seq          { AFFICHE("L_seq"); return Parser::token::SEQ; }
+ieq          { AFFICHE("L_ieq"); return Parser::token::IEQ; }
 and          { AFFICHE("L_and"); return Parser::token::AND; }
 or           { AFFICHE("L_or"); return Parser::token::OR; }
 xor          { AFFICHE("L_xor"); return Parser::token::XOR; }

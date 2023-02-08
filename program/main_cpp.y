@@ -38,7 +38,7 @@
 %token IF ELSE FOR WHILE FN INCLUDE IN
 %token SEMI COMMA ARROW
 %token PRINT READ ADD MNS TMS DIV RANGE SET
-%token EQL AND OR XOR NOT
+%token EQL SUP INF SEQ IEQ AND OR XOR NOT
 %token <std::string> IDENTIFIER
 %token <std::string> STRING
 %token ERROR
@@ -86,13 +86,13 @@ includes: INCLUDE IDENTIFIER SEMI
 function:
         FN IDENTIFIER[name]'('paramDeclarations')' block[ops]
         {
-          pb.createFunction($name, $ops, VOID);
+          pb.createFunction($name, $ops);
         }
         |
         FN IDENTIFIER[name]'('paramDeclarations')' ARROW type[rt] block[ops]
         {
           // TODO: look for return stmt in $ops
-          pb.createFunction($name, $ops, $rt);
+          pb.createFunction($name, $ops);
         }
         ;
 
@@ -104,7 +104,7 @@ paramDeclaration: %empty
      | type[t] IDENTIFIER
      {
        std::cout << "new param: " << $2 << std::endl;
-       pb.pushFunctionParam(Variable($2, $t));
+       pb.pushFunctionParam(Variable($2));
      }
      ;
 
@@ -124,7 +124,7 @@ operand:
      IDENTIFIER
      {
         std::cout << "new param variable" << std::endl;
-        std::shared_ptr<ASTNode> v = std::make_shared<Variable>($1, VOID);
+        std::shared_ptr<ASTNode> v = std::make_shared<Variable>($1);
         $$ = v;
      }
      |
@@ -188,7 +188,7 @@ read: READ'('IDENTIFIER[v]')'
     {
       std::cout << "read" << std::endl;
       // TODO: use symTable to get the type of the variable
-      pb.pushBlock(std::make_shared<Read>(Variable($v, VOID)));
+      pb.pushBlock(std::make_shared<Read>(Variable($v)));
     }
     ;
 
@@ -204,7 +204,7 @@ print:
      {
         std::cout << "print var" << std::endl;
         // TODO: use symTable to get the type of the variable
-        pb.pushBlock(std::make_shared<Print>(std::make_shared<Variable>($v, VOID)));
+        pb.pushBlock(std::make_shared<Print>(std::make_shared<Variable>($v)));
      }
      ;
 
@@ -217,7 +217,7 @@ inlineSymbol:
             {
                std::cout << "new param variable" << std::endl;
                // TODO: use symTable to get the type
-               $$ = std::make_shared<Variable>($1, VOID);
+               $$ = std::make_shared<Variable>($1);
             }
             ;
 
@@ -252,6 +252,30 @@ booleanOperation:
                  {
                     std::cout << "EqlOP" << std::endl;
                     $$ = std::make_shared<EqlOP>($left, $right);
+                 }
+                 |
+                 SUP'(' operand[left] COMMA operand[right] ')'
+                 {
+                    std::cout << "SupOP" << std::endl;
+                    $$ = std::make_shared<SupOP>($left, $right);
+                 }
+                 |
+                 INF'(' operand[left] COMMA operand[right] ')'
+                 {
+                    std::cout << "InfOP" << std::endl;
+                    $$ = std::make_shared<InfOP>($left, $right);
+                 }
+                 |
+                 SEQ'(' operand[left] COMMA operand[right] ')'
+                 {
+                    std::cout << "SeqOP" << std::endl;
+                    $$ = std::make_shared<SeqOP>($left, $right);
+                 }
+                 |
+                 IEQ'(' operand[left] COMMA operand[right] ')'
+                 {
+                    std::cout << "IeqOP" << std::endl;
+                    $$ = std::make_shared<IeqOP>($left, $right);
                  }
                  |
                  AND'('booleanOperation[left] COMMA booleanOperation[right]')'
@@ -309,7 +333,7 @@ declaration:
            type[t] IDENTIFIER
            {
              std::cout << "new declaration: " << $2 << std::endl;
-             pb.pushBlock(std::make_shared<Declaration>(Variable($2, $t)));
+             pb.pushBlock(std::make_shared<Declaration>(Variable($2)));
            }
            ;
 
@@ -317,7 +341,7 @@ assignement:
            SET'('IDENTIFIER[v] COMMA inlineSymbol[ic]')'
            {
              std::cout << "new assignement: " << $v << std::endl;
-             pb.pushBlock(std::make_shared<Assignement>(Variable($v, VOID), $ic));
+             pb.pushBlock(std::make_shared<Assignement>(Variable($v), $ic));
            }
            ;
 
@@ -396,7 +420,7 @@ for:
    FOR IDENTIFIER[v] IN RANGE'('operand[b] COMMA operand[e] COMMA operand[s]')' block[ops]
    {
      std::cout << "in for" << std::endl;
-     $$ = pb.createFor(Variable($v, VOID), $b, $e, $s, $ops);
+     $$ = pb.createFor(Variable($v), $b, $e, $s, $ops);
    }
    ;
 
