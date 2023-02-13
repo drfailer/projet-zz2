@@ -24,7 +24,6 @@
 %define api.parser.class {Parser}
 %define api.namespace {interpreter}
 %define api.value.type variant
-%define parse.trace
 %locations
 %parse-param {Scanner* scanner}
 
@@ -41,10 +40,11 @@
     #include "lexer.hpp"
     #include <memory>
     // #define yylex(x) scanner->lex(x)
-    #define yylex(x, y) scanner->lex(x, y)
+    #define yylex(x, y) scanner->lex(x, y) // now we use yylval and yylloc
     ProgramBuilder pb;
     Symtable symtable;
     ContextManager contextManager;
+    bool erros = false;
 }
 
 %token <long long>  INT
@@ -104,6 +104,7 @@ function:
         FN IDENTIFIER[name]'('paramDeclarations')'
         {
           contextManager.enterScope();
+          contextManager.newSymbol($name, VOID, FUNCTION);
         }
         block[ops]
         {
@@ -114,6 +115,7 @@ function:
         FN IDENTIFIER[name]'('paramDeclarations')' ARROW type[rt]
         {
           contextManager.enterScope();
+          contextManager.newSymbol($name, $rt, FUNCTION);
         }
         block[ops]
         {
@@ -132,6 +134,7 @@ paramDeclaration: %empty
      {
        DEBUG("new param: " << $2);
        // TODO: new symbol
+       contextManager.newSymbol($2, $t, FUN_PARAM);
        pb.pushFunctionParam(Variable($2));
      }
      ;
@@ -152,6 +155,15 @@ operand:
      IDENTIFIER
      {
         DEBUG("new param variable" );
+        std::optional<Symbol> sym = contextManager.lookup($1);
+        if (!sym.has_value()) {
+          std::cout << "error: undefined symbol " << $1 << std::endl;
+          // return 1;
+          // TODO: exit
+          // TODO: add some color
+        }
+        // TODO: rewrite variable node to add symbol informations (better for
+        // the transpiler)
         std::shared_ptr<ASTNode> v = std::make_shared<Variable>($1);
         $$ = v;
      }
@@ -215,6 +227,13 @@ command: print
 read: READ'('IDENTIFIER[v]')'
     {
       DEBUG("read");
+      std::optional<Symbol> sym = contextManager.lookup($v);
+      if (!sym.has_value()) {
+        std::cout << "error: undefined symbol " << $v << std::endl;
+        // return 1;
+        // TODO: exit
+        // TODO: add some color
+      }
       // TODO: use symTable to get the type of the variable
       pb.pushBlock(std::make_shared<Read>(Variable($v)));
     }
@@ -224,13 +243,19 @@ print:
      PRINT'('STRING[s]')'
      {
         DEBUG("print str");
-        // TODO: use symTable to get the type of the variable
         pb.pushBlock(std::make_shared<Print>($s));
      }
      |
      PRINT'('IDENTIFIER[v]')'
      {
         DEBUG("print var");
+        std::optional<Symbol> sym = contextManager.lookup($v);
+        if (!sym.has_value()) {
+          std::cout << "error: undefined symbol " << $v << std::endl;
+          // return 1;
+          // TODO: exit
+          // TODO: add some color
+        }
         // TODO: use symTable to get the type of the variable
         pb.pushBlock(std::make_shared<Print>(std::make_shared<Variable>($v)));
      }
@@ -244,6 +269,13 @@ inlineSymbol:
             IDENTIFIER
             {
                DEBUG("new param variable");
+               std::optional<Symbol> sym = contextManager.lookup($1);
+               if (!sym.has_value()) {
+                 std::cout << "error: undefined symbol " << $1 << std::endl;
+                 // return 1;
+                 // TODO: exit
+                 // TODO: add some color
+               }
                // TODO: use symTable to get the type
                $$ = std::make_shared<Variable>($1);
             }
@@ -334,6 +366,13 @@ booleanOperation:
 funcall:
        IDENTIFIER'('
        {
+          std::optional<Symbol> sym = contextManager.lookup($1);
+          if (!sym.has_value()) {
+            std::cout << "error: undefined symbol " << $1 << std::endl;
+            // return 1;
+            // TODO: exit
+            // TODO: add some color
+          }
           pb.newFuncall($1);
        }
        params')'
@@ -343,24 +382,11 @@ funcall:
        }
        ;
 
-print:
-     PRINT'('')'
-     {
-       std::cout << "new print" << std::endl;
-     }
-     ;
-
-read:
-    READ'('')'
-    {
-      std::cout << "new read" << std::endl;
-    }
-     ;
-
 declaration:
            type[t] IDENTIFIER
            {
              DEBUG("new declaration: " << $2);
+             contextManager.newSymbol($2, $t, LOCAL_VAR);
              pb.pushBlock(std::make_shared<Declaration>(Variable($2)));
            }
            ;
@@ -369,6 +395,13 @@ assignement:
            SET'('IDENTIFIER[v] COMMA inlineSymbol[ic]')'
            {
              DEBUG("new assignement: " << $v);
+             std::optional<Symbol> sym = contextManager.lookup($v);
+             if (!sym.has_value()) {
+               std::cout << "error: undefined symbol " << $v << std::endl;
+               // return 1;
+               // TODO: exit
+               // TODO: add some color
+             }
              pb.pushBlock(std::make_shared<Assignement>(Variable($v), $ic));
            }
            ;
@@ -458,7 +491,13 @@ for:
    FOR IDENTIFIER[v] IN RANGE'('operand[b] COMMA operand[e] COMMA operand[s]')'
    {
      contextManager.enterScope();
-
+     std::optional<Symbol> sym = contextManager.lookup($v);
+     if (!sym.has_value()) {
+       std::cout << "error: undefined symbol " << $v << std::endl;
+       // return 1;
+       // TODO: exit
+       // TODO: add some color
+     }
    }
    block[ops]
    {
@@ -485,6 +524,7 @@ comment: COMMENT;
 %%
 
 void interpreter::Parser::error(const location_type& loc, const std::string& msg) {
+      // TODO: create better error report
       std::cerr << msg << " at: " << loc << std::endl;
 }
 
