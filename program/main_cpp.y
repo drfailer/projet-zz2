@@ -2,11 +2,13 @@
 #include <iostream>
 #include <string>
 #include <FlexLexer.h>
+#include <fstream>
 #include "AST/AST.hpp"
 #include "AST/ProgramBuilder.hpp"
 #include "symtable/Symtable.hpp"
 #include "symtable/Symbol.hpp"
-#define DBG_PARS 0
+#include "symtable/ContextManager.hpp"
+#define DBG_PARS 1
 #if DBG_PARS == 1
 #define DEBUG(A) std::cout << A << std::endl
 #else
@@ -37,6 +39,7 @@
     #define yylex(x) scanner->lex(x)
     ProgramBuilder pb;
     Symtable symtable;
+    ContextManager contextManager;
 }
 
 %token <long long>  INT
@@ -87,21 +90,31 @@ programElt:
 
 includes: INCLUDE IDENTIFIER SEMI
         {
-          DEBUG("new include id: " + $2);
+          DEBUG("new include id: " << $2);
           pb.addInclude(std::make_shared<Include>($2));
         }
         ;
 
 function:
-        FN IDENTIFIER[name]'('paramDeclarations')' block[ops]
+        FN IDENTIFIER[name]'('paramDeclarations')'
+        {
+          contextManager.enterScope();
+        }
+        block[ops]
         {
           pb.createFunction($name, $ops);
+          contextManager.leaveScope();
         }
         |
-        FN IDENTIFIER[name]'('paramDeclarations')' ARROW type[rt] block[ops]
+        FN IDENTIFIER[name]'('paramDeclarations')' ARROW type[rt]
+        {
+          contextManager.enterScope();
+        }
+        block[ops]
         {
           // TODO: look for return stmt in $ops
           pb.createFunction($name, $ops);
+          contextManager.leaveScope();
         }
         ;
 
@@ -112,7 +125,8 @@ paramDeclarations: paramDeclaration
 paramDeclaration: %empty
      | type[t] IDENTIFIER
      {
-       DEBUG("new param: " + $2);
+       DEBUG("new param: " << $2);
+       // TODO: new symbol
        pb.pushFunctionParam(Variable($2));
      }
      ;
@@ -319,7 +333,7 @@ funcall:
        }
        params')'
        {
-         DEBUG("new funcall: " + $1);
+         DEBUG("new funcall: " << $1);
          $$ = pb.createFuncall();
        }
        ;
@@ -341,7 +355,7 @@ read:
 declaration:
            type[t] IDENTIFIER
            {
-             DEBUG("new declaration: " + $2);
+             DEBUG("new declaration: " << $2);
              pb.pushBlock(std::make_shared<Declaration>(Variable($2)));
            }
            ;
@@ -349,7 +363,7 @@ declaration:
 assignement:
            SET'('IDENTIFIER[v] COMMA inlineSymbol[ic]')'
            {
-             DEBUG("new assignement: " + $v);
+             DEBUG("new assignement: " << $v);
              pb.pushBlock(std::make_shared<Assignement>(Variable($v), $ic));
            }
            ;
@@ -357,21 +371,21 @@ assignement:
 value:
      INT
      {
-       DEBUG("new int: " + $1);
+       DEBUG("new int: " << $1);
        type_t v = { .i = $1 };
        $$ = Value(v, INT);
      }
      |
      FLOAT
      {
-       DEBUG("new double: " + $1);
+       DEBUG("new double: " << $1);
        type_t v = { .f = $1 };
        $$ = Value(v, FLT);
      }
      |
      CHAR
      {
-       DEBUG("new char: " + $1);
+       DEBUG("new char: " << $1);
        type_t v = { .c = $1 };
        $$ = Value(v, CHR);
      }
@@ -407,37 +421,58 @@ if:
     $$ = $1;
   }
   |
-  simpleIf[sif] ELSE block[ops]
+  simpleIf[sif] ELSE
+  {
+    contextManager.enterScope();
+  }
+  block[ops]
   {
     DEBUG("else");
     std::shared_ptr<If> ifstmt = $sif;
     // adding else block
     ifstmt->createElse($ops);
     $$ = ifstmt;
+    contextManager.leaveScope();
   }
   ;
 
 simpleIf:
-  IF '('booleanOperation[cond]')' block[ops]
+  IF '('booleanOperation[cond]')'
+  {
+    contextManager.enterScope();
+  }
+  block[ops]
   {
     DEBUG("if");
     $$ = pb.createIf($cond, $ops);
+    contextManager.leaveScope();
   }
   ;
 
 for:
-   FOR IDENTIFIER[v] IN RANGE'('operand[b] COMMA operand[e] COMMA operand[s]')' block[ops]
+   FOR IDENTIFIER[v] IN RANGE'('operand[b] COMMA operand[e] COMMA operand[s]')'
+   {
+     contextManager.enterScope();
+
+   }
+   block[ops]
    {
      DEBUG("in for");
      $$ = pb.createFor(Variable($v), $b, $e, $s, $ops);
+     contextManager.leaveScope();
    }
    ;
 
 while:
-     WHILE '('booleanOperation[cond]')' block[ops]
+     WHILE '('booleanOperation[cond]')'
+     {
+       contextManager.enterScope();
+     }
+     block[ops]
      {
        DEBUG("in while");
        $$ = pb.createWhile($cond, $ops);
+       contextManager.leaveScope();
      }
      ;
 
@@ -448,9 +483,19 @@ void interpreter::Parser::error(const std::string& msg) {
       std::cerr << msg << '\n';
 }
 
-int main() {
-  interpreter::Scanner scanner{ std::cin, std::cerr };
-  interpreter::Parser parser{ &scanner };
-  parser.parse();
-  pb.display();
+int main(int argc, char **argv) {
+  contextManager.enterScope(); // TODO: put the current module/file name here
+  if (argc == 2) {
+    std::ifstream is(argv[1], std::ios::in);
+    interpreter::Scanner scanner{ is , std::cerr };
+    interpreter::Parser parser{ &scanner };
+    parser.parse();
+    pb.display();
+  }
+  else {
+    interpreter::Scanner scanner{ std::cin, std::cerr };
+    interpreter::Parser parser{ &scanner };
+    parser.parse();
+    pb.display();
+  }
 }

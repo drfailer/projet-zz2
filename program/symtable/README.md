@@ -17,5 +17,24 @@ fn ma_fonction(int a) { // ma_fonction/a (a.Kind => FUN_PARAM)
 }
 ```
 
-Cela implique que pour la recher, il faut d'abord chercher dans le scope
+Cela implique que pour la recherche, il faut d'abord chercher dans le scope
 courant puis, "remonter" dans les scopes accessibles.
+
+## Scope
+
+Les scope sont des chaine des caractères générées par les `ContextManager` et sont
+de la forme suivant:
+
+```
+"/fichier/fonction/if1/else1/for11"
+```
+
+À noter que l'on est obligé de sauvegarder le numéro de statement, car sinon, 2
+"if" qui se suivent correspondraient au même scope.
+
+# New strategy
+
+La stratégie précédente n'est pas adaptée, de ce fait, la table des symboles
+sera un arbre où chaque noeud sera une sous table. Pour faire une recherche de
+symboles, il faut faire une recherche dans la table courante, ou chercher dans
+les tables supérieures jusqu'au scope global.

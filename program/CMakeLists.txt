@@ -1,5 +1,6 @@
 cmake_minimum_required(VERSION 3.25.2)
 set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_BUILD_TYPE Debug)
 
 project(transpiler)
 
@@ -15,4 +16,5 @@ add_custom_target(lexer ALL flex main_cpp.l
 
 add_executable(prog parser.cpp lexer.cpp
   AST/AST.cpp AST/Program.cpp AST/ProgramBuilder.cpp
-  AST/Types.cpp symtable/Symtable.cpp symtable/Symbol.cpp)
+  AST/Types.cpp symtable/Symtable.cpp symtable/Symbol.cpp
+  symtable/ContextManager.cpp)

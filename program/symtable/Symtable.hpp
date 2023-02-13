@@ -1,6 +1,7 @@
 #ifndef __SYMTABLE__
 #define __SYMTABLE__
 #include <iostream>
+#include <memory>
 #include <unordered_map>
 #include <list>
 #include <optional>
@@ -9,12 +10,17 @@
 class Symtable
 {
   private:
-    std::unordered_map<std::string, std::list<Symbol>> table;
+    std::unordered_map<std::string, Symbol> table;
+    std::list<std::shared_ptr<Symtable>> childScopes;
+    std::shared_ptr<Symtable> father; // father node in the table
 
   public:
-    std::optional<Symbol> lookup(std::string name, std::string scope);
+    std::shared_ptr<Symtable> getFather() const;
+    std::optional<Symbol> lookup(std::string name);
+    void addScope(std::shared_ptr<Symtable>);
     void add(std::string name, std::string scope, Type type, Kind kind);
-    Symtable();
+    Symtable(std::shared_ptr<Symtable>);
+    Symtable() = default;
     ~Symtable() = default;
 };
 
