@@ -4,6 +4,14 @@
 #include <FlexLexer.h>
 #include "AST/AST.hpp"
 #include "AST/ProgramBuilder.hpp"
+#include "symtable/Symtable.hpp"
+#include "symtable/Symbol.hpp"
+#define DBG_PARS 0
+#if DBG_PARS == 1
+#define DEBUG(A) std::cout << A << std::endl
+#else
+#define DEBUG(A)
+#endif
 %}
 %language "c++"
 %defines "parser.hpp"
@@ -28,6 +36,7 @@
     #include <memory>
     #define yylex(x) scanner->lex(x)
     ProgramBuilder pb;
+    Symtable symtable;
 }
 
 %token <long long>  INT
@@ -65,12 +74,12 @@ program: %empty
 programElt:
        includes
        {
-         std::cout << "create new include" << std::endl;
+         DEBUG("create new include" );
        }
        |
        function
        {
-         std::cout << "create new function" << std::endl;
+         DEBUG("create new function" );
        }
        |
        comment
@@ -78,7 +87,7 @@ programElt:
 
 includes: INCLUDE IDENTIFIER SEMI
         {
-          std::cout << "new include id: " << $2 << std::endl;
+          DEBUG("new include id: " + $2);
           pb.addInclude(std::make_shared<Include>($2));
         }
         ;
@@ -103,7 +112,7 @@ paramDeclarations: paramDeclaration
 paramDeclaration: %empty
      | type[t] IDENTIFIER
      {
-       std::cout << "new param: " << $2 << std::endl;
+       DEBUG("new param: " + $2);
        pb.pushFunctionParam(Variable($2));
      }
      ;
@@ -123,7 +132,7 @@ param: %empty
 operand:
      IDENTIFIER
      {
-        std::cout << "new param variable" << std::endl;
+        DEBUG("new param variable" );
         std::shared_ptr<ASTNode> v = std::make_shared<Variable>($1);
         $$ = v;
      }
@@ -158,7 +167,7 @@ block:
      }
      code '}'
      {
-       std::cout << "new block" << std::endl;
+       DEBUG("new block");
        $$ = pb.endBlock();
      }
      ;
@@ -186,7 +195,7 @@ command: print
 
 read: READ'('IDENTIFIER[v]')'
     {
-      std::cout << "read" << std::endl;
+      DEBUG("read");
       // TODO: use symTable to get the type of the variable
       pb.pushBlock(std::make_shared<Read>(Variable($v)));
     }
@@ -195,14 +204,14 @@ read: READ'('IDENTIFIER[v]')'
 print:
      PRINT'('STRING[s]')'
      {
-        std::cout << "print str" << std::endl;
+        DEBUG("print str");
         // TODO: use symTable to get the type of the variable
         pb.pushBlock(std::make_shared<Print>($s));
      }
      |
      PRINT'('IDENTIFIER[v]')'
      {
-        std::cout << "print var" << std::endl;
+        DEBUG("print var");
         // TODO: use symTable to get the type of the variable
         pb.pushBlock(std::make_shared<Print>(std::make_shared<Variable>($v)));
      }
@@ -215,7 +224,7 @@ inlineSymbol:
             |
             IDENTIFIER
             {
-               std::cout << "new param variable" << std::endl;
+               DEBUG("new param variable");
                // TODO: use symTable to get the type
                $$ = std::make_shared<Variable>($1);
             }
@@ -224,25 +233,25 @@ inlineSymbol:
 arithmeticOperations:
                     ADD'(' operand[left] COMMA operand[right] ')'
                     {
-                      std::cout << "addOP" << std::endl;
+                      DEBUG("addOP");
                       $$ = std::make_shared<AddOP>($left, $right);
                     }
                     |
                     MNS'(' operand[left] COMMA operand[right] ')'
                     {
-                      std::cout << "mnsOP" << std::endl;
+                      DEBUG("mnsOP");
                       $$ = std::make_shared<MnsOP>($left, $right);
                     }
                     |
                     TMS'(' operand[left] COMMA operand[right] ')'
                     {
-                      std::cout << "tmsOP" << std::endl;
+                      DEBUG("tmsOP");
                       $$ = std::make_shared<TmsOP>($left, $right);
                     }
                     |
                     DIV'(' operand[left] COMMA operand[right] ')'
                     {
-                      std::cout << "divOP" << std::endl;
+                      DEBUG("divOP");
                       $$ = std::make_shared<DivOP>($left, $right);
                     }
                     ;
@@ -250,55 +259,55 @@ arithmeticOperations:
 booleanOperation:
                  EQL'(' operand[left] COMMA operand[right] ')'
                  {
-                    std::cout << "EqlOP" << std::endl;
+                    DEBUG("EqlOP");
                     $$ = std::make_shared<EqlOP>($left, $right);
                  }
                  |
                  SUP'(' operand[left] COMMA operand[right] ')'
                  {
-                    std::cout << "SupOP" << std::endl;
+                    DEBUG("SupOP");
                     $$ = std::make_shared<SupOP>($left, $right);
                  }
                  |
                  INF'(' operand[left] COMMA operand[right] ')'
                  {
-                    std::cout << "InfOP" << std::endl;
+                    DEBUG("InfOP");
                     $$ = std::make_shared<InfOP>($left, $right);
                  }
                  |
                  SEQ'(' operand[left] COMMA operand[right] ')'
                  {
-                    std::cout << "SeqOP" << std::endl;
+                    DEBUG("SeqOP");
                     $$ = std::make_shared<SeqOP>($left, $right);
                  }
                  |
                  IEQ'(' operand[left] COMMA operand[right] ')'
                  {
-                    std::cout << "IeqOP" << std::endl;
+                    DEBUG("IeqOP");
                     $$ = std::make_shared<IeqOP>($left, $right);
                  }
                  |
                  AND'('booleanOperation[left] COMMA booleanOperation[right]')'
                  {
-                    std::cout << "AndOP" << std::endl;
+                    DEBUG("AndOP");
                     $$ = std::make_shared<AndOP>($left, $right);
                  }
                  |
                  OR'('booleanOperation[left] COMMA booleanOperation[right]')'
                  {
-                    std::cout << "OrOP" << std::endl;
+                    DEBUG("OrOP");
                     $$ = std::make_shared<OrOP>($left, $right);
                  }
                  |
                  XOR'('booleanOperation[left] COMMA booleanOperation[right]')'
                  {
-                    std::cout << "XorOP" << std::endl;
+                    DEBUG("XorOP");
                     $$ = std::make_shared<XorOP>($left, $right);
                  }
                  |
                  NOT'('booleanOperation[op]')'
                  {
-                    std::cout << "NotOP" << std::endl;
+                    DEBUG("NotOP");
                     $$ = std::make_shared<NotOP>($op);
                  }
                  ;
@@ -310,7 +319,7 @@ funcall:
        }
        params')'
        {
-         std::cout << "new funcall: " << $1 << std::endl;
+         DEBUG("new funcall: " + $1);
          $$ = pb.createFuncall();
        }
        ;
@@ -332,7 +341,7 @@ read:
 declaration:
            type[t] IDENTIFIER
            {
-             std::cout << "new declaration: " << $2 << std::endl;
+             DEBUG("new declaration: " + $2);
              pb.pushBlock(std::make_shared<Declaration>(Variable($2)));
            }
            ;
@@ -340,7 +349,7 @@ declaration:
 assignement:
            SET'('IDENTIFIER[v] COMMA inlineSymbol[ic]')'
            {
-             std::cout << "new assignement: " << $v << std::endl;
+             DEBUG("new assignement: " + $v);
              pb.pushBlock(std::make_shared<Assignement>(Variable($v), $ic));
            }
            ;
@@ -348,21 +357,21 @@ assignement:
 value:
      INT
      {
-       std::cout << "new int: " << $1 << std::endl;
+       DEBUG("new int: " + $1);
        type_t v = { .i = $1 };
        $$ = Value(v, INT);
      }
      |
      FLOAT
      {
-       std::cout << "new double: " << $1 << std::endl;
+       DEBUG("new double: " + $1);
        type_t v = { .f = $1 };
        $$ = Value(v, FLT);
      }
      |
      CHAR
      {
-       std::cout << "new char: " << $1 << std::endl;
+       DEBUG("new char: " + $1);
        type_t v = { .c = $1 };
        $$ = Value(v, CHR);
      }
@@ -375,19 +384,19 @@ statements: %empty
 statement:
          if
          {
-           std::cout << "new if" << std::endl;
+           DEBUG("new if");
            pb.pushBlock($1);
          }
          |
          for
          {
-           std::cout << "new for" << std::endl;
+           DEBUG("new for");
            pb.pushBlock($1);
          }
          |
          while
          {
-           std::cout << "new for" << std::endl;
+           DEBUG("new for");
            pb.pushBlock($1);
          }
          ;
@@ -400,7 +409,7 @@ if:
   |
   simpleIf[sif] ELSE block[ops]
   {
-    std::cout << "else" << std::endl;
+    DEBUG("else");
     std::shared_ptr<If> ifstmt = $sif;
     // adding else block
     ifstmt->createElse($ops);
@@ -411,7 +420,7 @@ if:
 simpleIf:
   IF '('booleanOperation[cond]')' block[ops]
   {
-    std::cout << "if" << std::endl;
+    DEBUG("if");
     $$ = pb.createIf($cond, $ops);
   }
   ;
@@ -419,7 +428,7 @@ simpleIf:
 for:
    FOR IDENTIFIER[v] IN RANGE'('operand[b] COMMA operand[e] COMMA operand[s]')' block[ops]
    {
-     std::cout << "in for" << std::endl;
+     DEBUG("in for");
      $$ = pb.createFor(Variable($v), $b, $e, $s, $ops);
    }
    ;
@@ -427,7 +436,7 @@ for:
 while:
      WHILE '('booleanOperation[cond]')' block[ops]
      {
-       std::cout << "in while" << std::endl;
+       DEBUG("in while");
        $$ = pb.createWhile($cond, $ops);
      }
      ;

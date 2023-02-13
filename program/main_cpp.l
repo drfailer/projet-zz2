@@ -2,11 +2,11 @@
 #include "parser.hpp"
 #include "lexer.hpp"
 #define YY_DECL int interpreter::Scanner::lex(interpreter::Parser::semantic_type *yylval)
-#define DEBUG 0
-#if DEBUG == 1
-#define AFFICHE(A) std::cout << A << std::endl
+#define DBG_LEX 0
+#if DBG_LEX == 1
+#define DEBUG(A) std::cout << A << std::endl
 #else
-#define AFFICHE(A)
+#define DEBUG(A)
 #endif
 %}
 
@@ -26,69 +26,69 @@ str \"(\\.|[^"\\])*\"
 comment #.*$
 
 %%
-int          { AFFICHE("L_nbrt"); return Parser::token::INTT; }
-flt          { AFFICHE("L_fltt"); return Parser::token::FLTT; }
-chr          { AFFICHE("L_chrt"); return Parser::token::CHRT; }
-fn           { AFFICHE("L_fn"); return Parser::token::FN; }
-if           { AFFICHE("L_if"); return Parser::token::IF; }
-else         { AFFICHE("L_else"); return Parser::token::ELSE; }
-while        { AFFICHE("L_while"); return Parser::token::WHILE; }
-for          { AFFICHE("L_for"); return Parser::token::FOR; }
-in           { AFFICHE("L_in"); return Parser::token::IN; }
-print        { AFFICHE("L_print"); return Parser::token::PRINT; }
-read         { AFFICHE("L_read"); return Parser::token::READ; }
-add          { AFFICHE("L_add"); return Parser::token::ADD; }
-mns          { AFFICHE("L_mns"); return Parser::token::MNS; }
-tms          { AFFICHE("L_tms"); return Parser::token::TMS; }
-div          { AFFICHE("L_div"); return Parser::token::DIV; }
-eql          { AFFICHE("L_eql"); return Parser::token::EQL; }
-sup          { AFFICHE("L_sup"); return Parser::token::SUP; }
-inf          { AFFICHE("L_inf"); return Parser::token::INF; }
-seq          { AFFICHE("L_seq"); return Parser::token::SEQ; }
-ieq          { AFFICHE("L_ieq"); return Parser::token::IEQ; }
-and          { AFFICHE("L_and"); return Parser::token::AND; }
-or           { AFFICHE("L_or"); return Parser::token::OR; }
-xor          { AFFICHE("L_xor"); return Parser::token::XOR; }
-not          { AFFICHE("L_not"); return Parser::token::NOT; }
-set          { AFFICHE("L_set"); return Parser::token::SET; }
-include      { AFFICHE("L_include"); return Parser::token::INCLUDE; }
-range        { AFFICHE("L_range"); return Parser::token::RANGE; }
-->           { AFFICHE("L_arrow"); return Parser::token::ARROW; }
-return       { AFFICHE("L_return"); return Parser::token::RETURN; }
+int          { DEBUG("L_nbrt"); return Parser::token::INTT; }
+flt          { DEBUG("L_fltt"); return Parser::token::FLTT; }
+chr          { DEBUG("L_chrt"); return Parser::token::CHRT; }
+fn           { DEBUG("L_fn"); return Parser::token::FN; }
+if           { DEBUG("L_if"); return Parser::token::IF; }
+else         { DEBUG("L_else"); return Parser::token::ELSE; }
+while        { DEBUG("L_while"); return Parser::token::WHILE; }
+for          { DEBUG("L_for"); return Parser::token::FOR; }
+in           { DEBUG("L_in"); return Parser::token::IN; }
+print        { DEBUG("L_print"); return Parser::token::PRINT; }
+read         { DEBUG("L_read"); return Parser::token::READ; }
+add          { DEBUG("L_add"); return Parser::token::ADD; }
+mns          { DEBUG("L_mns"); return Parser::token::MNS; }
+tms          { DEBUG("L_tms"); return Parser::token::TMS; }
+div          { DEBUG("L_div"); return Parser::token::DIV; }
+eql          { DEBUG("L_eql"); return Parser::token::EQL; }
+sup          { DEBUG("L_sup"); return Parser::token::SUP; }
+inf          { DEBUG("L_inf"); return Parser::token::INF; }
+seq          { DEBUG("L_seq"); return Parser::token::SEQ; }
+ieq          { DEBUG("L_ieq"); return Parser::token::IEQ; }
+and          { DEBUG("L_and"); return Parser::token::AND; }
+or           { DEBUG("L_or"); return Parser::token::OR; }
+xor          { DEBUG("L_xor"); return Parser::token::XOR; }
+not          { DEBUG("L_not"); return Parser::token::NOT; }
+set          { DEBUG("L_set"); return Parser::token::SET; }
+include      { DEBUG("L_include"); return Parser::token::INCLUDE; }
+range        { DEBUG("L_range"); return Parser::token::RANGE; }
+->           { DEBUG("L_arrow"); return Parser::token::ARROW; }
+return       { DEBUG("L_return"); return Parser::token::RETURN; }
 
 {identifier} {
-  AFFICHE("L_id");
+  DEBUG("L_id");
   yylval->build<std::string>(yytext);
   return Parser::token::IDENTIFIER;
 }
 
 {int} {
-  AFFICHE("L_int: ");
+  DEBUG("L_int: ");
   yylval->build<long long>((long long) std::atol(yytext));
   return Parser::token::INT;
 }
 
 {float} {
-  AFFICHE("L_float");
+  DEBUG("L_float");
   yylval->build<double>((double) std::atof(yytext));
   return Parser::token::FLOAT;
 }
 
 {char} {
-  AFFICHE("L_char");
+  DEBUG("L_char");
   yylval->build<char>(yytext[1]);
   return Parser::token::CHAR;
 }
 
 {str} {
-  AFFICHE("L_string");
+  DEBUG("L_string");
   yylval->build<std::string>(yytext);
   return Parser::token::STRING;
 }
 
-{semi}       { AFFICHE("L_semi"); return Parser::token::SEMI; }
-{comma}      { AFFICHE("L_comma"); return Parser::token::COMMA; }
-{comment}    { AFFICHE("L_comment"); return Parser::token::COMMENT; }
+{semi}       { DEBUG("L_semi"); return Parser::token::SEMI; }
+{comma}      { DEBUG("L_comma"); return Parser::token::COMMA; }
+{comment}    { DEBUG("L_comment"); return Parser::token::COMMENT; }
 {blanks}
 .            { return yytext[0]; return Parser::token::TEXT; }
 %%
