@@ -37,3 +37,5 @@ rapport/rapport.run.xml
 rapport/rapport.toc
 program/Types.o
 program/build
+program/location.hh
+program/position.hh

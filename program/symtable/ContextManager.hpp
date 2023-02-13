@@ -12,7 +12,7 @@ class ContextManager
   public:
     void enterScope();
     void leaveScope();
-    std::shared_ptr<Symtable> getScope() const;
+    Symtable getScope() const; // NOTE: may be wrong
     std::string scopeToString() const;
     ContextManager(): currentScope(std::make_shared<Symtable>()) {}
     ~ContextManager() = default;

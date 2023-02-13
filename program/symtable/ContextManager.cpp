@@ -1,9 +1,9 @@
 #include "ContextManager.hpp"
 #include <sstream>
 
-std::shared_ptr<Symtable> ContextManager::getScope() const
+Symtable ContextManager::getScope() const
 {
-  return currentScope;
+  return *currentScope;
 }
 
 void ContextManager::enterScope()

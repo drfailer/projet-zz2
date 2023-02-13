@@ -1,7 +1,7 @@
 %{
 #include "parser.hpp"
 #include "lexer.hpp"
-#define YY_DECL int interpreter::Scanner::lex(interpreter::Parser::semantic_type *yylval)
+#define YY_DECL int interpreter::Scanner::lex(Parser::semantic_type *yylval, Parser::location_type *yylloc)
 #define DBG_LEX 0
 #if DBG_LEX == 1
 #define DEBUG(A) std::cout << A << std::endl
@@ -10,7 +10,7 @@
 #endif
 %}
 
-%option c++ interactive noyywrap noyylineno nodefault outfile="lexer.cpp"
+%option c++ interactive noyywrap yylineno nodefault outfile="lexer.cpp"
 
 alpha [a-zA-Z]
 digit [0-9]
@@ -89,6 +89,7 @@ return       { DEBUG("L_return"); return Parser::token::RETURN; }
 {semi}       { DEBUG("L_semi"); return Parser::token::SEMI; }
 {comma}      { DEBUG("L_comma"); return Parser::token::COMMA; }
 {comment}    { DEBUG("L_comment"); return Parser::token::COMMENT; }
+\n           { yylloc->lines(yyleng); yylloc->step(); }
 {blanks}
 .            { return yytext[0]; return Parser::token::TEXT; }
 %%

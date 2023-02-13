@@ -8,6 +8,8 @@
 #include "symtable/Symtable.hpp"
 #include "symtable/Symbol.hpp"
 #include "symtable/ContextManager.hpp"
+#define YYLOCATION_PRINT   location_print
+#define YYDEBUG 1
 #define DBG_PARS 1
 #if DBG_PARS == 1
 #define DEBUG(A) std::cout << A << std::endl
@@ -22,6 +24,8 @@
 %define api.parser.class {Parser}
 %define api.namespace {interpreter}
 %define api.value.type variant
+%define parse.trace
+%locations
 %parse-param {Scanner* scanner}
 
 %code requires
@@ -36,7 +40,8 @@
 {
     #include "lexer.hpp"
     #include <memory>
-    #define yylex(x) scanner->lex(x)
+    // #define yylex(x) scanner->lex(x)
+    #define yylex(x, y) scanner->lex(x, y)
     ProgramBuilder pb;
     Symtable symtable;
     ContextManager contextManager;
@@ -479,12 +484,13 @@ while:
 comment: COMMENT;
 %%
 
-void interpreter::Parser::error(const std::string& msg) {
-      std::cerr << msg << '\n';
+void interpreter::Parser::error(const location_type& loc, const std::string& msg) {
+      std::cerr << msg << " at: " << loc << std::endl;
 }
 
 int main(int argc, char **argv) {
   contextManager.enterScope(); // TODO: put the current module/file name here
+  // TODO: learn how to properly create steam.
   if (argc == 2) {
     std::ifstream is(argv[1], std::ios::in);
     interpreter::Scanner scanner{ is , std::cerr };
