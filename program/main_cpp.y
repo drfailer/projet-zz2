@@ -107,7 +107,6 @@ function:
         block[ops]
         {
           // error if there is a return statement
-          if ($ops)
           pb.createFunction($name, $ops, VOID);
           contextManager.leaveScope();
         }
@@ -119,7 +118,6 @@ function:
         }
         block[ops]
         {
-          // TODO: look for return stmt in $ops
           pb.createFunction($name, $ops, $rt);
           contextManager.leaveScope();
         }
@@ -133,7 +131,6 @@ paramDeclaration: %empty
      | type[t] IDENTIFIER
      {
        DEBUG("new param: " << $2);
-       // TODO: new symbol
        contextManager.newSymbol($2, $t, FUN_PARAM);
        pb.pushFunctionParam(Variable($2, $t));
      }
@@ -214,6 +211,10 @@ code: %empty
 
 commands: %empty
         | command SEMI commands
+        | error
+        {
+          yyerrok; // works but not perfect, must find a way to detect the error
+        }
         ;
 
 command: print
