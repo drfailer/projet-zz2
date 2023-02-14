@@ -17,4 +17,5 @@ add_custom_target(lexer ALL flex main_cpp.l
 add_executable(prog parser.cpp lexer.cpp
   AST/AST.cpp AST/Program.cpp AST/ProgramBuilder.cpp
   AST/Types.cpp symtable/Symtable.cpp symtable/Symbol.cpp
-  symtable/ContextManager.cpp)
+  symtable/ContextManager.cpp
+  errorManager/ErrorManager.cpp)

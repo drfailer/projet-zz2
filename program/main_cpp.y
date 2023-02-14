@@ -8,6 +8,7 @@
 #include "symtable/Symtable.hpp"
 #include "symtable/Symbol.hpp"
 #include "symtable/ContextManager.hpp"
+#include "errorManager/ErrorManager.hpp"
 #define YYLOCATION_PRINT   location_print
 #define YYDEBUG 1
 #define DBG_PARS 0
@@ -44,7 +45,7 @@
     ProgramBuilder pb;
     Symtable symtable;
     ContextManager contextManager;
-    bool erros = false;
+    ErrorManager errMgr;
 }
 
 %token <long long>  INT
@@ -152,16 +153,17 @@ operand:
      IDENTIFIER
      {
         DEBUG("new param variable" );
+        std::shared_ptr<ASTNode> v;
         std::optional<Symbol> sym = contextManager.lookup($1);
         if (!sym.has_value()) {
-          std::cout << "error: undefined symbol " << $1 << std::endl;
-          // return 1;
-          // TODO: exit
-          // TODO: add some color
+          std::ostringstream oss;
+          oss << "undefined Symbol '" << $1 << "'" << " at: " << @1;
+          errMgr.newError(oss.str());
+          v = std::make_shared<Variable>($1, VOID);
         }
-        // TODO: rewrite variable node to add symbol informations (better for
-        // the transpiler)
-        std::shared_ptr<ASTNode> v = std::make_shared<Variable>($1, VOID);
+        else {
+          v = std::make_shared<Variable>($1, sym.value().getType());
+        }
         $$ = v;
      }
      |
@@ -397,7 +399,12 @@ assignement:
              DEBUG("new assignement: " << $v);
              std::optional<Symbol> sym = contextManager.lookup($v);
              if (!sym.has_value()) {
-               std::cout << "error: undefined symbol " << $v << std::endl;
+               std::cout << "ERRORRRRRRRRRRR: undefined symbol " << $v << std::endl;
+               std::cout << "at: " << @v << std::endl;
+               std::ostringstream oss;
+               oss << "undefined Symbol '" << $v << "'";
+               oss << " at: " << @1;
+               errMgr.newError(oss.str());
                // return 1;
                // TODO: exit
                // TODO: add some color
@@ -534,12 +541,22 @@ int main(int argc, char **argv) {
     interpreter::Scanner scanner{ is , std::cerr };
     interpreter::Parser parser{ &scanner };
     parser.parse();
-    pb.display();
+    if (errMgr.getErrors()) {
+      errMgr.report();
+    }
+    else {
+      pb.display();
+    }
   }
   else {
     interpreter::Scanner scanner{ std::cin, std::cerr };
     interpreter::Parser parser{ &scanner };
     parser.parse();
-    pb.display();
+    if (errMgr.getErrors()) {
+      errMgr.report();
+    }
+    else {
+      pb.display();
+    }
   }
 }
