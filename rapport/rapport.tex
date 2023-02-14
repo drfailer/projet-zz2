@@ -148,9 +148,15 @@ Nous tenons à exprimer notre profonde gratitude à :\\
 
 \setcounter{secnumdepth}{0}
 \section{Résumé}
-L'objectif de ce projet est la création d'un langage \textbf{interprété} en \textbf{C++} dans le but de faire découvrir l'informatique et la programmation à des collégiens et lycéens. Ce projet rentre dans le cadre du sujet commun de la filière F2, qui concerne la conception d’outils et plus généralement en développement logiciel.\\
+L'objectif de ce projet est la création d'un langage \textbf{interprété} en
+\textbf{C++} dans le but de faire découvrir l'informatique et la programmation à
+des collégiens et lycéens. Ce projet rentre dans le cadre du sujet commun de la
+filière F2, qui concerne la conception d’outils et plus généralement en
+développement logiciel.\\
 
-Le projet, réalisé sous Visual Studio Code, utilisera un \textbf{lexeur} et \textbf{parseur} pour pouvoir reconnaitre notre \textbf{}{langage de programmation} voulu.
+Le projet, réalisé sous Visual Studio Code, utilisera un \textbf{lexeur} et
+\textbf{parseur} pour pouvoir reconnaitre notre \textbf{}{langage de
+programmation} voulu.
 \\~\\
 
 \noindent
@@ -158,9 +164,16 @@ Mots-clés : \textbf{C++}, \textbf{interpréteur}, \textbf{lexeur}, \textbf{pars
 \\[2\baselineskip]
 
 \section{Abstract}
-The objective of this project is the creation of an \textbf{interpreted} language  in \textbf{C++} in order to introduce computer science and programming to middle and high school students. This project falls within the framework of the common subject of the F2 major, which relates to the design of tools and more generally in software development.\\
 
-The project, coded with Visual Studio Code, uses a \textbf{lexeur} and \textbf{parser} to be able to recognize our desired \textbf{}{programming language}.
+The objective of this project is the creation of an \textbf{interpreted}
+language  in \textbf{C++} in order to introduce computer science and programming
+to middle and high school students. This project falls within the framework of
+the common subject of the F2 major, which relates to the design of tools and
+more generally in software development.\\
+
+The project, coded with Visual Studio Code, uses a \textbf{lexeur} and
+\textbf{parser} to be able to recognize our desired \textbf{}{programming
+language}.
 \\~\\
 
 \noindent
@@ -174,13 +187,23 @@ Keywords : \textbf{C++}, \textbf{interpreter}, \textbf{lexer}, \textbf{parser}, 
 %------------------------------------------------------------------------------%
 \section{Introduction}
 \large
-Dans le cardre du projet de 2\up{ème} année à l'ISIMA, nous avons choisi de réalisé un travail concernant le sujet commun de la filière F2, Génie Logiciel et Systèmes d'Informations. Le but du projet est de pouvoir montrer à des élèves de collèges et lycées ce que la filière ingénieur permet de faire.\\
+Dans le cardre du projet de 2\up{ème} année à l'ISIMA, nous avons choisi de
+réaliser un travail concernant le sujet commun de la filière F2, génie logiciel
+et systèmes d'informations. Le but du projet est de pouvoir montrer à des élèves
+de collèges et lycées ce que la filière ingénieur permet de faire.\\
 
-Le domaine étant vaste, nous avons choisi de concevoir un langage informatique simple en C++ avec comme principal objectif de faire comprendre aux élèves la notion de fonction. Ce langage devait posséder une interface graphique, mais cette tâche s'est avérée trop ambitieuse pour un travail de 60 heures.\\
+Le domaine étant vaste, nous avons choisi de concevoir un langage informatique
+simple en C++ avec comme principal objectif de faire comprendre aux élèves la
+notion de fonction. Ce langage devait posséder une interface graphique, mais
+cette tâche s'est avérée trop ambitieuse pour un travail de 60 heures.\\
 
-Le projet, en plus de sa valeur pédagogique, nous permet de nous familiariser avec les concepts de compilateur, interpreteur et arbre syntaxique.\\
+Le projet, en plus de sa valeur pédagogique, nous permet de nous familiariser
+avec les concepts de compilateur, interpreteur et arbre syntaxique.\\
 
-Pour présenter ce projet, nous commencerons par la forme du langage à créer souhaité, puis nous détaillerons sa structure. Une fois familier avec les différentes étapes de son implémentation,  nous introduirons les concepts et outils informatiques qui permettent la réalisation de notre langage.\\
+Pour présenter ce projet, nous commencerons par la forme du langage à créer
+souhaité, puis nous détaillerons sa structure. Une fois familier avec les
+différentes étapes de son implémentation,  nous introduirons les concepts et
+outils informatiques qui permettent la réalisation de notre langage.\\
 
 \normalsize
 \clearpage{}
@@ -222,6 +245,24 @@ Pour présenter ce projet, nous commencerons par la forme du langage à créer s
 \setcounter{secnumdepth}{1}
 
 %------------------------------------------------------------------------------%
+%                                     Plan                                     %
+%------------------------------------------------------------------------------%
+
+% NOTE: les partie ne sont pas très équilibrées
+
+\section{Conception d'une grammaire}
+\subsection{Définition de la grammaire}
+\subsection{Arbre syntaxique}
+\subsection{Le parseur}
+
+\section{Analyse des symboles}
+\subsection{Création d'une table des symboles}
+\subsection{Traitement des des symboles dans le parseur}
+
+\section{Le transpilleur}
+% TODO
+
+%------------------------------------------------------------------------------%
 %                        GRAMMAIRE DE NOTRE LANGAGE                            %
 %------------------------------------------------------------------------------%
 \section{Conception d'un langage informatique}
@@ -229,8 +270,12 @@ Pour présenter ce projet, nous commencerons par la forme du langage à créer s
 \phantomsection
 \subsection{Grammaire de notre langage}
 
-Avant d'implémenter notre langage informatique, il faut avoir une idée de sa grammaire, c'est-à-dire son fonctionnement. Un de ces objectifs est d'initier les élèves de collèges et lycées à la notion de fonction informatique.\\
-C'est la raison pour laquelle les opérations permises par notre langage ne seront que des fonctions.\\
+Avant d'implémenter notre langage informatique, il faut avoir une idée de sa
+grammaire, c'est-à-dire son fonctionnement. Un de ces objectifs est d'initier
+les élèves de collèges et lycées à la notion de fonction informatique.\\
+
+C'est la raison pour laquelle les opérations permises par notre langage ne
+seront que des fonctions.\\
 
 \textbf{Exemple} \\
 Nous disposons de 2 variables \textbf{a} et \textbf{b}.\\
@@ -256,6 +301,7 @@ fn main() {
     read(a);
     set(b, 4);
     affiche(add3(a, b, 5));
+}
 \end{grammar}\leavevmode\newline
 
 La particularité de cette grammaire est que les opérations arithmétiques de base sont remplacées par des fonctions :\\
@@ -285,7 +331,9 @@ La particularité de cette grammaire est que les opérations arithmétiques de b
 \phantomsection
 \subsection{Définition}
 
- Le lexeur, ou encore appelé analyseur lexical, a pour but de transformer le texte du code source en des unités lexicales, appelées \textit{tokens}, comme expliqué par la partie consultable de  \cite{flexBisonHandbook}. \\
+Le lexeur, ou encore appelé analyseur lexical, a pour but de transformer le
+texte du code source en des unités lexicales, appelées \textit{tokens}, comme
+expliqué par la partie consultable de  \cite{flexBisonHandbook}. \\
 
 \textbf{Exemple} \\
     Pour l'expression simple \textbf{a = 2 * b} \\
@@ -308,18 +356,28 @@ La particularité de cette grammaire est que les opérations arithmétiques de b
 \end{tabular}
 \end{center}
 
-Le lexeur a également pour rôle de supprimer les informations inutiles, généralement du caractère espace et des commentaires.\\~\\
+Le lexeur a également pour rôle de supprimer les informations inutiles,
+généralement du caractère espace et des commentaires.\\~\\
 
 
 \phantomsection
 \subsection{Implémentation}
 
-L'outil utilisé pour générer un lexeur à partir du code précédent est Flex (Fast LEXical analyser generator). Au lieu d'écrire un lexeur à partir de zéro, Flex permet d'avoir un lexeur en donnant seulement les modèles des expressions régulières ainsi que le langage de travail (c++ dans notre cas).\\
-\cite{compilerFlexBison} a fourni un squelette pour la réalisation du fichier nécessaire à Flex.\\~\\
+L'outil utilisé pour générer un lexeur à partir du code précédent est Flex (Fast
+LEXical analyser generator). Au lieu d'écrire un lexeur à partir de zéro, Flex
+permet d'avoir un lexeur en donnant seulement les modèles des expressions
+régulières ainsi que le langage de travail (c++ dans notre cas).\\
+
+\cite{compilerFlexBison} a fourni un squelette pour la réalisation du fichier
+nécessaire à Flex.\\~\\
+
 \noindent
-Le fichier \textbf{main\_cpp.l} contient le code qui permet de générer le lexeur avec Flex. Les token doivent-être définis dans \textbf{main\_cpp.y} au préalable.
-À noter que l'on peut utiliser la variable `yylval` pour transmettre des
-éléments au parser.\\
+
+Le fichier \textbf{main\_cpp.l} contient le code qui permet de générer le lexeur
+avec Flex. Les token doivent-être définis dans \textbf{main\_cpp.y} au
+préalable.
+À noter que l'on peut utiliser la variable \lstinline{yylval} pour transmettre
+des éléments au parser.\\
 
 La structure du fichier \textbf{main\_cpp.l} est la suivante :
 
