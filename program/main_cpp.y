@@ -10,7 +10,7 @@
 #include "symtable/ContextManager.hpp"
 #define YYLOCATION_PRINT   location_print
 #define YYDEBUG 1
-#define DBG_PARS 1
+#define DBG_PARS 0
 #if DBG_PARS == 1
 #define DEBUG(A) std::cout << A << std::endl
 #else
@@ -60,7 +60,7 @@
 %token <std::string> STRING
 %token ERROR
 %token RETURN
-%token HASH EOL TEXT COMMENT
+%token HASH EOL TEXT
 
 %nterm <Type> type
 %nterm <Value> value
@@ -89,8 +89,6 @@ programElt:
        {
          DEBUG("create new function" );
        }
-       |
-       comment
        ;
 
 includes: INCLUDE IDENTIFIER SEMI
@@ -108,7 +106,9 @@ function:
         }
         block[ops]
         {
-          pb.createFunction($name, $ops);
+          // error if there is a return statement
+          if ($ops)
+          pb.createFunction($name, $ops, VOID);
           contextManager.leaveScope();
         }
         |
@@ -120,7 +120,7 @@ function:
         block[ops]
         {
           // TODO: look for return stmt in $ops
-          pb.createFunction($name, $ops);
+          pb.createFunction($name, $ops, $rt);
           contextManager.leaveScope();
         }
         ;
@@ -135,7 +135,7 @@ paramDeclaration: %empty
        DEBUG("new param: " << $2);
        // TODO: new symbol
        contextManager.newSymbol($2, $t, FUN_PARAM);
-       pb.pushFunctionParam(Variable($2));
+       pb.pushFunctionParam(Variable($2, $t));
      }
      ;
 
@@ -164,7 +164,7 @@ operand:
         }
         // TODO: rewrite variable node to add symbol informations (better for
         // the transpiler)
-        std::shared_ptr<ASTNode> v = std::make_shared<Variable>($1);
+        std::shared_ptr<ASTNode> v = std::make_shared<Variable>($1, VOID);
         $$ = v;
      }
      |
@@ -210,7 +210,6 @@ code: %empty
     {
       pb.pushBlock(std::make_shared<Return>($rs));
     }
-    | comment code
     ;
 
 commands: %empty
@@ -235,7 +234,7 @@ read: READ'('IDENTIFIER[v]')'
         // TODO: add some color
       }
       // TODO: use symTable to get the type of the variable
-      pb.pushBlock(std::make_shared<Read>(Variable($v)));
+      pb.pushBlock(std::make_shared<Read>(Variable($v, VOID)));
     }
     ;
 
@@ -257,7 +256,7 @@ print:
           // TODO: add some color
         }
         // TODO: use symTable to get the type of the variable
-        pb.pushBlock(std::make_shared<Print>(std::make_shared<Variable>($v)));
+        pb.pushBlock(std::make_shared<Print>(std::make_shared<Variable>($v, VOID)));
      }
      ;
 
@@ -277,7 +276,7 @@ inlineSymbol:
                  // TODO: add some color
                }
                // TODO: use symTable to get the type
-               $$ = std::make_shared<Variable>($1);
+               $$ = std::make_shared<Variable>($1, VOID);
             }
             ;
 
@@ -387,7 +386,7 @@ declaration:
            {
              DEBUG("new declaration: " << $2);
              contextManager.newSymbol($2, $t, LOCAL_VAR);
-             pb.pushBlock(std::make_shared<Declaration>(Variable($2)));
+             pb.pushBlock(std::make_shared<Declaration>(Variable($2, VOID)));
            }
            ;
 
@@ -402,7 +401,7 @@ assignement:
                // TODO: exit
                // TODO: add some color
              }
-             pb.pushBlock(std::make_shared<Assignement>(Variable($v), $ic));
+             pb.pushBlock(std::make_shared<Assignement>(Variable($v, VOID), $ic));
            }
            ;
 
@@ -502,7 +501,7 @@ for:
    block[ops]
    {
      DEBUG("in for");
-     $$ = pb.createFor(Variable($v), $b, $e, $s, $ops);
+     $$ = pb.createFor(Variable($v, VOID), $b, $e, $s, $ops);
      contextManager.leaveScope();
    }
    ;
@@ -519,8 +518,6 @@ while:
        contextManager.leaveScope();
      }
      ;
-
-comment: COMMENT;
 %%
 
 void interpreter::Parser::error(const location_type& loc, const std::string& msg) {

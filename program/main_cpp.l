@@ -88,7 +88,7 @@ return       { DEBUG("L_return"); return Parser::token::RETURN; }
 
 {semi}       { DEBUG("L_semi"); return Parser::token::SEMI; }
 {comma}      { DEBUG("L_comma"); return Parser::token::COMMA; }
-{comment}    { DEBUG("L_comment"); return Parser::token::COMMENT; }
+{comment}    { DEBUG("L_comment"); } // comment => do nothing
 \n           { yylloc->lines(yyleng); yylloc->step(); }
 {blanks}
 .            { return yytext[0]; return Parser::token::TEXT; }
