@@ -1,6 +1,6 @@
-\documentclass[a4paper]{article}
+\documentclass[a4paper]{article}%{{{
 
-\usepackage[utf8]{inputenc}
+\usepackage[utf8]{inputenc}%{{{
 \usepackage[T1]{fontenc}
 \usepackage{textcomp}
 \usepackage{url}
@@ -15,68 +15,68 @@
 \usepackage{setspace}
 \usepackage{graphicx}
 \usepackage{geometry}
-\usepackage{titlesec}
+\usepackage{titlesec}%}}}
 
 \addbibresource{refs.bib}
 
-\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegreen}{rgb}{0,0.6,0}%{{{
 \definecolor{codegray}{rgb}{0.5,0.5,0.5}
 \definecolor{backcolour}{rgb}{0.95,0.95,0.92}
 \definecolor{backpink}{rgb}{1,0.94,0.95}
-
-\lstdefinestyle{codestyle}{
-    backgroundcolor=\color{backcolour},   
+%}}}
+\lstdefinestyle{codestyle}{%{{{
+    backgroundcolor=\color{backcolour},
     commentstyle=\color{codegreen},
     keywordstyle=\color{magenta},
     numberstyle=\tiny\color{codegray},
     stringstyle=\color{teal},
     basicstyle=\ttfamily\footnotesize,
-    breakatwhitespace=false,         
-    breaklines=true,                 
-    captionpos=b,                    
-    keepspaces=true,                 
-    %numbers=left,                    
-    %numbersep=5pt,                  
-    showspaces=false,                
+    breakatwhitespace=false,
+    breaklines=true,
+    captionpos=b,
+    keepspaces=true,
+    %numbers=left,
+    %numbersep=5pt,
+    showspaces=false,
     showstringspaces=false,
-    showtabs=false,                  
+    showtabs=false,
     tabsize=2
 }
-
-\lstdefinestyle{grammarstyle}{
-    backgroundcolor=\color{backpink},   
+%}}}
+\lstdefinestyle{grammarstyle}{%{{{
+    backgroundcolor=\color{backpink},
     commentstyle=\color{codegreen},
     keywordstyle=\color{purple},
     numberstyle=\tiny\color{codegray},
     stringstyle=\color{teal},
     basicstyle=\ttfamily\footnotesize,
-    breakatwhitespace=false,         
-    breaklines=true,                 
-    captionpos=b,                    
-    keepspaces=true,                 
-    %numbers=left,                    
-    %numbersep=5pt,                  
-    showspaces=false,                
+    breakatwhitespace=false,
+    breaklines=true,
+    captionpos=b,
+    keepspaces=true,
+    %numbers=left,
+    %numbersep=5pt,
+    showspaces=false,
     showstringspaces=false,
-    showtabs=false,                  
+    showtabs=false,
     tabsize=2
 }
-
-\lstnewenvironment{code}[1][]
-  {\noindent\minipage{\linewidth}\medskip 
+%}}}
+\lstnewenvironment{code}[1][]%{{{
+  {\noindent\minipage{\linewidth}\medskip
    \lstset{basicstyle=\ttfamily\footnotesize,frame=single,#1,upquote=true}
     \lstset{style=codestyle}
      }
   {\endminipage}
 
  \lstnewenvironment{grammar}[1][]
-  {\noindent\minipage{\linewidth}\medskip 
+  {\noindent\minipage{\linewidth}\medskip
    \lstset{basicstyle=\ttfamily\footnotesize,frame=single,#1,upquote=true}
    \lstset{style=grammarstyle}
    }
   {\endminipage}
-
-%===========style & geometry===========
+%}}}
+%===========style & geometry==========={{{
 %\lstset{style=mystyle}
 
  \geometry{
@@ -89,8 +89,8 @@
 
  \titleformat*{\section}{\LARGE\bfseries}
  \titleformat*{\subsection}{\Large\bfseries}
-
-%================infos=================
+%}}}
+%================infos================={{{
 \pagenumbering{gobble}
 \begin{titlepage}
 
@@ -98,7 +98,7 @@
 \author{Franck ALONSO, CHASSAGNOL Rémi}
 \date{\today}
 \end{titlepage}
-
+%}}}}}}
 
 %------------------------------------------------------------------------------%
 %                                  Title page                                  %
@@ -186,7 +186,9 @@ Pour présenter ce projet, nous commencerons par la forme du langage à créer s
 \clearpage{}
 
 
-
+%------------------------------------------------------------------------------%
+%               Résumé des réfs (à supprimer à la dernière version             %
+%------------------------------------------------------------------------------%
 \section{Résumé des références}
 
 \begin{itemize}
@@ -198,13 +200,17 @@ Pour présenter ce projet, nous commencerons par la forme du langage à créer s
     l'autre méthode qui consiste à utiliser un object-ABS plutot que directement
     du byte code. Article très utilisé au départ pour la mise en place du
     parseur/lexeur.
+  \item \cite{flexmanual}: manuel d'utilisation de Flex.
+  \item \cite{cppparsing}: nous a permis d'avoir un exemple de code qui allie
+    flex et bison en C++ et non en C.
+
+
   \item \cite{compilerTICH} explication du fonctionnement d'un compilateur.
   \item \cite{compilerTILB} première version de l'article précédent.
   \item \cite{crew1997astlog} création d'un analyser syntaxique pour du C/C++:
     ASTROLOG. L'article par d'analyse syntaxique et de la construction
     d'\textbf{ABS}.
-  \item \cite{cppparsing}: nous a permis d'avoir un exemple de code qui allie
-    flex et bison en C++ et non en C.
+
   \item \cite{visser2002meta} L'objectif de l'article est de présenter
     l'utilisation des \textbf{ABS} pour de la méta programmation. Il comporte
     pas mal d'exemples sur les \textbf{ABS} donc je le trouve pertinant.
@@ -260,9 +266,9 @@ La particularité de cette grammaire est que les opérations arithmétiques de b
     \hline
     \textbf{a} - \textbf{b} devient \textit{mns}(\textbf{a}, \textbf{b})\\
     \hline
-    \textbf{a} x \textbf{b} devient \textit{tms}(\textbf{a}, \textbf{b})\\
+    \textbf{a} $\times$ \textbf{b} devient \textit{tms}(\textbf{a}, \textbf{b})\\
     \hline
-    \textbf{a} / \textbf{b} devient \textit{div}(\textbf{a}, \textbf{b})\\
+    \textbf{a} $\div$ \textbf{b} devient \textit{div}(\textbf{a}, \textbf{b})\\
     \hline
 \end{tabular}
 \end{center}
@@ -279,19 +285,19 @@ La particularité de cette grammaire est que les opérations arithmétiques de b
 \phantomsection
 \subsection{Définition}
 
- Le lexeur, ou encore appelé analyseur lexical, a pour but de transformer le texte du code source en des unités lexicales, appelées \textit{tokens}. \\
- 
+ Le lexeur, ou encore appelé analyseur lexical, a pour but de transformer le texte du code source en des unités lexicales, appelées \textit{tokens}, comme expliqué par la partie consultable de  \cite{flexBisonHandbook}. \\
+
 \textbf{Exemple} \\
     Pour l'expression simple \textbf{a = 2 * b} \\
     Les tokens apparaissant sont : \\
     \begin{center}
     \begin{tabular}{ | c | c | }
     \hline
-    \textbf{Token} & \textbf{Sa nature} \\ 
+    \textbf{Token} & \textbf{Sa nature} \\
     \hline
-    a & Identificateur de variable \\ 
+    a & Identificateur de variable \\
     \hline
-    = & Symbole d'affectation \\  
+    = & Symbole d'affectation \\
     \hline
     2 & Valeur entière \\
     \hline
@@ -308,9 +314,10 @@ Le lexeur a également pour rôle de supprimer les informations inutiles, géné
 \phantomsection
 \subsection{Implémentation}
 
-L'outil utilisé pour générer un lexeur à partir du code précédent est FLEX (Fast LEXical analyser generator). Au lieu d'écrire un lexeur à partir de zéro, FLEX permet d'avoir un lexeur en donnant seulement les modèles des expressions régulières ainsi que le langage de travail (c++ dans notre cas).\\~\\
+L'outil utilisé pour générer un lexeur à partir du code précédent est Flex (Fast LEXical analyser generator). Au lieu d'écrire un lexeur à partir de zéro, Flex permet d'avoir un lexeur en donnant seulement les modèles des expressions régulières ainsi que le langage de travail (c++ dans notre cas).\\
+\cite{compilerFlexBison} a fourni un squelette pour la réalisation du fichier nécessaire à Flex.\\~\\
 \noindent
-Le fichier \textbf{main\_cpp.l} contient le code qui permet de générer le lexeur avec FLEX. Les token doivent-être définis dans \textbf{main\_cpp.y} au préalable.
+Le fichier \textbf{main\_cpp.l} contient le code qui permet de générer le lexeur avec Flex. Les token doivent-être définis dans \textbf{main\_cpp.y} au préalable.
 À noter que l'on peut utiliser la variable `yylval` pour transmettre des
 éléments au parser.\\
 
@@ -366,13 +373,13 @@ for          { AFFICHE("L_for"); return Parser::token::FOR; }
 \end{code}\leavevmode\newline
 
 \noindent
-Ici on a accès à la variable \textbf{yylval} qui est un \textbf{Parser::semantic\_type*} et qui possède une méthode \textbf{build} qui nous permet de transmettre des valeurs à bison.\\
-Ces valeurs sont accessible via les variables de bison: \textbf{\$2}. La variable
-\textbf{yytext} contient le text traité par flex. De plus, dans le code, on retourne
+Ici on a accès à la variable \textcolor{purple}{yylval} qui est un \textcolor{purple}{Parser::semantic\_type*} et qui possède une méthode \textcolor{purple}{build} qui nous permet de transmettre des valeurs à bison.\\
+Ces valeurs sont accessible via les variables de bison: \textcolor{purple}{\$2}. La variable
+\textcolor{purple}{yytext} contient le text traité par Flex. De plus, dans le code, on retourne
 les \textit{tokens}. Ces \textbf{tokens} sont définis dans le fichier de bison.
 \newline
 
-La fonction appelée par défaut est \textbf{yylex}, cependant, pour pouvoir travailler avec bison, nous devons fournir nos propres fonctions, pour ce faire on utilise la macro \textbf{YY\_DECL} (cf: **The generated scanner** dans la doc).
+La fonction appelée par défaut est \textcolor{purple}{yylex}, cependant, pour pouvoir travailler avec bison, nous devons fournir nos propres fonctions, pour ce faire on utilise la macro \textcolor{purple}{YY\_DECL}, comme expliqué dans la partie \textit{9 The Generated Scanner} du manuel pour Flex \cite{flexmanual}.
 
 \begin{code}
 #define YY_DECL int interpreter::Scanner::lex(interpreter::Parser::semantic_type *yylval)
@@ -401,10 +408,10 @@ La fonction appelée par défaut est \textbf{yylex}, cependant, pour pouvoir tra
     \begin{center}
     \begin{tabular}{ | c | c | c | }
     \hline
-    \textbf{Arbre syntaxique} & \textbf{Évaluation de 2 * b} & \textbf{Affectation de a} \\ 
+    \textbf{Arbre syntaxique} & \textbf{Évaluation de 2 * b} & \textbf{Affectation de a} \\
     \hline
-    \Tree[.= a  [.* 2 b ]] & 
-        \Tree[.= a  2*b ] &             
+    \Tree[.= a  [.* 2 b ]] &
+        \Tree[.= a  2*b ] &
             a = 2 * b\\
     \hline
     \end{tabular}
@@ -413,7 +420,8 @@ La fonction appelée par défaut est \textbf{yylex}, cependant, pour pouvoir tra
 \phantomsection
 \subsection{Implémentation}
 
-À l'instar de FLEX pour le lexeur, Bison est un générateur de grammaire qui convertit une description de grammaire en un programme c++ qui analyse cette même grammaire.\\~\\
+À l'instar de Flex pour le lexeur, Bison est un générateur de grammaire qui convertit une description de grammaire en un programme C++ qui analyse cette même grammaire.\\
+L'article \cite{compilerFlexBison} s'est encore une fois révélé très utile pour la réalisation du fichier nécessaire à Bison\\~\\
  Le fichier \textbf{main\_cpp.y} contient le code qui permet de générer le parseur avec Bison. Toutes les règles syntaxiques qui définissent la grammaire du langage y sont comprises.
 Chaque règle va contenir des blocks de code qui seront exécutés au moment où le parseur la reconnait, ce code permet de créer des objets qui formeront l'ABS (Abstract Syntaxic Tree) du programme.\\
 
@@ -458,7 +466,7 @@ Ici, on définie une règle \textbf{includes} qui décrit la syntaxe des \textit
 Enfin, les mots en majuscule sont les tokens retournés par le lexeur.\\
 
 On peut ajouter des blocks de codes qui seront exécutés au moment où le parseur
-atteint l'élément qui précède le block. Dans l'exemple ci-dessous, le block sera appelé une fois que Bison aura parser le \textcolor{red}{;}. À noter que l'on peut accéder aux éléments retournés par FLEX ; ici, \textcolor{blue}{\$2} fait référence au second élément de la règle qui est \textcolor{cyan}{IDENTIFIER}. Le type de \textcolor{orange}{IDENTIFIER} a été défini comme étant une \textcolor{teal}{std::string}. Le block de code nous permet donc de créer une nouvelle inclusion et de récupérer le nom de la bibliothèque.\\
+atteint l'élément qui précède le block. Dans l'exemple ci-dessous, le block sera appelé une fois que Bison aura parser le \textcolor{purple}{;}. À noter que l'on peut accéder aux éléments retournés par Flex ; ici, \textcolor{purple}{\$2} fait référence au second élément de la règle qui est \textcolor{purple}{IDENTIFIER}. Le type de \textcolor{purple}{IDENTIFIER} a été défini comme étant une \textcolor{purple}{std::string}. Le block de code nous permet donc de créer une nouvelle inclusion et de récupérer le nom de la bibliothèque.\\
 
 \begin{code}[language=c++]
 includes: %empty
@@ -497,7 +505,7 @@ Pour la génération du code, on a deux options :
 \begin{itemize}
 \item utiliser des instruction très simples => sorte de bytecode
 \item créer un code objet où tous les éléments sont des objets.
-\end{itemize}\leavevmode\\
+\end{itemize}\leavevmode\\~\\
 
 \underline{Choix de la représentation objet} :
 \begin{itemize}
