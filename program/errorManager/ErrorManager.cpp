@@ -21,6 +21,6 @@ bool ErrorManager::getErrors() const
 
 void ErrorManager::report()
 {
-  std::cout << errStream.str() << std::endl;
+  std::cerr << errStream.str() << std::endl;
 }
 

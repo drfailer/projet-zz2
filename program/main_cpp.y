@@ -38,14 +38,32 @@
 
 %code
 {
-    #include "lexer.hpp"
-    #include <memory>
-    // #define yylex(x) scanner->lex(x)
-    #define yylex(x, y) scanner->lex(x, y) // now we use yylval and yylloc
-    ProgramBuilder pb;
-    Symtable symtable;
-    ContextManager contextManager;
-    ErrorManager errMgr;
+#include "lexer.hpp"
+#include <memory>
+// #define yylex(x) scanner->lex(x)
+#define yylex(x, y) scanner->lex(x, y) // now we use yylval and yylloc
+ProgramBuilder pb;
+Symtable symtable;
+ContextManager contextManager;
+ErrorManager errMgr;
+
+// symtable check
+bool isDefined(std::string name, int line, int column, Type& type) {
+  bool defined = true;
+  std::optional<Symbol> sym = contextManager.lookup(name);
+  if (!sym.has_value()) {
+    defined = false;
+    std::ostringstream oss;
+    oss << "undefined Symbol '" << name << "'";
+    oss << " at: " << line << ":" << column << std::endl;
+    errMgr.newError(oss.str());
+    type = VOID;
+  }
+  else {
+    type = sym.value().getType();
+  }
+  return defined;
+}
 }
 
 %token <long long>  INT
@@ -102,8 +120,8 @@ includes: INCLUDE IDENTIFIER SEMI
 function:
         FN IDENTIFIER[name]'('paramDeclarations')'
         {
-          contextManager.enterScope();
           contextManager.newSymbol($name, VOID, FUNCTION);
+          contextManager.enterScope();
         }
         block[ops]
         {
@@ -114,8 +132,8 @@ function:
         |
         FN IDENTIFIER[name]'('paramDeclarations')' ARROW type[rt]
         {
-          contextManager.enterScope();
           contextManager.newSymbol($name, $rt, FUNCTION);
+          contextManager.enterScope();
         }
         block[ops]
         {
@@ -154,15 +172,12 @@ operand:
      {
         DEBUG("new param variable" );
         std::shared_ptr<ASTNode> v;
-        std::optional<Symbol> sym = contextManager.lookup($1);
-        if (!sym.has_value()) {
-          std::ostringstream oss;
-          oss << "undefined Symbol '" << $1 << "'" << " at: " << @1;
-          errMgr.newError(oss.str());
-          v = std::make_shared<Variable>($1, VOID);
+        Type type;
+        if (isDefined($1, @1.begin.line, @1.begin.column, type)) {
+          v = std::make_shared<Variable>($1, type);
         }
         else {
-          v = std::make_shared<Variable>($1, sym.value().getType());
+          v = std::make_shared<Variable>($1, VOID);
         }
         $$ = v;
      }
@@ -213,10 +228,6 @@ code: %empty
 
 commands: %empty
         | command SEMI commands
-        | error
-        {
-          yyerrok; // works but not perfect, must find a way to detect the error
-        }
         ;
 
 command: print
@@ -229,15 +240,13 @@ command: print
 read: READ'('IDENTIFIER[v]')'
     {
       DEBUG("read");
-      std::optional<Symbol> sym = contextManager.lookup($v);
-      if (!sym.has_value()) {
-        std::cout << "error: undefined symbol " << $v << std::endl;
-        // return 1;
-        // TODO: exit
-        // TODO: add some color
+      Type type;
+      if (isDefined($v, @v.begin.line, @v.begin.column, type)) {
+        pb.pushBlock(std::make_shared<Read>(Variable($v, type)));
       }
-      // TODO: use symTable to get the type of the variable
-      pb.pushBlock(std::make_shared<Read>(Variable($v, VOID)));
+      else {
+        pb.pushBlock(std::make_shared<Read>(Variable($v, VOID)));
+      }
     }
     ;
 
@@ -251,15 +260,13 @@ print:
      PRINT'('IDENTIFIER[v]')'
      {
         DEBUG("print var");
-        std::optional<Symbol> sym = contextManager.lookup($v);
-        if (!sym.has_value()) {
-          std::cout << "error: undefined symbol " << $v << std::endl;
-          // return 1;
-          // TODO: exit
-          // TODO: add some color
+        Type type;
+        if (isDefined($v, @v.begin.line, @v.begin.column, type)) {
+          pb.pushBlock(std::make_shared<Print>(std::make_shared<Variable>($v, type)));
         }
-        // TODO: use symTable to get the type of the variable
-        pb.pushBlock(std::make_shared<Print>(std::make_shared<Variable>($v, VOID)));
+        else {
+          pb.pushBlock(std::make_shared<Print>(std::make_shared<Variable>($v, VOID)));
+        }
      }
      ;
 
@@ -271,14 +278,14 @@ inlineSymbol:
             IDENTIFIER
             {
                DEBUG("new param variable");
-               std::optional<Symbol> sym = contextManager.lookup($1);
-               if (!sym.has_value()) {
-                 std::cout << "error: undefined symbol " << $1 << std::endl;
-                 // return 1;
-                 // TODO: exit
-                 // TODO: add some color
+               Type type;
+               std::shared_ptr<Variable> v;
+               if (isDefined($1, @1.begin.line, @1.begin.column, type)) {
+                 v = std::make_shared<Variable>($1, type);
                }
-               // TODO: use symTable to get the type
+               else {
+                 v = std::make_shared<Variable>($1, VOID);
+               }
                $$ = std::make_shared<Variable>($1, VOID);
             }
             ;
@@ -368,13 +375,8 @@ booleanOperation:
 funcall:
        IDENTIFIER'('
        {
-          std::optional<Symbol> sym = contextManager.lookup($1);
-          if (!sym.has_value()) {
-            std::cout << "error: undefined symbol " << $1 << std::endl;
-            // return 1;
-            // TODO: exit
-            // TODO: add some color
-          }
+          Type type;
+          isDefined($1, @1.begin.line, @1.begin.column, type);
           pb.newFuncall($1);
        }
        params')'
@@ -397,19 +399,13 @@ assignement:
            SET'('IDENTIFIER[v] COMMA inlineSymbol[ic]')'
            {
              DEBUG("new assignement: " << $v);
-             std::optional<Symbol> sym = contextManager.lookup($v);
-             if (!sym.has_value()) {
-               std::cout << "ERRORRRRRRRRRRR: undefined symbol " << $v << std::endl;
-               std::cout << "at: " << @v << std::endl;
-               std::ostringstream oss;
-               oss << "undefined Symbol '" << $v << "'";
-               oss << " at: " << @1;
-               errMgr.newError(oss.str());
-               // return 1;
-               // TODO: exit
-               // TODO: add some color
+             Type type;
+             if (isDefined($v, @v.begin.line, @v.begin.column, type)) {
+               pb.pushBlock(std::make_shared<Assignement>(Variable($v, type), $ic));
              }
-             pb.pushBlock(std::make_shared<Assignement>(Variable($v, VOID), $ic));
+             else {
+               pb.pushBlock(std::make_shared<Assignement>(Variable($v, VOID), $ic));
+             }
            }
            ;
 
@@ -498,18 +494,16 @@ for:
    FOR IDENTIFIER[v] IN RANGE'('operand[b] COMMA operand[e] COMMA operand[s]')'
    {
      contextManager.enterScope();
-     std::optional<Symbol> sym = contextManager.lookup($v);
-     if (!sym.has_value()) {
-       std::cout << "error: undefined symbol " << $v << std::endl;
-       // return 1;
-       // TODO: exit
-       // TODO: add some color
-     }
    }
    block[ops]
    {
      DEBUG("in for");
-     $$ = pb.createFor(Variable($v, VOID), $b, $e, $s, $ops);
+     Variable v($v, VOID);
+     Type type;
+     if (isDefined($v, @v.begin.line, @v.begin.column, type)) {
+       v = Variable($v, type);
+     }
+     $$ = pb.createFor(v, $b, $e, $s, $ops);
      contextManager.leaveScope();
    }
    ;
@@ -529,8 +523,9 @@ while:
 %%
 
 void interpreter::Parser::error(const location_type& loc, const std::string& msg) {
-      // TODO: create better error report
-      std::cerr << msg << " at: " << loc << std::endl;
+      std::ostringstream oss;
+      oss << msg << " at: " << loc << std::endl;
+      errMgr.newError(oss.str());
 }
 
 int main(int argc, char **argv) {
