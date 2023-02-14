@@ -15,6 +15,7 @@ class Symtable
     std::shared_ptr<Symtable> father; // father node in the table
 
   public:
+    std::list<std::shared_ptr<Symtable>> getChildScopes() const;
     std::shared_ptr<Symtable> getFather() const;
     std::optional<Symbol> lookup(std::string name);
     void addScope(std::shared_ptr<Symtable>);

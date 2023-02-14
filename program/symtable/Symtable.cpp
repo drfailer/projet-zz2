@@ -60,6 +60,11 @@ std::shared_ptr<Symtable> Symtable::getFather() const
   return father;
 }
 
+std::list<std::shared_ptr<Symtable>> Symtable::getChildScopes() const
+{
+  return childScopes;
+}
+
 void Symtable::addScope(std::shared_ptr<Symtable> newScope)
 {
   childScopes.push_back(newScope);

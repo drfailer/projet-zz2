@@ -45,7 +45,7 @@ void Value::display()
 
 /* -------------------------------------------------------------------------- */
 
-Variable::Variable(std::string id): id(id)
+Variable::Variable(std::string id, Type type): id(id), type(type)
 {
 }
 
@@ -73,8 +73,8 @@ void Function::display() {
 }
 
 Function::Function(std::string id, std::list<Variable> params,
-    std::shared_ptr<Block> instructions):
-  Statement(instructions), id(id), params(params)
+    std::shared_ptr<Block> instructions, Type returnType):
+  Statement(instructions), id(id), params(params), returnType(returnType)
 {
 }
 

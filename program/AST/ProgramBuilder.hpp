@@ -20,6 +20,7 @@ class ProgramBuilder
     std::list<std::list<std::shared_ptr<ASTNode>>> funcallParams;    // parameters of the last funcall
     // NOTE: maybe move this to the .y file as global variable:
     std::list<std::string> funcallIds;
+    // std::shared_ptr<Function> currentFunction; // TODO: user this
 
   public:
     void display();
@@ -40,11 +41,7 @@ class ProgramBuilder
     void pushFunctionParam(Variable);
     void newFuncall(std::string);
 
-    void createFunction(std::string, std::shared_ptr<Block>); // the return type
-                                                              // can be found
-                                                              // using the
-                                                              // symtable
-
+    void createFunction(std::string, std::shared_ptr<Block>, Type);
     void addInclude(std::shared_ptr<Include>);
     ProgramBuilder();
 };

@@ -88,12 +88,13 @@ class Variable : public ASTNode
 {
   private:
     std::string id;
+    Type type;
 
   public:
     void display() override;
     std::string getId();
     Type getType();
-    Variable(std::string);
+    Variable(std::string, Type);
 };
 
 /******************************************************************************/
@@ -180,10 +181,11 @@ class Function : public Statement
   private:
     std::string id;
     std::list<Variable> params;
+    Type returnType;
 
   public:
     void display() override;
-    Function(std::string, std::list<Variable>, std::shared_ptr<Block>);
+    Function(std::string, std::list<Variable>, std::shared_ptr<Block>, Type);
 };
 
 /**

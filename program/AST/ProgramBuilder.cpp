@@ -105,10 +105,10 @@ void ProgramBuilder::newFuncall(std::string name)
 }
 
 void ProgramBuilder::createFunction(std::string name, std::shared_ptr<Block>
-    operations)
+    operations, Type returnType)
 {
   std::shared_ptr<Function> newfun =
-    std::make_shared<Function>(name, funParams, operations);
+    std::make_shared<Function>(name, funParams, operations, returnType);
   program->addFunction(newfun);
   funParams.clear();
 }
