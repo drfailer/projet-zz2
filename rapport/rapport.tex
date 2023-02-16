@@ -114,12 +114,15 @@
 \section*{Remerciements}
 
 \doublespacing
-\large
+\large % TODO: reformuler
 Nous tenons à exprimer notre profonde gratitude à :\\
-- Notre encadrant et cher professeur M. Loïc YON pour al qualité de son encadrement, et pour nous avoir guidées durant toute la période du projet.\\
-- Mme Murielle MOUZAT, notre professeur de communication pour son aide précieuse et indispensable pour la réussite de notre projet de 2\up{ème} année.\\
+- Notre encadrant et cher professeur M. Loïc YON pour al qualité de son
+  encadrement, et pour nous avoir guidées durant toute la période du projet.\\
+- Mme Murielle MOUZAT, notre professeur de communication pour son aide précieuse
+  et indispensable pour la réussite de notre projet de 2\up{ème} année.\\
 
-\noindent Finalement, nous exprimons nos vifs remerciements à toute personne ayant participée de près ou de loin au bon déroulement de ce projet.
+\noindent Finalement, nous exprimons nos vifs remerciements à toute personne
+ayant participée de près ou de loin au bon déroulement de ce projet.
 
 \normalsize
 \onehalfspacing
@@ -148,36 +151,38 @@ Nous tenons à exprimer notre profonde gratitude à :\\
 
 \setcounter{secnumdepth}{0}
 \section{Résumé}
-L'objectif de ce projet est la création d'un langage \textbf{interprété} en
+L'objectif de ce projet est la création d'un langage \textbf{transpilé} en
 \textbf{C++} dans le but de faire découvrir l'informatique et la programmation à
 des collégiens et lycéens. Ce projet rentre dans le cadre du sujet commun de la
 filière F2, qui concerne la conception d’outils et plus généralement en
-développement logiciel.\\
+développement logiciel.
 
-Le projet, réalisé sous Visual Studio Code, utilisera un \textbf{lexeur} et
-\textbf{parseur} pour pouvoir reconnaitre notre \textbf{}{langage de
-programmation} voulu.
+Ce projet s'inscrit dans le cadre du projet commun de la filière 2. L'objectif
+du projet commun est la création d'outils de démonstration servant à présenter
+la filière génie logiciel. Notre travail a consisté en la création d'un langage
+de programmation transpilé. Pour ce faire, nous avons du étudier des concepts et
+des outils utilisés pour la création de compilateurs. % TODO: trouver mieux
+% TODO: mentionner C++
 \\~\\
 
 \noindent
-Mots-clés : \textbf{C++}, \textbf{interpréteur}, \textbf{lexeur}, \textbf{parseur},  \textbf{langage de programmation}
+Mots-clés : \textbf{C++}, \textbf{transpileur}, \textbf{lexeur},
+\textbf{parseur}, \textbf{flex}, \textbf{bison},  \textbf{langage de
+programmation}
 \\[2\baselineskip]
 
 \section{Abstract}
 
-The objective of this project is the creation of an \textbf{interpreted}
+The objective of this project is the creation of an \textbf{transpiled}
 language  in \textbf{C++} in order to introduce computer science and programming
 to middle and high school students. This project falls within the framework of
 the common subject of the F2 major, which relates to the design of tools and
-more generally in software development.\\
-
-The project, coded with Visual Studio Code, uses a \textbf{lexeur} and
-\textbf{parser} to be able to recognize our desired \textbf{}{programming
-language}.
+more generally in software development.
 \\~\\
 
 \noindent
-Keywords : \textbf{C++}, \textbf{interpreter}, \textbf{lexer}, \textbf{parser},  \textbf{programming language}
+Keywords : \textbf{C++}, \textbf{interpreter}, \textbf{lexer}, \textbf{parser},
+\textbf{programming language}
 
 \clearpage{}
 
@@ -187,21 +192,24 @@ Keywords : \textbf{C++}, \textbf{interpreter}, \textbf{lexer}, \textbf{parser}, 
 %------------------------------------------------------------------------------%
 \section{Introduction}
 \large
-Dans le cardre du projet de 2\up{ème} année à l'ISIMA, nous avons choisi de
-réaliser un travail concernant le sujet commun de la filière F2, génie logiciel
-et systèmes d'informations. Le but du projet est de pouvoir montrer à des élèves
-de collèges et lycées ce que la filière ingénieur permet de faire.\\
+Dans le cadre du projet de 2\up{ème} année à l'ISIMA, nous avons choisi de
+réaliser un travail concernant le sujet commun de la filière 2, génie logiciel
+et systèmes d'informations. Le but du projet commun est la création d'outils de
+démonstration servant à présenter la filière.\\
 
-Le domaine étant vaste, nous avons choisi de concevoir un langage informatique
-simple en C++ avec comme principal objectif de faire comprendre aux élèves la
-notion de fonction. Ce langage devait posséder une interface graphique, mais
-cette tâche s'est avérée trop ambitieuse pour un travail de 60 heures.\\
+Nous souhaitions au départ, créer un langage de programmation interprété ainsi
+qu'un IDE, cependant, ce projet s'est avéré trop ambitieux pour être réalisé en
+60 heures. Pour simplifier, nous avons décidé de concevoir un langage transpilé,
+délégant ainsi une partie des tâches complexes comme la gestion de la mémoire à
+un compilateur existant.\\
 
-Le projet, en plus de sa valeur pédagogique, nous permet de nous familiariser
-avec les concepts de compilateur, interpreteur et arbre syntaxique.\\
+Ce projet permettra de présenter un langage de programmation très simple pour
+introduire des lycéen à la programmation. De plus, il pourra constituer une
+maquette pour les élèves de l'ISIMA souhaitant étudier le fonctionnement des
+compilateurs.\\
 
 Pour présenter ce projet, nous commencerons par la forme du langage à créer
-souhaité, puis nous détaillerons sa structure. Une fois familier avec les
+souhaité, puis nous détaillerons sa structure. Une fois familiarisé avec les
 différentes étapes de son implémentation,  nous introduirons les concepts et
 outils informatiques qui permettent la réalisation de notre langage.\\
 
@@ -212,6 +220,7 @@ outils informatiques qui permettent la réalisation de notre langage.\\
 %------------------------------------------------------------------------------%
 %               Résumé des réfs (à supprimer à la dernière version             %
 %------------------------------------------------------------------------------%
+% TODO: à enlever
 \section{Résumé des références}
 
 \begin{itemize}
@@ -263,7 +272,7 @@ outils informatiques qui permettent la réalisation de notre langage.\\
 % TODO
 
 %------------------------------------------------------------------------------%
-%                        GRAMMAIRE DE NOTRE LANGAGE                            %
+%                        GRAMMAIRE DE NOTRE LANGAGE                            %{{{
 %------------------------------------------------------------------------------%
 \section{Conception d'un langage informatique}
 
@@ -271,15 +280,92 @@ outils informatiques qui permettent la réalisation de notre langage.\\
 \subsection{Grammaire de notre langage}
 
 Avant d'implémenter notre langage informatique, il faut avoir une idée de sa
-grammaire, c'est-à-dire son fonctionnement. Un de ces objectifs est d'initier
-les élèves de collèges et lycées à la notion de fonction informatique.\\
+grammaire. Puisque nous souhaitons utiliser ce langage à des fins pédagogiques,
+nous avons décider de simplifier au maximum la syntaxe. Par exemple, nous avons
+choisit de supprimer tous les opérateurs, ainsi, toutes les opérations
+arithmétiques et booléennes auront la même syntaxe que les fonctions. Par
+exemple, $a+b$ s'écrira \textit{add}(\textbf{a}, \textbf{b}). De plus, pour
+différer au maximum de python, notre syntaxe s'inspirera de celle des langages
+\textbf{C} et \textbf{Rust}. Pour définir la grammaire de manière formelle, nous
+utiliserons la forme de Backus-Naur.
+% TODO: cite !!!
 
-C'est la raison pour laquelle les opérations permises par notre langage ne
-seront que des fonctions.\\
+% ---------------------------------------------------------------------------
+% TODO: move
+% \begin{center}
+% \begin{tabular}{ | c | c | }
+%     \hline
+%     opération & syntaxe\\
+%     \hline
+%     \textbf{a} + \textbf{b} & \textit{add}(\textbf{a}, \textbf{b})\\
+%     \hline
+%     \textbf{a} - \textbf{b} & \textit{mns}(\textbf{a}, \textbf{b})\\
+%     \hline
+%     \textbf{a} $\times$ \textbf{b} & \textit{tms}(\textbf{a}, \textbf{b})\\
+%     \hline
+%     \textbf{a} $\div$ \textbf{b} & \textit{div}(\textbf{a}, \textbf{b})\\
+%     \hline
+%     \textbf{a} \textbf{==} \textbf{b} & \textit{eql}(\textbf{a}, \textbf{b})\\
+%     \hline
+% \end{tabular}
+% \end{center}
+% ---------------------------------------------------------------------------
 
-\textbf{Exemple} \\
-Nous disposons de 2 variables \textbf{a} et \textbf{b}.\\
-La variable \textbf{a} est lue par commande de l'utilisateur tandis que la valeur 4 est assignée à \textbf{b}.\\
+\subsubsection{Les variables}
+
+Pour stocker des données, notre langage utilise des variables dont la
+convention de nommage est la même qu'en \textbf{C}. Le langage est à typage
+statique, ce qui signifie que toutes les variables doivent être déclarée avec
+leur type avant d'être utilisées. Pour l'instant, nous possédons trois types :
+les entiers (\textit{int}), les nombre à virgule flottante (\textit{flt}) et les
+caractères (\textit{chr}). Voici la syntaxe pour déclarer une variable:
+
+\begin{grammar}
+<identifier> ::= 'a'-'z'( <alpha> | '0'-'9' )*
+<int> ::= "int"
+<flt> ::= "flt"
+<chr> ::= "chr"
+<type> ::= <int> | <flt> | <chr>
+<declaration> ::= <type> <identifier> ";"
+\end{grammar}\leavevmode\newline
+
+\subsubsection{Les fonctions}
+
+Pour définir des fonctions, nous utilisons le mot clé \textbf{fn}, suivit du nom
+de la fonction avec ses paramètres entre parenthèses et enfin le bloque de code
+qui contient les instructions entre accolade. De plus, il faut spécifier le type
+de la valeur retour de la fonction en utilisant \textbf{-> type} quand c'est
+nécessaire.
+
+\begin{grammar}
+<function> ::= fn <identifier>"("<parameters>")" [ "->" <type> ] "{"<instructions>"}"
+\end{grammar}\leavevmode\newline
+
+Pour pouvoir retourner une valeur, il faudra utiliser le mot clé \textit{return}
+dans la fonction.
+
+\subsubsection{Les structures de contrôle}
+
+Nous avons aussi ajouté les structures de contrôle présentes dans la plupart des
+langages de programmation.
+
+\begin{grammar}
+<if> ::= if "("<condition>")" "{"<instructions>"}" [ else "{" <instructions>"}" ]
+
+<range> ::= range "("<valueSymbol>, <valueSymbol>, <valueSymbol>")"
+<for> ::= for <identifier> in <range> "{"<instructions>"}"
+
+<while> ::= while "("<condition>")" "{" <instructions> "}"
+\end{grammar}\leavevmode\newline
+
+\subsubsection{Les opérations}
+
+\subsubsection{Inclusion de fichier}
+
+\subsubsection{Exemple de code}
+Nous disposons de 2 variables \textbf{a} et \textbf{b}. La variable \textbf{a}
+est lue par commande de l'utilisateur tandis que la valeur 4 est assignée à
+\textbf{b}.\\
 Nous cherchons ensuite à additionner les 2 variables avec la valeur 5. Nous avons alors la syntaxe suivante :\\
 - une fonction \textit{add3} qui additionne les valeurs de ses 3 paramètres\\
 - une fonction \textit{affiche} qui affiche sur l'écran le nombre passé en paramètre\\
@@ -304,26 +390,11 @@ fn main() {
 }
 \end{grammar}\leavevmode\newline
 
-La particularité de cette grammaire est que les opérations arithmétiques de base sont remplacées par des fonctions :\\
-\begin{center}
-\begin{tabular}{ | c | }
-    \hline
-    \textbf{a} + \textbf{b} devient \textit{add}(\textbf{a}, \textbf{b})\\
-    \hline
-    \textbf{a} - \textbf{b} devient \textit{mns}(\textbf{a}, \textbf{b})\\
-    \hline
-    \textbf{a} $\times$ \textbf{b} devient \textit{tms}(\textbf{a}, \textbf{b})\\
-    \hline
-    \textbf{a} $\div$ \textbf{b} devient \textit{div}(\textbf{a}, \textbf{b})\\
-    \hline
-\end{tabular}
-\end{center}
 
-
-\clearpage{}
+\clearpage{}%}}}
 
 %------------------------------------------------------------------------------%
-%                                      LEXER                                   %
+%                                      LEXER                                   %{{{
 %------------------------------------------------------------------------------%
 
 \section{Le lexeur}
@@ -357,11 +428,11 @@ expliqué par la partie consultable de  \cite{flexBisonHandbook}. \\
 \end{center}
 
 Le lexeur a également pour rôle de supprimer les informations inutiles,
-généralement du caractère espace et des commentaires.\\~\\
+généralement du caractère espace et des commentaires.\\~\\%}}}
 
 
 \phantomsection
-\subsection{Implémentation}
+\subsection{Implémentation}%{{{
 
 L'outil utilisé pour générer un lexeur à partir du code précédent est Flex (Fast
 LEXical analyser generator). Au lieu d'écrire un lexeur à partir de zéro, Flex
@@ -443,16 +514,14 @@ La fonction appelée par défaut est \textcolor{purple}{yylex}, cependant, pour 
 #define YY_DECL int interpreter::Scanner::lex(interpreter::Parser::semantic_type *yylval)
 \end{code}\leavevmode\\~\\
 
-\clearpage{}
-
-
+\clearpage{}%}}}
 
 
 %------------------------------------------------------------------------------%
 %                                      PARSER                                  %
 %------------------------------------------------------------------------------%
 
-\section{Le parseur}
+\section{Le parseur}%{{{
 
 \phantomsection
 \subsection{Définition}
@@ -572,7 +641,7 @@ Pour la génération du code, on a deux options :
 \end{itemize}
 
 
-\clearpage{}
+\clearpage{}%}}}
 
 %------------------------------------------------------------------------------%
 %                                 bibliography                                 %
