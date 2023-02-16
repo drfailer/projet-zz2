@@ -18,7 +18,7 @@ void ContextManager::leaveScope()
   currentScope = currentScope->getFather();
 }
 
-void ContextManager::newSymbol(std::string name, Type type, Kind kind)
+void ContextManager::newSymbol(std::string name, std::list<Type> type, Kind kind)
 {
   currentScope->add(name, type, kind);
 }

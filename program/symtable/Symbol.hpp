@@ -1,6 +1,7 @@
 #ifndef __SYMBOL__
 #define __SYMBOL__
 #include <iostream>
+#include <list>
 #include "../AST/Types.hpp"
 
 enum Kind
@@ -14,14 +15,14 @@ class Symbol
 {
   private:
     std::string name;
-    Type type;
+    std::list<Type> type;
     Kind kind;
 
   public:
     Kind getKind() const;
-    Type getType() const;
+    std::list<Type> getType() const;
     std::string getName() const;
-    Symbol(std::string name, Type type, Kind kind);
+    Symbol(std::string name, std::list<Type> type, Kind kind);
     Symbol() = default;
     ~Symbol() = default;
 };

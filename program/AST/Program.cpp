@@ -21,3 +21,13 @@ void Program::display()
   for (std::shared_ptr<Function> f : functions)
     f->display();
 }
+
+std::list<std::shared_ptr<Include>> Program::getIncludes() const
+{
+  return includes;
+}
+
+std::list<std::shared_ptr<Function>> Program::getFunctions() const
+{
+  return functions;
+}

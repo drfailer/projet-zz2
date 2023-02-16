@@ -48,7 +48,7 @@ ContextManager contextManager;
 ErrorManager errMgr;
 
 // symtable check
-bool isDefined(std::string name, int line, int column, Type& type) {
+bool isDefined(std::string name, int line, int column, std::list<Type>& type) {
   bool defined = true;
   std::optional<Symbol> sym = contextManager.lookup(name);
   if (!sym.has_value()) {
@@ -57,7 +57,7 @@ bool isDefined(std::string name, int line, int column, Type& type) {
     oss << "undefined Symbol '" << name << "'";
     oss << " at: " << line << ":" << column << std::endl;
     errMgr.newError(oss.str());
-    type = VOID;
+    type = std::list<Type>();
   }
   else {
     type = sym.value().getType();
@@ -120,7 +120,9 @@ includes: INCLUDE IDENTIFIER SEMI
 function:
         FN IDENTIFIER[name]'('paramDeclarations')'
         {
-          contextManager.newSymbol($name, VOID, FUNCTION);
+          std::list<Type> funType = pb.getParamsTypes();
+          funType.push_back(VOID);
+          contextManager.newSymbol($name, funType, FUNCTION);
           contextManager.enterScope();
         }
         block[ops]
@@ -132,7 +134,9 @@ function:
         |
         FN IDENTIFIER[name]'('paramDeclarations')' ARROW type[rt]
         {
-          contextManager.newSymbol($name, $rt, FUNCTION);
+          std::list<Type> funType = pb.getParamsTypes();
+          funType.push_back($rt);
+          contextManager.newSymbol($name, funType, FUNCTION);
           contextManager.enterScope();
         }
         block[ops]
@@ -150,7 +154,7 @@ paramDeclaration: %empty
      | type[t] IDENTIFIER
      {
        DEBUG("new param: " << $2);
-       contextManager.newSymbol($2, $t, FUN_PARAM);
+       contextManager.newSymbol($2, std::list<Type>($t), FUN_PARAM);
        pb.pushFunctionParam(Variable($2, $t));
      }
      ;
@@ -172,9 +176,9 @@ operand:
      {
         DEBUG("new param variable" );
         std::shared_ptr<ASTNode> v;
-        Type type;
+        std::list<Type> type;
         if (isDefined($1, @1.begin.line, @1.begin.column, type)) {
-          v = std::make_shared<Variable>($1, type);
+          v = std::make_shared<Variable>($1, type.back());
         }
         else {
           v = std::make_shared<Variable>($1, VOID);
@@ -240,9 +244,9 @@ command: print
 read: READ'('IDENTIFIER[v]')'
     {
       DEBUG("read");
-      Type type;
+      std::list<Type> type;
       if (isDefined($v, @v.begin.line, @v.begin.column, type)) {
-        pb.pushBlock(std::make_shared<Read>(Variable($v, type)));
+        pb.pushBlock(std::make_shared<Read>(Variable($v, type.back())));
       }
       else {
         pb.pushBlock(std::make_shared<Read>(Variable($v, VOID)));
@@ -260,9 +264,10 @@ print:
      PRINT'('IDENTIFIER[v]')'
      {
         DEBUG("print var");
-        Type type;
+        std::list<Type> type;
         if (isDefined($v, @v.begin.line, @v.begin.column, type)) {
-          pb.pushBlock(std::make_shared<Print>(std::make_shared<Variable>($v, type)));
+          pb.pushBlock(std::make_shared<Print>(std::make_shared<Variable>($v,
+            type.back())));
         }
         else {
           pb.pushBlock(std::make_shared<Print>(std::make_shared<Variable>($v, VOID)));
@@ -278,10 +283,10 @@ inlineSymbol:
             IDENTIFIER
             {
                DEBUG("new param variable");
-               Type type;
+               std::list<Type> type;
                std::shared_ptr<Variable> v;
                if (isDefined($1, @1.begin.line, @1.begin.column, type)) {
-                 v = std::make_shared<Variable>($1, type);
+                 v = std::make_shared<Variable>($1, type.back());
                }
                else {
                  v = std::make_shared<Variable>($1, VOID);
@@ -375,7 +380,7 @@ booleanOperation:
 funcall:
        IDENTIFIER'('
        {
-          Type type;
+          std::list<Type> type;
           isDefined($1, @1.begin.line, @1.begin.column, type);
           pb.newFuncall($1);
        }
@@ -390,7 +395,7 @@ declaration:
            type[t] IDENTIFIER
            {
              DEBUG("new declaration: " << $2);
-             contextManager.newSymbol($2, $t, LOCAL_VAR);
+             contextManager.newSymbol($2, std::list<Type>($t), LOCAL_VAR);
              pb.pushBlock(std::make_shared<Declaration>(Variable($2, VOID)));
            }
            ;
@@ -399,9 +404,10 @@ assignement:
            SET'('IDENTIFIER[v] COMMA inlineSymbol[ic]')'
            {
              DEBUG("new assignement: " << $v);
-             Type type;
+             std::list<Type> type;
              if (isDefined($v, @v.begin.line, @v.begin.column, type)) {
-               pb.pushBlock(std::make_shared<Assignement>(Variable($v, type), $ic));
+               pb.pushBlock(std::make_shared<Assignement>(Variable($v,
+                 type.back()), $ic));
              }
              else {
                pb.pushBlock(std::make_shared<Assignement>(Variable($v, VOID), $ic));
@@ -499,9 +505,9 @@ for:
    {
      DEBUG("in for");
      Variable v($v, VOID);
-     Type type;
+     std::list<Type> type;
      if (isDefined($v, @v.begin.line, @v.begin.column, type)) {
-       v = Variable($v, type);
+       v = Variable($v, type.back());
      }
      $$ = pb.createFor(v, $b, $e, $s, $ops);
      contextManager.leaveScope();

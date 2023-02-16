@@ -19,7 +19,7 @@ class Symtable
     std::shared_ptr<Symtable> getFather() const;
     std::optional<Symbol> lookup(std::string name);
     void addScope(std::shared_ptr<Symtable>);
-    void add(std::string name, Type type, Kind kind);
+    void add(std::string name, std::list<Type> type, Kind kind);
     Symtable(std::shared_ptr<Symtable>);
     Symtable() = default;
     ~Symtable() = default;

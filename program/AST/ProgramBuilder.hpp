@@ -23,6 +23,10 @@ class ProgramBuilder
     // std::shared_ptr<Function> currentFunction; // TODO: user this
 
   public:
+    std::list<Variable> getFunParams() const;
+    std::shared_ptr<Program> getProgram() const;
+    std::list<Type> getParamsTypes() const;
+
     void display();
 
     void beginBlock(); // create an empty block on the top of the blocks stack

@@ -107,8 +107,13 @@ void ProgramBuilder::newFuncall(std::string name)
 void ProgramBuilder::createFunction(std::string name, std::shared_ptr<Block>
     operations, Type returnType)
 {
+  std::list<Type> type;
+  for (Variable v : funParams) {
+    type.push_back(v.getType());
+  }
+  type.push_back(returnType);
   std::shared_ptr<Function> newfun =
-    std::make_shared<Function>(name, funParams, operations, returnType);
+    std::make_shared<Function>(name, funParams, operations, type);
   program->addFunction(newfun);
   funParams.clear();
 }
@@ -126,3 +131,27 @@ void ProgramBuilder::pushFunctionParam(Variable newParam)
 {
   funParams.push_back(newParam);
 }
+
+/******************************************************************************/
+/*                                  getters                                   */
+/******************************************************************************/
+
+std::shared_ptr<Program> ProgramBuilder::getProgram() const
+{
+  return program;
+}
+
+std::list<Variable> ProgramBuilder::getFunParams() const
+{
+  return funParams;
+}
+
+std::list<Type> ProgramBuilder::getParamsTypes() const
+{
+  std::list<Type> paramsTypes;
+  for (Variable v : funParams) {
+    paramsTypes.push_back(v.getType());
+  }
+  return paramsTypes;
+}
+

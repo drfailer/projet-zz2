@@ -181,11 +181,12 @@ class Function : public Statement
   private:
     std::string id;
     std::list<Variable> params;
-    Type returnType;
+    std::list<Type> type;
 
   public:
     void display() override;
-    Function(std::string, std::list<Variable>, std::shared_ptr<Block>, Type);
+    Function(std::string, std::list<Variable>, std::shared_ptr<Block>,
+        std::list<Type>);
 };
 
 /**
