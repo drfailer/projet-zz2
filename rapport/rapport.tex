@@ -382,6 +382,9 @@ Nous cherchons ensuite à additionner les 2 variables avec la valeur 5. Nous avo
 - une fonction \textit{affiche} qui affiche sur l'écran le nombre passé en paramètre\\
 - une fonction \textit{main}, où se trouve toutes les commandes voulues de notre programme\\
 
+% section  (end)
+
+
 \begin{grammar}[language=C++]
 fn add3(int a, int b, int c) -> int {
     return add(a, add(b, c));
@@ -402,31 +405,72 @@ fn main() {
 \end{grammar}\leavevmode\newline
 
 
-\clearpage{}%}}}
+\clearpage{}
+%}}}
+\subsection{Arbre syntaxique}%{{{
 
-\subsection{Arbre syntaxique}
+Pour donner un sens aux éléments textuels du langage, nous utiliseront une
+représentation sous forme d'arbre. On appel cela un arbre syntaxique ou AST
+(Abstract Syntax Tree). Les arbres syntaxiques sont nés avec la théorie des
+langages et comme on peut le voir dans cet article \cite{compilerTICH}, les AST
+sont très utilisés par les compilateurs car ce sont des structures plus simples
+à manipuler que du texte. Voici l'arbre syntaxique de la fonction \textit{add3} :
 
-TODO
+\begin{figure}[h]
+  \begin{center}
+  \includegraphics[scale=0.4]{img/ast1.png}
+  \caption{Exemple d'arbre syntaxique}
+  \end{center}
+\end{figure}
 
-\subsection{Le parseur}
+Pour cette partie, nous nous sommes inspiré d'un projet appelé \textbf{minijava}
+\cite{minijava} ainsi que d'un article \cite{gagnon1998sablecc} qui couvre aussi
+l'utilisation des AST en java. Nous avons choisit l'approche objet, avec un AST
+représenté par des classes, où chaque nœud de l'arbre a sa propre classe.\\
 
-\section{Analyse des symboles}
-\subsection{Création d'une table des symboles}
-\subsection{Traitement des des symboles dans le parseur}
+Toutes les classes de l'arbre sont stockées dans le fichier
+\lstinline{AST/AST.hpp} et héritent toutes d'une classe abstraite
+\lstinline{ASTNode}. L'emploi de l'héritage ici est très important car
+nous profiterons par la suite des avantages du polymorphisme pour stocker des
+opérations de différents types. La classe \lstinline{ASTNode} est abstraite car
+elle ne doit pas être instanciée, il faut que chaque nœud ai un type concret
+utilisable dans le transpileur. Le diagramme de classes complet est disponible
+en annexe \ref{appendix:classAST}. Détaillons maintenant les parties
+importantes.
 
-\section{Le transpilleur}
-% TODO
+\subsubsection{Les bloques de code}
 
-\section{Conception d'un langage informatique}
+La classe \lstinline{Block} correspond aux bloques de code en entre accolades.
+Elle possède une liste de nœuds qui sont les opérations contenues dans le
+bloque.
 
-%------------------------------------------------------------------------------%
-%                                      LEXER                                   %
-%------------------------------------------------------------------------------%
+\subsubsection{Les conteneurs d'opérations}
 
-\section{Le lexeur}
+La classes \lstinline{Statement} correspond aux éléments qui contiennent des
+blocks de code. Cela comprend les fonctions et les structures de contrôles. La
+grammaire ne permet pas l'emploi des bloques ailleurs.
+
+\begin{figure}[h]
+  \begin{center}
+  \includegraphics[scale=0.5]{../ressources/diagrams/stmts.png}
+  \caption{Classe Statement}
+  \end{center}
+\end{figure}
+\subsubsection{Les opérations}
+
+Les opérations sont traitées avec la classe \lstinline{OperationBinaire} qui
+correspond à tous les opérateurs.
+
+% TODO: img
+
+%}}}
+
+\section{Construction de l'AST}
+
+\subsection{Flex}%{{{
 
 \phantomsection
-\subsection{Définition}
+\subsubsection{Définition}
 
 Le lexeur, ou encore appelé analyseur lexical, a pour but de transformer le
 texte du code source en des unités lexicales, appelées \textit{tokens}, comme
@@ -454,11 +498,11 @@ expliqué par la partie consultable de  \cite{flexBisonHandbook}. \\
 \end{center}
 
 Le lexeur a également pour rôle de supprimer les informations inutiles,
-généralement du caractère espace et des commentaires.\\~\\%}}}
+généralement du caractère espace et des commentaires.\\~\\
 
 
 \phantomsection
-\subsection{Implémentation}%{{{
+\subsection{Implémentation}
 
 L'outil utilisé pour générer un lexeur à partir du code précédent est Flex (Fast
 LEXical analyser generator). Au lieu d'écrire un lexeur à partir de zéro, Flex
@@ -540,14 +584,9 @@ La fonction appelée par défaut est \textcolor{purple}{yylex}, cependant, pour 
 #define YY_DECL int interpreter::Scanner::lex(interpreter::Parser::semantic_type *yylval)
 \end{code}\leavevmode\\~\\
 
-\clearpage{}%}}}
-
-
-%------------------------------------------------------------------------------%
-%                                      PARSER                                  %
-%------------------------------------------------------------------------------%
-
-\section{Le parseur}%{{{
+\clearpage{}
+%}}}
+\subsection{Bison}%{{{
 
 \phantomsection
 \subsection{Définition}
@@ -667,11 +706,48 @@ Pour la génération du code, on a deux options :
 \end{itemize}
 
 
-\clearpage{}%}}}
+\clearpage{}
+%}}}
+\subsection{Fabrique à programme}
+
+\section{Analyse des symboles}
+
+
+
+\subsection{Création d'une table des symboles}
+\subsection{Traitement des des symboles dans le parseur}
+
+\section{Le transpilleur}
+% TODO
+
+\section{Conception d'un langage informatique}
+
+%------------------------------------------------------------------------------%
+%                                      LEXER                                   %
+%------------------------------------------------------------------------------%
+
+
+%------------------------------------------------------------------------------%
+%                                      PARSER                                  %
+%------------------------------------------------------------------------------%
+
+\section{Le parseur}%{{{
 
 %------------------------------------------------------------------------------%
 %                                 bibliography                                 %
 %------------------------------------------------------------------------------%
 \printbibliography[keyword={paper},title={Biliographie}]
 \printbibliography[keyword={web},title={Webographie}]
+
+\appendix
+
+\clearpage
+\section{Diagramme de classes de l'AST}\label{appendix:classAST}
+
+\begin{figure}[h]
+  \begin{center}
+  \rotatebox[origin=c]{90}{\includegraphics[scale=0.22]{../ressources/diagrams/ast.png}}
+  \end{center}
+\end{figure}
+
 \end{document}
