@@ -260,24 +260,8 @@ outils informatiques qui permettent la réalisation de notre langage.\\
 % NOTE: les partie ne sont pas très équilibrées
 
 \section{Conception d'une grammaire}
-\subsection{Définition de la grammaire}
-\subsection{Arbre syntaxique}
-\subsection{Le parseur}
 
-\section{Analyse des symboles}
-\subsection{Création d'une table des symboles}
-\subsection{Traitement des des symboles dans le parseur}
-
-\section{Le transpilleur}
-% TODO
-
-%------------------------------------------------------------------------------%
-%                        GRAMMAIRE DE NOTRE LANGAGE                            %{{{
-%------------------------------------------------------------------------------%
-\section{Conception d'un langage informatique}
-
-\phantomsection
-\subsection{Grammaire de notre langage}
+\subsection{Définition de la grammaire}%{{{
 
 Avant d'implémenter notre langage informatique, il faut avoir une idée de sa
 grammaire. Puisque nous souhaitons utiliser ce langage à des fins pédagogiques,
@@ -289,27 +273,6 @@ différer au maximum de python, notre syntaxe s'inspirera de celle des langages
 \textbf{C} et \textbf{Rust}. Pour définir la grammaire de manière formelle, nous
 utiliserons la forme de Backus-Naur.
 % TODO: cite !!!
-
-% ---------------------------------------------------------------------------
-% TODO: move
-% \begin{center}
-% \begin{tabular}{ | c | c | }
-%     \hline
-%     opération & syntaxe\\
-%     \hline
-%     \textbf{a} + \textbf{b} & \textit{add}(\textbf{a}, \textbf{b})\\
-%     \hline
-%     \textbf{a} - \textbf{b} & \textit{mns}(\textbf{a}, \textbf{b})\\
-%     \hline
-%     \textbf{a} $\times$ \textbf{b} & \textit{tms}(\textbf{a}, \textbf{b})\\
-%     \hline
-%     \textbf{a} $\div$ \textbf{b} & \textit{div}(\textbf{a}, \textbf{b})\\
-%     \hline
-%     \textbf{a} \textbf{==} \textbf{b} & \textit{eql}(\textbf{a}, \textbf{b})\\
-%     \hline
-% \end{tabular}
-% \end{center}
-% ---------------------------------------------------------------------------
 
 \subsubsection{Les variables}
 
@@ -360,12 +323,60 @@ langages de programmation.
 
 \subsubsection{Les opérations}
 
+Comme dit précédemment, tous le langage ne comporte pas d'opérateur donc toutes
+les opérations se font à l'aide de fonctions directement intégrées dans le
+transpileur. Voici une liste des opérations possibles :
+
+\begin{center}
+\begin{tabular}{ | c | c | }
+    \hline
+    opération & syntaxe\\
+    \hline
+    \textbf{a} + \textbf{b} & \textit{add}(\textbf{a}, \textbf{b})\\
+    \hline
+    \textbf{a} - \textbf{b} & \textit{mns}(\textbf{a}, \textbf{b})\\
+    \hline
+    \textbf{a} $\times$ \textbf{b} & \textit{tms}(\textbf{a}, \textbf{b})\\
+    \hline
+    \textbf{a} $\div$ \textbf{b} & \textit{div}(\textbf{a}, \textbf{b})\\
+    \hline
+    \textbf{a} \textbf{==} \textbf{b} & \textit{eql}(\textbf{a}, \textbf{b})\\
+    \hline
+    \textbf{a} \textbf{<} \textbf{b} & \textit{inf}(\textbf{a}, \textbf{b})\\
+    \hline
+    \textbf{a} \textbf{>} \textbf{b} & \textit{sup}(\textbf{a}, \textbf{b})\\
+    \hline
+    \textbf{a} \textbf{<=} \textbf{b} & \textit{ieq}(\textbf{a}, \textbf{b})\\
+    \hline
+    \textbf{a} \textbf{>=} \textbf{b} & \textit{seq}(\textbf{a}, \textbf{b})\\
+    \hline
+    \textbf{not} \textbf{a} & \textit{not}(\textbf{a})\\
+    \hline
+\end{tabular}
+\end{center}
+
 \subsubsection{Inclusion de fichier}
 
+TODO: Non fonctionnel :/
+
+\subsubsection{Entrée et sortie}
+
+Le langage possède aussi la possibilité d'afficher et de lire du texte depuis la
+console. La lecture se fait avec la fonction \textit{read} qui prend en
+paramètre une variable qui stockera le résultat. Pour la l'affichage, il faudra
+utiliser la fonction \textit{print} qui peut être utilisée de deux manières :
+
+\begin{itemize}
+  \item \lstinline{print("Hello, World!")} : affiche du texte
+  \item \lstinline{print(variable)} : affichage d'une valeur (depuis une
+    variable ou une fonction).
+\end{itemize}
+
 \subsubsection{Exemple de code}
-Nous disposons de 2 variables \textbf{a} et \textbf{b}. La variable \textbf{a}
-est lue par commande de l'utilisateur tandis que la valeur 4 est assignée à
-\textbf{b}.\\
+
+Dans cet exemple, nous disposons de 2 variables \textbf{a} et \textbf{b}. La
+variable \textbf{a} est lue par commande de l'utilisateur tandis que la valeur 4
+est assignée à \textbf{b}.\\
 Nous cherchons ensuite à additionner les 2 variables avec la valeur 5. Nous avons alors la syntaxe suivante :\\
 - une fonction \textit{add3} qui additionne les valeurs de ses 3 paramètres\\
 - une fonction \textit{affiche} qui affiche sur l'écran le nombre passé en paramètre\\
@@ -393,8 +404,23 @@ fn main() {
 
 \clearpage{}%}}}
 
+\subsection{Arbre syntaxique}
+
+TODO
+
+\subsection{Le parseur}
+
+\section{Analyse des symboles}
+\subsection{Création d'une table des symboles}
+\subsection{Traitement des des symboles dans le parseur}
+
+\section{Le transpilleur}
+% TODO
+
+\section{Conception d'un langage informatique}
+
 %------------------------------------------------------------------------------%
-%                                      LEXER                                   %{{{
+%                                      LEXER                                   %
 %------------------------------------------------------------------------------%
 
 \section{Le lexeur}
