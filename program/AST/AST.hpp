@@ -1,4 +1,5 @@
-#pragma once
+#ifndef __AST__
+#define __AST__
 #include <cstdio>
 #include <list>
 #include <string>
@@ -72,7 +73,7 @@ class Value : public ASTNode
   public:
     void display() override;
     type_t getValue();
-    Type getType();
+    Type getType() const;
     Value(type_t, Type);
     Value() = default;
 };
@@ -93,7 +94,7 @@ class Variable : public ASTNode
   public:
     void display() override;
     std::string getId();
-    Type getType();
+    Type getType() const;
     Variable(std::string, Type);
 };
 
@@ -147,7 +148,10 @@ class Funcall : public ASTNode
     std::list<std::shared_ptr<ASTNode>> params; // TODO: get all params
 
   public:
+    std::string getFunctionName() const;
+    std::list<std::shared_ptr<ASTNode>> getParams() const;
     Funcall(std::string, std::list<std::shared_ptr<ASTNode>>);
+    Type getType() const;
     void display() override;
 };
 
@@ -395,3 +399,5 @@ class Return: public ASTNode
     void display() override;
     Return(std::shared_ptr<ASTNode>);
 };
+
+#endif

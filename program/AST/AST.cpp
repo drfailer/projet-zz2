@@ -21,7 +21,7 @@ type_t Value::getValue()
   return value;
 }
 
-Type Value::getType()
+Type Value::getType() const
 {
   return type;
 }
@@ -59,7 +59,7 @@ void Variable::display()
   std::cout << id;
 }
 
-Type Variable::getType()
+Type Variable::getType() const
 {
   return type;
 }
@@ -164,6 +164,16 @@ void Funcall::display()
     std::cout << ", ";
   }
   std::cout << "])" << std::endl;
+}
+
+std::list<std::shared_ptr<ASTNode>> Funcall::getParams() const
+{
+  return params;
+}
+
+std::string Funcall::getFunctionName() const
+{
+  return functionName;
 }
 
 /******************************************************************************/

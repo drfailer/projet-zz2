@@ -226,6 +226,7 @@ code: %empty
     | commands code
     | RETURN inlineSymbol[rs] SEMI
     {
+      // TODO: check the type !!!
       pb.pushBlock(std::make_shared<Return>($rs));
     }
     ;
@@ -380,14 +381,61 @@ booleanOperation:
 funcall:
        IDENTIFIER'('
        {
-          std::list<Type> type;
-          isDefined($1, @1.begin.line, @1.begin.column, type);
           pb.newFuncall($1);
        }
        params')'
-       {
+       { // TODO: c'est la merde !!!!!!!!!!!!!
+         std::list<Type> expectedType;
+         std::list<Type> funcallType;
+         isDefined($1, @1.begin.line, @1.begin.column, expectedType);
+         std::shared_ptr<Funcall> funcall = pb.createFuncall();
+         // TODO: add a getType methode to the ASTNode
+         // TODO: get funcall type
+         // get the funcall type
+         for (std::shared_ptr<ASTNode> param : funcall->getParams()) {
+           // It would have greate to have a TypedElement class :,)
+           if(std::shared_ptr<Funcall> fun = std::dynamic_pointer_cast<Funcall>(param)) {
+              // treat as a funcall
+              std::optional<Symbol> funSym = contextManager.lookup(fun->getFunctionName());
+              funcallType.push_back(funSym.value().getType().back());
+           }
+           else if (std::shared_ptr<Variable> var = std::dynamic_pointer_cast<Variable>(param)) { // this is a variable
+              std::optional<Symbol> varSym = contextManager.lookup(var->getId());
+              funcallType.push_back(varSym.value().getType().back());
+           }
+           else if (std::shared_ptr<Value> val = std::dynamic_pointer_cast<Value>(param)) { // this is a value
+              funcallType.push_back(val->getType());
+           }
+           else {
+             errMgr.newError("Type error: this doesn't work");
+           }
+         }
+         bool typeError = false;
+         expectedType.pop_back(); // get rid of the return type
+         if (expectedType.size() != funcallType.size())
+           typeError = true;
+         else {
+           for (int i = 0; i < funcallType.size(); ++i) {
+             if (expectedType.size() == 0 || funcallType.front() != expectedType.front())
+               typeError = true;
+             funcallType.pop_front();
+             expectedType.pop_front();
+           }
+         }
+         // with the expected funcall type compare
+         if (typeError) { // TODO: write a compare function
+           std::cout << $1 << std::endl;
+           for (Type t : expectedType) {
+             std::cout << "expected: " << t << std::endl;
+           }
+           for (Type t : funcallType) {
+             std::cout << "found: " << t << std::endl;
+           }
+           errMgr.newError("Type error: the expected type was: TODO, found: TODO\n");
+         }
          DEBUG("new funcall: " << $1);
-         $$ = pb.createFuncall();
+         // check the type
+         $$ = funcall;
        }
        ;
 

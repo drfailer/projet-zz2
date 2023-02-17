@@ -33,7 +33,7 @@ class ProgramBuilder
     std::shared_ptr<Block> endBlock(); // pop the last block of the blocks stack
     void pushBlock(std::shared_ptr<ASTNode>); // add command to the last block
 
-    std::shared_ptr<ASTNode> createFuncall();
+    std::shared_ptr<Funcall> createFuncall();
 
     std::shared_ptr<If> createIf(std::shared_ptr<ASTNode>, std::shared_ptr<Block>);
     std::shared_ptr<For>  createFor(Variable, std::shared_ptr<ASTNode>,
