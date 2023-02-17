@@ -227,6 +227,8 @@ code: %empty
     | RETURN inlineSymbol[rs] SEMI
     {
       // TODO: check the type !!!
+      // note: use the current function name contained by the program builder
+      // to find the type
       pb.pushBlock(std::make_shared<Return>($rs));
     }
     ;
@@ -389,8 +391,6 @@ funcall:
          std::list<Type> funcallType;
          isDefined($1, @1.begin.line, @1.begin.column, expectedType);
          std::shared_ptr<Funcall> funcall = pb.createFuncall();
-         // TODO: add a getType methode to the ASTNode
-         // TODO: get funcall type
          // get the funcall type
          for (std::shared_ptr<ASTNode> param : funcall->getParams()) {
            // It would have greate to have a TypedElement class :,)
@@ -454,6 +454,8 @@ assignement:
              DEBUG("new assignement: " << $v);
              std::list<Type> type;
              if (isDefined($v, @v.begin.line, @v.begin.column, type)) {
+               // TODO: check the type of the symbol and raise a warning if cast
+               // needed
                pb.pushBlock(std::make_shared<Assignement>(Variable($v,
                  type.back()), $ic));
              }
