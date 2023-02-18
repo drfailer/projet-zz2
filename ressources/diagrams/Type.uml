@@ -1,0 +1,11 @@
+@startuml
+skinparam classattributeiconsize 0
+hide empty methods
+
+enum Type {
+  INT
+  FLT
+  CHR
+  VOID
+}
+@enduml

@@ -447,18 +447,44 @@ La classes \lstinline{Statement} correspond aux éléments qui contiennent des
 blocks de code. Cela comprend les fonctions et les structures de contrôles. La
 grammaire ne permet pas l'emploi des bloques ailleurs.
 
-\begin{figure}[h]
+\begin{figure}[h!]
   \begin{center}
   \includegraphics[scale=0.5]{../ressources/diagrams/stmts.png}
-  \caption{Classe Statement}
+  \caption{Diagramme de classe: Statement}
   \end{center}
 \end{figure}
+
 \subsubsection{Les opérations}
 
 Les opérations sont traitées avec la classe \lstinline{OperationBinaire} qui
 correspond à tous les opérateurs.
 
-% TODO: img
+\begin{figure}[h!]
+  \begin{center}
+  \includegraphics[scale=0.5]{../ressources/diagrams/binaryOp.png}
+  \caption{Diagamme de classe: BinaryOperation}
+  \end{center}
+\end{figure}
+
+\subsubsection{Les éléments typé}
+\label{sec:eltTypes}
+
+Les fonctions, les valeurs et les variables possède un champ type. \textbf{Type}
+est une énumération qui possède les éléments suivant :
+
+\begin{figure}[h!]
+  \begin{center}
+  \includegraphics[scale=0.5]{../ressources/diagrams/Type.png}
+  \caption{Enumération Type}
+  \end{center}
+\end{figure}
+
+Les valeurs et les variable possède un simple type, et les fonctions possède une
+liste de \textbf{Type} qui contient le type des paramètres suivit du type de
+retour de la fonction. À noter que pour stocker une valeur, on utilise une union
+composé d'un entier, d'un double et d'un char. De ce fait, \textbf{Value} peut
+contenir n'importe quel type de valeur et le champ à utiliser est déterminé par
+le type de la valeur.
 
 %}}}
 
@@ -638,45 +664,56 @@ pour bison.
 \subsection{Le parseur}%{{{
 
 \phantomsection
-\subsection{Définition}
+\subsubsection{Définition}
 
-Également appelé analyseur syntaxique, son rôle principal est la vérification de la syntaxe du code en regroupant les tokens selon une structure suivant des rêgles syntaxiques. \\
+Également appelé analyseur syntaxique, son rôle principal est la vérification de
+la syntaxe du code en regroupant les tokens selon une structure suivant des
+règles syntaxiques. \\
 
 
-    \textbf{Exemple} \\
-    Pour l'expression simple \textbf{a = 2 * b} \\
-    Les tokens apparaissant sont : \\
-    \begin{center}
-    \begin{tabular}{ | c | c | c | }
-    \hline
-    \textbf{Arbre syntaxique} & \textbf{Évaluation de 2 * b} & \textbf{Affectation de a} \\
-    \hline
-    \Tree[.= a  [.* 2 b ]] &
-        \Tree[.= a  2*b ] &
-            a = 2 * b\\
-    \hline
-    \end{tabular}
-    \end{center}
+\subsubsection{Exemple}
+
+Pour l'expression simple \textbf{a = 2 * b} \\
+Les tokens apparaissant sont : \\
+\begin{center}
+\begin{tabular}{ | c | c | c | }
+\hline
+\textbf{Arbre syntaxique} & \textbf{Évaluation de 2 * b} & \textbf{Affectation de a} \\
+\hline
+\Tree[.= a  [.* 2 b ]] &
+    \Tree[.= a  2*b ] &
+        a = 2 * b\\
+\hline
+\end{tabular}
+\end{center}
 
 \phantomsection
-\subsection{Implémentation}
+\subsubsection{Implémentation}
 
-À l'instar de Flex pour le lexeur, Bison est un générateur de grammaire qui convertit une description de grammaire en un programme C++ qui analyse cette même grammaire.\\
-L'article \cite{compilerFlexBison} s'est encore une fois révélé très utile pour la réalisation du fichier nécessaire à Bison\\~\\
- Le fichier \textbf{main\_cpp.y} contient le code qui permet de générer le parseur avec Bison. Toutes les règles syntaxiques qui définissent la grammaire du langage y sont comprises.
-Chaque règle va contenir des blocks de code qui seront exécutés au moment où le parseur la reconnait, ce code permet de créer des objets qui formeront l'ABS (Abstract Syntaxic Tree) du programme.\\
+À l'instar de Flex pour le lexeur, Bison est un générateur de grammaire qui
+convertit une description de grammaire en un programme C++ qui analyse cette
+même grammaire.\\
 
+L'article \cite{compilerFlexBison} s'est encore une fois révélé très utile pour
+la réalisation du fichier nécessaire à Bison\\~\\
 
-La structure du fichier \textbf{main\_cpp.y} est identique au lexeur :
+Le fichier \textbf{main\_cpp.y} contient le code qui permet de générer le
+parseur avec Bison. Toutes les règles syntaxiques qui définissent la grammaire
+du langage y sont comprises. Chaque règle va contenir des bloques de code qui
+seront exécutés au moment où le parseur la reconnait, ce code permet de
+construire l'ABS (Abstract Syntaxic Tree) du programme ainsi que de faire de la
+vérification sur les symboles (définition et type).\\
+
+La structure du fichier \textbf{main\_cpp.y} est similaire à celle du lexeur :
 
 \begin{code}
-C and parser declaration
+// C++, options, et declaration des tokens
 
 %%
-Grammar rules and actions
+// Regles de grammaire
 
 %%
-C subroutings
+// fonctions C++
 \end{code}\leavevmode\newline
 
 Les tokens sont définis en début de fichier avec la syntaxe suivante:
@@ -703,11 +740,21 @@ includes: %empty
        ;
 \end{code}\leavevmode\newline
 
-Ici, on définie une règle \textbf{includes} qui décrit la syntaxe des \textit{includes}. Selon cette règle, une suite d'inclusions est soit vide, soit elle comporte une inclusion, suivit d'une suite d'inclusion (`|` signifie "ou"). Il faut noter que la syntaxe est "récursive", ce qui nous permet de définir une suite d'éléments.
-Enfin, les mots en majuscule sont les tokens retournés par le lexeur.\\
+Ici, on définie une règle \textbf{includes} qui décrit la syntaxe des
+\textit{includes}. Selon cette règle, une suite d'inclusions est soit vide, soit
+elle comporte une inclusion, suivit d'une suite d'inclusion (`|` signifie "ou").
+Il faut noter que la syntaxe est "récursive", ce qui nous permet de définir une
+suite d'éléments. Enfin, les mots en majuscule sont les tokens retournés par le
+lexeur.\\
 
 On peut ajouter des blocks de codes qui seront exécutés au moment où le parseur
-atteint l'élément qui précède le block. Dans l'exemple ci-dessous, le block sera appelé une fois que Bison aura parser le \textcolor{purple}{;}. À noter que l'on peut accéder aux éléments retournés par Flex ; ici, \textcolor{purple}{\$2} fait référence au second élément de la règle qui est \textcolor{purple}{IDENTIFIER}. Le type de \textcolor{purple}{IDENTIFIER} a été défini comme étant une \textcolor{purple}{std::string}. Le block de code nous permet donc de créer une nouvelle inclusion et de récupérer le nom de la bibliothèque.\\
+atteint l'élément qui précède le block. Dans l'exemple ci-dessous, le block sera
+appelé une fois que Bison aura parser le \textcolor{purple}{;}. À noter que l'on
+peut accéder aux éléments retournés par Flex ; ici, \textcolor{purple}{\$2} fait
+référence au second élément de la règle qui est \textcolor{purple}{IDENTIFIER}.
+Le type de \textcolor{purple}{IDENTIFIER} a été défini comme étant une
+\textcolor{purple}{std::string}. Le block de code nous permet donc de créer une
+nouvelle inclusion et de récupérer le nom de la bibliothèque.\\
 
 \begin{code}[language=c++]
 includes: %empty
@@ -759,9 +806,80 @@ Pour la génération du code, on a deux options :
 %}}}
 \subsection{Fabrique à programme}
 
+Pour construire l'arbre syntaxique dans le programme, nous utiliserons
+la classe \textbf{ProgramBuilder}. Cette classe permet de stocker des éléments
+comme le nom de la fonction courante ou les commendes récupérée par le parseur.
+De plus cette classe permet d'instancier les éléments de l'AST pour construire
+le programme. Le diagramme de cette classe est le suivant :
+
+\begin{figure}[h]
+  \begin{center}
+  \includegraphics[scale=0.5]{../ressources/diagrams/program-builder.png}
+  \caption{Diagramme de classe : ProgramBuilder}
+  \end{center}
+\end{figure}
+
+On peut noter sur ce diagramme que l'on a des fonctions de créations qui
+permettent de créer les éléments de l'AST définis dans la première partie. De
+plus la classe est composé du programme, auquel elle ajoute les fonctions et les
+fichiers inclus. % note: ça va changer
+
+L'emploi de cette classe permet de limiter le code dans le parseur mais aussi de
+pouvoir récupérer des éléments dans des piles quand on ne connait pas leurs
+nombre. Par exemple, pour les \textbf{Block}, on ne sait pas combien de
+commandes ils contiennent, c'est pourquoi le \textbf{ProgramBuilder} possède une
+pile qui permet d'ajouter les commandes au bloques ainsi que d'avoir accès au
+dernier bloque pour construire les \textbf{Statement}. Il en est de même pour
+les paramètres de fonctions, dans ce cas nous avons une liste de liste. Si une
+fonction \textbf{A} prend le résultat d'une autre fonction \textbf{B} en
+paramètre (\textit{A(..., B(...), ...)}), la dernière liste contient les
+paramètres de \textbf{B} au moment ou \textbf{B} est traitée. À l'origine, ce
+choix avait été fait car il permet de toujours avoir accès aux éléments qui sont
+en train d'être récupérer depuis n'importe quel endroit du parseur. Cependant,
+cette fonctionnalité n'est pas utilisée, il aurait donc été plus simple de
+construire ces listes en utilisant les valeurs retour de bison.\\
+% NOTE: je sais plus parler
+
+Le \textbf{ProgramBuilder} permet donc de stocker les éléments important ainsi
+que de construire le \textbf{Program} au fur et à mesure de l'exécution du
+parseur.
+
 \section{Analyse des symboles}
 
+Dans cette partie, nous allons créer une table des symboles qui, de façon
+similaire à ce que l'on voit dans \cite{compilerFlexBison}, permet de vérifier
+si les symboles (variables et fonctions) utilisés ont bien été déclarés.
+Cependant, ici notre table des symboles sera plus complexe du fait que les
+symboles peuvent avoir des portées différentes. De plus la table des symboles
+nous permettra aussi de faire de la vérification de types pour par exemple,
+vérifier qu'une fonctions prend les bon paramètres.
+
+Du fait que nous allons devoir faire de la détection d'erreurs, nous créeront
+une nouvelle classe qui permettra de stocker tous les messages d'erreurs (et
+avertissements) au fil de l'exécution du parseur. Ces messages seront affichés à
+la fin une fois le tous code source traité. À noter que la présence d'erreurs
+empêche la compilation.
+
 \subsection{Création d'une table des symboles}
+
+Pour la création de notre table des symboles nous utiliserons la méthode
+présenté dans cet article \cite{power2000symbol} que nous avons simplifié pour
+la récupération et la recherche de symboles.\\
+
+Commençons par étudier la composition d'un symbole. Chaque symbole est composé
+d'un nom qui lui sert d'identifiant, d'un type et d'un genre. Le genre est une
+énumération qui suis le même principe que dans \cite{power2000symbol}. Le type
+du symbole est une liste de \textbf{Type} qui est une énumération décrite dans
+l'AST, il a la même utilité que pour les éléments typées \ref{sec:eltTypes}.
+
+\begin{figure}[h!]
+  \begin{center}
+  \includegraphics[scale=0.5]{../ressources/diagrams/symbol.png}
+  \caption{Diagramme de classe : Symbol}
+  \end{center}
+\end{figure}
+
+\subsection{Gestion des erreurs}
 \subsection{Traitement des des symboles dans le parseur}
 
 \section{Le transpilleur}

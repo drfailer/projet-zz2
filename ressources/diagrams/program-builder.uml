@@ -8,7 +8,7 @@ class Program {
 
 ProgramBuilder o-- Program
 class ProgramBuilder {
-  -program: Program
+  -program: <Program>
   -blocks: list<Block>
   -funParams: list<Variable>
   -funcallParams: list<list<ASTNode>>
