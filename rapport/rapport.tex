@@ -109,9 +109,9 @@
 
 
 %------------------------------------------------------------------------------%
-%                                Remerciements                                 %{{{
+%                                Remerciements
 %------------------------------------------------------------------------------%
-\section*{Remerciements}
+\section*{Remerciements}%{{{
 
 \doublespacing
 \large % TODO: reformuler
@@ -130,25 +130,24 @@ ayant participée de près ou de loin au bon déroulement de ce projet.
 \clearpage{}%}}}
 
 %------------------------------------------------------------------------------%
-%                               Table of contents                              %{{{
+%                               Table of contents
 %------------------------------------------------------------------------------%
-\pagenumbering{arabic}
+\pagenumbering{arabic}%{{{
 \thispagestyle{empty}
 \tableofcontents
 \clearpage{}%}}}
 
 %------------------------------------------------------------------------------%
-%                               Table of figures                               %{{{
+%                               Table of figures
 %------------------------------------------------------------------------------%
-%\listoffigures
+\listoffigures%{{{
 \clearpage{}%}}}
 
 
 %------------------------------------------------------------------------------%
-%                              Résumé et Abstract                              %{{{
+%                              Résumé et Abstract
 %------------------------------------------------------------------------------%
-
-\setcounter{secnumdepth}{0}
+\setcounter{secnumdepth}{0}%{{{
 \section{Résumé}
 L'objectif de ce projet est la création d'un langage \textbf{transpilé} en
 \textbf{C++} dans le but de faire découvrir l'informatique et la programmation à
@@ -186,9 +185,9 @@ Keywords : \textbf{C++}, \textbf{interpreter}, \textbf{lexer}, \textbf{parser},
 \clearpage{}%}}}
 
 %------------------------------------------------------------------------------%
-%                                 Introduction                                 %{{{
+%                                 Introduction
 %------------------------------------------------------------------------------%
-\section{Introduction}
+\section{Introduction}%{{{
 \large
 Dans le cadre du projet de 2\up{ème} année à l'ISIMA, nous avons choisi de
 réaliser un travail concernant le sujet commun de la filière 2, génie logiciel
@@ -215,40 +214,39 @@ outils informatiques qui permettent la réalisation de notre langage.\\
 \clearpage{}%}}}
 
 %------------------------------------------------------------------------------%
-%               Résumé des réfs (à supprimer à la dernière version             %{{{
+%               Résumé des réfs (à supprimer à la dernière version
 %------------------------------------------------------------------------------%
-% TODO: à enlever
-\section{Résumé des références}
-
-\begin{itemize}
-  \item La partie consultable de \cite{flexBisonHandbook} présentent les bases
-    de flex.
-  \item \cite{compilerFlexBison} présente la construction d'un compilateur avec
-    flex et bison. Le compilateur présenté utilise une \textbf{table des
-    symboles} ainsi qu'une sorte de \textbf{byte code}. Nous avons choisi
-    l'autre méthode qui consiste à utiliser un object-ABS plutot que directement
-    du byte code. Article très utilisé au départ pour la mise en place du
-    parseur/lexeur.
-  \item \cite{flexmanual}: manuel d'utilisation de Flex.
-  \item \cite{cppparsing}: nous a permis d'avoir un exemple de code qui allie
-    flex et bison en C++ et non en C.
-
-
-  \item \cite{compilerTICH} explication du fonctionnement d'un compilateur.
-  \item \cite{compilerTILB} première version de l'article précédent.
-  \item \cite{crew1997astlog} création d'un analyser syntaxique pour du C/C++:
-    ASTROLOG. L'article par d'analyse syntaxique et de la construction
-    d'\textbf{ABS}.
-
-  \item \cite{visser2002meta} L'objectif de l'article est de présenter
-    l'utilisation des \textbf{ABS} pour de la méta programmation. Il comporte
-    pas mal d'exemples sur les \textbf{ABS} donc je le trouve pertinant.
-  \item \cite{gagnon1998sablecc}: \textbf{ABS} en java.
-\end{itemize}
-
-
-\clearpage{}
-\setcounter{secnumdepth}{1}%}}}
+% \section{Résumé des références}{{{
+%
+% \begin{itemize}
+%   \item La partie consultable de \cite{flexBisonHandbook} présentent les bases
+%     de flex.
+%   \item \cite{compilerFlexBison} présente la construction d'un compilateur avec
+%     flex et bison. Le compilateur présenté utilise une \textbf{table des
+%     symboles} ainsi qu'une sorte de \textbf{byte code}. Nous avons choisi
+%     l'autre méthode qui consiste à utiliser un object-ABS plutot que directement
+%     du byte code. Article très utilisé au départ pour la mise en place du
+%     parseur/lexeur.
+%   \item \cite{flexmanual}: manuel d'utilisation de Flex.
+%   \item \cite{cppparsing}: nous a permis d'avoir un exemple de code qui allie
+%     flex et bison en C++ et non en C.
+%
+%
+%   \item \cite{compilerTICH} explication du fonctionnement d'un compilateur.
+%   \item \cite{compilerTILB} première version de l'article précédent.
+%   \item \cite{crew1997astlog} création d'un analyser syntaxique pour du C/C++:
+%     ASTROLOG. L'article par d'analyse syntaxique et de la construction
+%     d'\textbf{ABS}.
+%
+%   \item \cite{visser2002meta} L'objectif de l'article est de présenter
+%     l'utilisation des \textbf{ABS} pour de la méta programmation. Il comporte
+%     pas mal d'exemples sur les \textbf{ABS} donc je le trouve pertinant.
+%   \item \cite{gagnon1998sablecc}: \textbf{ABS} en java.
+% \end{itemize}
+%
+%
+% \clearpage{}
+% \setcounter{secnumdepth}{1}}}}
 
 %------------------------------------------------------------------------------%
 %                                     Plan                                     %
@@ -256,7 +254,7 @@ outils informatiques qui permettent la réalisation de notre langage.\\
 
 % NOTE: les partie ne sont pas très équilibrées
 
-\section{Conception d'une grammaire}
+\section{Conception d'une grammaire}%{{{
 
 \subsection{Définition de la grammaire}%{{{
 
@@ -271,7 +269,7 @@ différer au maximum de python, notre syntaxe s'inspirera de celle des langages
 utiliserons la forme de Backus-Naur.
 % TODO: cite !!!
 
-\subsubsection{Les variables}
+\subsubsection*{Les variables}%{{{
 
 Pour stocker des données, notre langage utilise des variables dont la
 convention de nommage est la même qu'en \textbf{C}. Le langage est à typage
@@ -288,8 +286,8 @@ caractères (\textit{chr}). Voici la syntaxe pour déclarer une variable:
 <type> ::= <int> | <flt> | <chr>
 <declaration> ::= <type> <identifier> ";"
 \end{grammar}\leavevmode\newline
-
-\subsubsection{Les fonctions}
+%}}}
+\subsubsection*{Les fonctions}%{{{
 
 Pour définir des fonctions, nous utilisons le mot clé \textbf{fn}, suivit du nom
 de la fonction avec ses paramètres entre parenthèses et enfin le bloque de code
@@ -303,8 +301,8 @@ nécessaire.
 
 Pour pouvoir retourner une valeur, il faudra utiliser le mot clé \textit{return}
 dans la fonction.
-
-\subsubsection{Les structures de contrôle}
+%}}}
+\subsubsection*{Les structures de contrôle}%{{{
 
 Nous avons aussi ajouté les structures de contrôle présentes dans la plupart des
 langages de programmation.
@@ -317,8 +315,8 @@ langages de programmation.
 
 <while> ::= while "("<condition>")" "{" <instructions> "}"
 \end{grammar}\leavevmode\newline
-
-\subsubsection{Les opérations}
+%}}}
+\subsubsection*{Les opérations}%{{{
 
 Comme dit précédemment, tous le langage ne comporte pas d'opérateur donc toutes
 les opérations se font à l'aide de fonctions directement intégrées dans le
@@ -351,12 +349,12 @@ transpileur. Voici une liste des opérations possibles :
     \hline
 \end{tabular}
 \end{center}
-
-\subsubsection{Inclusion de fichier}
+%}}}
+\subsubsection*{Inclusion de fichier}%{{{
 
 TODO: Non fonctionnel :/
-
-\subsubsection{Entrée et sortie}
+%}}}
+\subsubsection*{Entrée et sortie}%{{{
 
 Le langage possède aussi la possibilité d'afficher et de lire du texte depuis la
 console. La lecture se fait avec la fonction \textit{read} qui prend en
@@ -368,8 +366,8 @@ utiliser la fonction \textit{print} qui peut être utilisée de deux manières :
   \item \lstinline{print(variable)} : affichage d'une valeur (depuis une
     variable ou une fonction).
 \end{itemize}
-
-\subsubsection{Exemple de code}
+%}}}
+\subsubsection*{Exemple de code}%{{{
 
 Dans cet exemple, nous disposons de 2 variables \textbf{a} et \textbf{b}. La
 variable \textbf{a} est lue par commande de l'utilisateur tandis que la valeur 4
@@ -402,7 +400,7 @@ fn main() {
 \end{grammar}\leavevmode\newline
 
 
-\clearpage{}
+\clearpage{}%}}}
 %}}}
 \subsection{Arbre syntaxique}%{{{
 
@@ -435,13 +433,14 @@ utilisable dans le transpileur. Le diagramme de classes complet est disponible
 en annexe \ref{appendix:classAST}. Détaillons maintenant les parties
 importantes.
 
-\subsubsection{Les bloques de code}
+\subsubsection*{Les bloques de code}
 
 La classe \lstinline{Block} correspond aux bloques de code en entre accolades.
 Elle possède une liste de nœuds qui sont les opérations contenues dans le
 bloque.
 
-\subsubsection{Les conteneurs d'opérations}
+\clearpage{}
+\subsubsection*{Les conteneurs d'opérations}
 
 La classes \lstinline{Statement} correspond aux éléments qui contiennent des
 blocks de code. Cela comprend les fonctions et les structures de contrôles. La
@@ -454,7 +453,7 @@ grammaire ne permet pas l'emploi des bloques ailleurs.
   \end{center}
 \end{figure}
 
-\subsubsection{Les opérations}
+\subsubsection*{Les opérations}
 
 Les opérations sont traitées avec la classe \lstinline{OperationBinaire} qui
 correspond à tous les opérateurs.
@@ -466,7 +465,7 @@ correspond à tous les opérateurs.
   \end{center}
 \end{figure}
 
-\subsubsection{Les éléments typé}
+\subsubsection*{Les éléments typé}
 \label{sec:eltTypes}
 
 Les fonctions, les valeurs et les variables possède un champ type. \textbf{Type}
@@ -487,8 +486,8 @@ contenir n'importe quel type de valeur et le champ à utiliser est déterminé p
 le type de la valeur.
 
 %}}}
-
-\section{Construction de l'AST}
+%}}}
+\section{Construction de l'AST}%{{{
 
 Dans cette partie nous expliquerons la création d'un parseur en utilisant les
 outils \textbf{GNU Flex} et \textbf{GNU Bison}. De plus, nous détaillerons la
@@ -502,13 +501,13 @@ parseur \cite{cppparsing}.
 \subsection{Le lexeur}%{{{
 
 \phantomsection
-\subsubsection{Définition}
+\subsubsection*{Définition}
 
 Le lexeur, ou encore appelé analyseur lexical, a pour but de transformer le
 texte du code source en des unités lexicales, appelées \textit{tokens}
 \cite{flexBisonHandbook}. \\
 
-\subsubsection{Exemple}
+\subsubsection*{Exemple}
 
 Pour l'expression simple \textbf{a = 2 * b} \\
 Les tokens apparaissant sont : \\
@@ -535,7 +534,7 @@ généralement du caractère blancs (espaces et tabulations) et des
 commentaires.\\~\\
 
 \phantomsection
-\subsubsection{Implémentation}
+\subsubsection*{Implémentation}
 
 L'outil utilisé pour générer le lexeur est \textbf{GNU Flex} (Fast LEXical
 analyser generator). Il permet de générer le code C++ du lexeur à partir d'un
@@ -664,14 +663,14 @@ pour bison.
 \subsection{Le parseur}%{{{
 
 \phantomsection
-\subsubsection{Définition}
+\subsubsection*{Définition}
 
 Également appelé analyseur syntaxique, son rôle principal est la vérification de
 la syntaxe du code en regroupant les tokens selon une structure suivant des
 règles syntaxiques. \\
 
 
-\subsubsection{Exemple}
+\subsubsection*{Exemple}
 
 Pour l'expression simple \textbf{a = 2 * b} \\
 Les tokens apparaissant sont : \\
@@ -688,7 +687,7 @@ Les tokens apparaissant sont : \\
 \end{center}
 
 \phantomsection
-\subsubsection{Implémentation}
+\subsubsection*{Implémentation}
 
 À l'instar de Flex pour le lexeur, Bison est un générateur de grammaire qui
 convertit une description de grammaire en un programme C++ qui analyse cette
@@ -804,7 +803,7 @@ Pour la génération du code, on a deux options :
 
 \clearpage{}
 %}}}
-\subsection{Fabrique à programme}
+\subsection{Fabrique à programme}%{{{
 
 Pour construire l'arbre syntaxique dans le programme, nous utiliserons
 la classe \textbf{ProgramBuilder}. Cette classe permet de stocker des éléments
@@ -843,8 +842,9 @@ construire ces listes en utilisant les valeurs retour de bison.\\
 Le \textbf{ProgramBuilder} permet donc de stocker les éléments important ainsi
 que de construire le \textbf{Program} au fur et à mesure de l'exécution du
 parseur.
-
-\section{Analyse des symboles}
+%}}}
+%}}}
+\section{Analyse des symboles}%{{{
 
 Dans cette partie, nous allons créer une table des symboles qui, de façon
 similaire à ce que l'on voit dans \cite{compilerFlexBison}, permet de vérifier
@@ -879,9 +879,28 @@ l'AST, il a la même utilité que pour les éléments typées \ref{sec:eltTypes}
   \end{center}
 \end{figure}
 
+Pour implémenter la table des symbole nous nous sommes inspiré du schéma suivant
+\cite{symtableGenius}. Ici la table des symboles est une table de tables, et
+chaque sous table correspond à une zone de code dans laquelle peuvent être
+définis des symboles (\textbf{scope}). Cette représentation est intéressante car
+elle permet de pouvoir aisément vérifier si un symbole existe en remontant
+l'arborescence de la table jusqu'aux \textbf{scope} global. En effet, les
+éléments stockés dans la table mère sont toujours accessibles.
+
+% TODO diagramme de classe
+
+% TODO: context manager
+
+\begin{figure}[h!]
+  \begin{center}
+  \includegraphics[scale=0.5]{./img/symtable.png}
+  \caption{Structure de la table des symboles}
+  \end{center}
+\end{figure}
+
 \subsection{Gestion des erreurs}
 \subsection{Traitement des des symboles dans le parseur}
-
+%}}}
 \section{Le transpilleur}
 % TODO
 
@@ -890,12 +909,13 @@ l'AST, il a la même utilité que pour les éléments typées \ref{sec:eltTypes}
 %------------------------------------------------------------------------------%
 %                                 bibliography                                 %
 %------------------------------------------------------------------------------%
+\clearpage{}
 \printbibliography[keyword={paper},title={Biliographie}]
 \printbibliography[keyword={web},title={Webographie}]
 
 \appendix
 
-\clearpage
+\clearpage{}
 \section{Diagramme de classes de l'AST}\label{appendix:classAST}
 
 \begin{figure}[h]
