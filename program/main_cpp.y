@@ -46,6 +46,7 @@ ProgramBuilder pb;
 Symtable symtable;
 ContextManager contextManager;
 ErrorManager errMgr;
+std::string currentFunction = "";
 
 // symtable check
 bool isDefined(std::string name, int line, int column, std::list<Type>& type) {
@@ -89,26 +90,31 @@ bool checkTypeError(std::list<Type> expectedType, std::list<Type> funcallType) {
   return typeError;
 }
 
+// d'avoir le type d'un symbol inline
+Type getType(std::shared_ptr<ASTNode> node) {
+  Type type = VOID;
+
+  if(std::shared_ptr<Funcall> fun = std::dynamic_pointer_cast<Funcall>(node)) {
+    // treat as a funcall
+    std::optional<Symbol> funSym = contextManager.lookup(fun->getFunctionName());
+    type = funSym.value().getType().back();
+  }
+  else if (std::shared_ptr<Variable> var = std::dynamic_pointer_cast<Variable>(node)) { // this is a variable
+    std::optional<Symbol> varSym = contextManager.lookup(var->getId());
+    type = varSym.value().getType().back();
+  }
+  else if (std::shared_ptr<Value> val = std::dynamic_pointer_cast<Value>(node)) { // this is a value
+    type = val->getType();
+  }
+  // otherwise this is a buildin function
+  return type;
+}
+
 // permet de récupérer les types des paramètres lors des appels de fonctions
 std::list<Type> getTypes(std::list<std::shared_ptr<ASTNode>> nodes) {
   std::list<Type> types;
   for (std::shared_ptr<ASTNode> node : nodes) {
-   // It would have greate to have a TypedElement class :,)
-   if(std::shared_ptr<Funcall> fun = std::dynamic_pointer_cast<Funcall>(node)) {
-     // treat as a funcall
-     std::optional<Symbol> funSym = contextManager.lookup(fun->getFunctionName());
-     types.push_back(funSym.value().getType().back());
-   }
-   else if (std::shared_ptr<Variable> var = std::dynamic_pointer_cast<Variable>(node)) { // this is a variable
-     std::optional<Symbol> varSym = contextManager.lookup(var->getId());
-     types.push_back(varSym.value().getType().back());
-   }
-   else if (std::shared_ptr<Value> val = std::dynamic_pointer_cast<Value>(node)) { // this is a value
-     types.push_back(val->getType());
-   }
-   else {
-     errMgr.newError("Type error: this doesn't work");
-   }
+    types.push_back(getType(node));
   }
   return types;
 }
@@ -169,6 +175,7 @@ includes: INCLUDE IDENTIFIER SEMI
 function:
         FN IDENTIFIER[name]'('paramDeclarations')'
         {
+          currentFunction = $name;
           std::list<Type> funType = pb.getParamsTypes();
           funType.push_back(VOID);
           contextManager.newSymbol($name, funType, FUNCTION);
@@ -183,6 +190,7 @@ function:
         |
         FN IDENTIFIER[name]'('paramDeclarations')' ARROW type[rt]
         {
+          currentFunction = $name;
           std::list<Type> funType = pb.getParamsTypes();
           funType.push_back($rt);
           contextManager.newSymbol($name, funType, FUNCTION);
@@ -275,9 +283,28 @@ code: %empty
     | commands code
     | RETURN inlineSymbol[rs] SEMI
     {
-      // TODO: check the type !!!
-      // note: use the current function name contained by the program builder
-      // to find the type
+      std::optional<Symbol> sym =
+        contextManager.lookup(currentFunction);
+      Type rtType = getType($rs);
+      Type functionType = sym.value().getType().back();
+      std::ostringstream oss;
+
+      if (functionType == VOID) { // no return allowed
+        oss << "founded return statement in " << currentFunction
+            << " at " << @1 << " which is of type void" << std::endl;
+        errMgr.newError(oss.str());
+      }
+      // must check if rtType is not void because of the buildin function (add, ...)
+      // which are not in the symtable
+      else if (functionType != rtType && rtType != VOID) {
+        oss << "in " << currentFunction
+            << " at " << @1 << " return of type " << typeToString(rtType)
+            << " but this function is of type "
+            << typeToString(functionType)
+            << std::endl;
+        errMgr.newWarning(oss.str());
+      }
+      // else verify the type and throw a warning
       pb.pushBlock(std::make_shared<Return>($rs));
     }
     ;

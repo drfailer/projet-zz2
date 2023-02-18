@@ -151,7 +151,6 @@ class Funcall : public ASTNode
     std::string getFunctionName() const;
     std::list<std::shared_ptr<ASTNode>> getParams() const;
     Funcall(std::string, std::list<std::shared_ptr<ASTNode>>);
-    Type getType() const;
     void display() override;
 };
 
