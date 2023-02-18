@@ -404,7 +404,7 @@ fn main() {
 %}}}
 \subsection{Arbre syntaxique}%{{{
 
-Pour donner un sens aux éléments textuels du langage, nous utiliseront une
+Pour donner un sens aux éléments textuels du langage, nous utiliserons une
 représentation sous forme d'arbre. On appel cela un arbre syntaxique ou AST
 (Abstract Syntax Tree). Les arbres syntaxiques sont nés avec la théorie des
 langages et comme on peut le voir dans cet article \cite{compilerTICH}, les AST
@@ -465,6 +465,7 @@ correspond à tous les opérateurs.
   \end{center}
 \end{figure}
 
+\clearpage{}
 \subsubsection*{Les éléments typé}
 \label{sec:eltTypes}
 
@@ -486,6 +487,7 @@ contenir n'importe quel type de valeur et le champ à utiliser est déterminé p
 le type de la valeur.
 
 %}}}
+\clearpage{}
 %}}}
 \section{Construction de l'AST}%{{{
 
@@ -854,13 +856,15 @@ symboles peuvent avoir des portées différentes. De plus la table des symboles
 nous permettra aussi de faire de la vérification de types pour par exemple,
 vérifier qu'une fonctions prend les bon paramètres.
 
-Du fait que nous allons devoir faire de la détection d'erreurs, nous créeront
+Du fait que nous allons devoir faire de la détection d'erreurs, nous créerons
 une nouvelle classe qui permettra de stocker tous les messages d'erreurs (et
 avertissements) au fil de l'exécution du parseur. Ces messages seront affichés à
 la fin une fois le tous code source traité. À noter que la présence d'erreurs
 empêche la compilation.
 
-\subsection{Création d'une table des symboles}
+\subsection{Gestion des symboles}
+
+\subsubsection{La table des symboles}
 
 Pour la création de notre table des symboles nous utiliserons la méthode
 présenté dans cet article \cite{power2000symbol} que nous avons simplifié pour
@@ -886,10 +890,7 @@ définis des symboles (\textbf{scope}). Cette représentation est intéressante 
 elle permet de pouvoir aisément vérifier si un symbole existe en remontant
 l'arborescence de la table jusqu'aux \textbf{scope} global. En effet, les
 éléments stockés dans la table mère sont toujours accessibles.
-
-% TODO diagramme de classe
-
-% TODO: context manager
+\clearpage
 
 \begin{figure}[h!]
   \begin{center}
@@ -898,13 +899,44 @@ l'arborescence de la table jusqu'aux \textbf{scope} global. En effet, les
   \end{center}
 \end{figure}
 
-\subsection{Gestion des erreurs}
-\subsection{Traitement des des symboles dans le parseur}
-%}}}
-\section{Le transpilleur}
-% TODO
+% TODO diagramme de classe
 
-\section{Conception d'un langage informatique}
+Pour l'implémentation, nous suivrons le diagramme ci-dessous. Les symboles sont
+stockés dans une \textbf{unordered\_map} qui est une table de hachage qui
+permettra de récupérer les symboles avec leurs identifiants. De plus, la table
+possède un liste de sous tables qui et un pointeur sur la table mère qui sera
+utilisé par la méthode \textbf{lookup} pour la recherche de symbole comme
+expliqué précédemment.
+
+\begin{figure}[h!]
+  \begin{center}
+  \includegraphics[scale=0.5]{../ressources/diagrams/symtable2.png}
+  \caption{Diagramme de classe : Symtable}
+  \end{center}
+\end{figure}
+
+\subsubsection{Gestion du contexte}
+
+% TODO: context manager
+
+\subsection{Gestion des erreurs}
+
+% TODO: errorMgr
+
+\subsection{Traitement des des symboles dans le parseur}
+
+\subsubsection{Vérification des définitions}
+
+% définition des variables
+% définition des fonction
+
+\subsubsection{Vérification des types}
+% fonction
+% set
+% vérifcation du return
+%}}}
+\section{Le transpileur}
+% TODO
 
 %------------------------------------------------------------------------------%
 %                                 bibliography                                 %

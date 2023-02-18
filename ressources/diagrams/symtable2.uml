@@ -1,12 +1,12 @@
 @startuml
 skinparam classattributeiconsize 0
 
-class symbolstable {
+class Symtable {
   -table: unordered_map<string, Symbol>
   -childScopes: list<Symtable>
-  -father: Symtable
+  -mother: Symtable
   +getChildScopes(): list<Symtable>
-  +getFather(): Symtable
+  +getMother(): Symtable
   +lookup(string name): optional<Symbol>
   +void addScope(Symtable): void
   +void add(string name, Type type, Kind kind): void

@@ -39,3 +39,4 @@ program/Types.o
 program/build
 program/location.hh
 program/position.hh
+rapport/rapport.lof
