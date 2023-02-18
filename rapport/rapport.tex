@@ -464,13 +464,11 @@ correspond à tous les opérateurs.
 
 \section{Construction de l'AST}
 
-% TODO: article flex bison + site C++
-
 Dans cette partie nous expliquerons la création d'un parseur en utilisant les
 outils \textbf{GNU Flex} et \textbf{GNU Bison}. De plus, nous détaillerons la
 génération de l'AST en utilisant les classes décrites précédemment. Pour cette
 partie, nous nous sommes aidé d'un article \cite{compilerFlexBison} qui présente
-la construction d'un compilateur avec Flex et Bison en C. Pour porter le code en % LA DOC !
+la construction d'un compilateur avec Flex et Bison en C. Pour porter le code en
 C++, nous avons utilisé la documentation officielle des deux outils ainsi qu'un
 article qui nous a permis d'avoir un squelette de base pour le lexeur et le
 parseur \cite{cppparsing}.
@@ -513,38 +511,67 @@ commentaires.\\~\\
 \phantomsection
 \subsubsection{Implémentation}
 
-L'outil utilisé pour générer un lexeur est \textbf{GNU Flex} (Fast LEXical
-analyser generator). Au lieu d'écrire un lexeur à partir de zéro, Flex permet
-d'avoir un lexeur en donnant seulement les modèles des expressions régulières
-ainsi que le langage de travail (C++ dans notre cas).\\ % TODO: reformuler
-
-\noindent
-
-Le fichier \textbf{main\_cpp.l} contient le code qui permet de générer le lexeur
-avec Flex. Les tokens doivent-être définis dans \textbf{main\_cpp.y} au
-préalable. À noter que l'on peut utiliser la variable \lstinline{yylval} pour
-transmettre des éléments au parser.\\
-
-La structure du fichier \textbf{main\_cpp.l} est la suivante :
+L'outil utilisé pour générer le lexeur est \textbf{GNU Flex} (Fast LEXical
+analyser generator). Il permet de générer le code C++ du lexeur à partir d'un
+fichier. Dans notre cas, le fichier utilisé sera \textbf{main\_cpp.l} et possède
+la structure suivante \cite{compilerFlexBison} :
 
 \begin{code}
-C and parser declaration
+// code C++, options et declarations de raccourcis
 
 %%
-Grammar rules and actions
+// Definition des tokens et actions
 
 %%
-C subroutings
+// Fonctions C++
 \end{code}\leavevmode\newline
 
 \noindent
 
-% TODO: dvlp sur les règles
-On peut définir des règles dans les déclarations du lexeur :
+Dans la première partie en haut du fichier, on place les inclusions de
+bibliothèques C/C++ ainsi que des options pour flex.
 
 \begin{code}
-%option c++ interactive noyywrap noyylineno nodefault outfile="lexer.cpp"
+%{
+#include "parser.hpp"
+#include "lexer.hpp"
+%}
 
+%option c++ interactive noyywrap yylineno nodefault outfile="lexer.cpp"
+\end{code}\leavevmode\newline
+
+Détail des fonctions utilisée :
+\begin{itemize}
+  \item \textbf{c++} : indique qu'on travail avec du cpp et non du c
+  \item \textbf{interactive} : utile quand on utlise \textbf{std::in}. Le
+    scanner interactif regarde plus de caractères avant de générer un token
+    (plus lent mais permet de lutter contre les ambiguitées)
+  \item \textbf{noyywrap} : ne pas appeler \textbf{yywrap()} qui permet de parser plusieurs fichiers
+  \item \textbf{nodefault} : pas de scanner par défaut (=> on doit tout implémenter)
+  \item \textbf{outfile:"file.cpp"} : permet de definir le fichier de sortie
+\end{itemize}\leavevmode\\
+
+% TODO: dvlp sur les règles
+Après les options on peut définir des raccourcis en utilisant des expressions
+régulières. Par exemple, dans le code ci-dessous, nous avons définit les règles
+suivantes :
+
+\begin{itemize}
+  \item \textbf{alpha :} un caractère alphabétique est composé d'une lettre
+    minuscule ou d'une lettre majuscule.
+  \item \textbf{digit :} les chiffres sont les caractères entre 0 et 9.
+  \item \textbf{int :} les entiers correspondes à une suite de chiffres et
+    peuvent être positifs ou négatifs.
+  \item \textbf{float :} similaire aux entiers sauf qu'ici on a obligatoirement
+    un point suivit d'une suite de chiffre à la fin.
+  \item \textbf{char :} les caractère sont toujours écrit entre \textbf{'} (par
+    exemple \textbf{'a'}).
+  \item \textbf{identifier :} correspond aux noms de fonctions et de variables
+    et suit le standard du C. Un identifiant commence par une lettre minuscule
+    et peut être suivit d'une suite de lettres, de nombre et de \textbf{\_}.
+\end{itemize}
+
+\begin{code}
 alpha [a-zA-Z]
 digit [0-9]
 int [+-]?{digit}+
@@ -555,24 +582,18 @@ identifier [a-z]({alpha}|{digit}|_)*
 
 \noindent
 
-% TODO: faire un petit paragraph
+Dans la seconde partie du fichier, on définit des règles et des actions. À noter
+que l'on peut utiliser les raccourcis définis précédemment en mettant leurs noms
+entre accolades comme fait ci-dessous pour \textbf{identifier}. La définition
+d'une règle suit le principe suivant, on commence par donner une suite de
+caractères qui sera consommée. Ensuite met du code entre accolades, et ce code
+sera exécuté quand le lexeur consommera la chaine. Par exemple, si on prend la
+première ligne ci-dessous, quand le lexeur trouvera le mot \textbf{for}, il
+affichera \textit{L\_for} dans le terminal puis retournera le token \textbf{FOR}.
 
-Concernant la ligne d'option :
-\begin{itemize}
-\item \textbf{c++} : indique qu'on travail avec du cpp et non du c
-\item \textbf{interactive} : utile quand on utlise \textbf{std::in}. Le scanner interactif regarde plus de caractères avant de générer un token (plus lent mais permet de lutter contre les ambiguitées)
-\item \textbf{noyywrap} : ne pas appeler \textbf{yywrap()} qui permet de parser plusieurs fichiers
-\item \textbf{noyylineno}: désactive l'enregistrement des lignes (\textbf{yylineno})
-\item \textbf{nodefault} : pas de scanner par défaut (=> on doit tout implémenter)
-\item \textbf{outfile:"file.cpp"} : permet de definir le fichier de sortie
-\end{itemize}\leavevmode\\[3\baselineskip]
-
-
-\noindent
-
-% TODO: dvlp sur les déclarations des tokens
-
-Dans les règles, on suit toujours le même principe, on indique les caractères à reconaitre puis on exécute du code :\\
+À noter que les tokens disponibles dans l'espace de nom \textbf{Parser::token}
+doivent être définis dans le ficher bison que l'on détaillera dans la partie
+suivante.
 
 \begin{code}
 for          { AFFICHE("L_for"); return Parser::token::FOR; }
@@ -590,10 +611,10 @@ Ici on a accès à la variable \textcolor{purple}{yylval} de type
 \textcolor{purple}{build} permettant de transmettre des valeurs à bison.\\
 
 % TODO: ça doit pas être là je pense
-Ces valeurs sont accessibles via les variables de bison: \textcolor{purple}{\$2}. La variable
-\textcolor{purple}{yytext} contient le text traité par Flex. De plus, dans le code, on retourne
-les \textit{tokens}. Ces \textbf{tokens} sont définis dans le fichier de bison.
-\newline
+% Ces valeurs sont accessibles via les variables de bison: \textcolor{purple}{\$2}. La variable
+% \textcolor{purple}{yytext} contient le text traité par Flex. De plus, dans le code, on retourne
+% les \textit{tokens}. Ces \textbf{tokens} sont définis dans le fichier de bison.
+% \newline
 
 La fonction appelée par défaut est \textcolor{purple}{yylex}, cependant, pour
 pouvoir travailler avec bison, nous devons fournir nos propres fonctions, pour
@@ -602,8 +623,15 @@ la partie \textit{9 The Generated Scanner} du manuel pour Flex
 \cite{flexmanual}.
 
 \begin{code}
-#define YY_DECL int interpreter::Scanner::lex(interpreter::Parser::semantic_type *yylval)
+#define YY_DECL int interpreter::Scanner::lex(Parser::semantic_type *yylval, Parser::location_type *yylloc)
 \end{code}\leavevmode\\~\\
+
+Cette macro permet de définir le type de la fonction \textbf{lex}, ici,
+on a pour paramètre \textcolor{purple}{yylval} (qui comme dit précédemment permet
+de transmettre des valeurs à bison) et \textcolor{purple}{yylloc} qui doit être
+fourni quand on utiliser les positions dans le parseur (pour avoir le numéro de
+ligne en cas d'erreur par exemple), mais cela nécessite une option particulière
+pour bison.
 
 \clearpage{}
 %}}}
