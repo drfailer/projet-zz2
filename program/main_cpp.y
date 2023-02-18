@@ -51,6 +51,7 @@ ErrorManager errMgr;
 bool isDefined(std::string name, int line, int column, std::list<Type>& type) {
   bool defined = true;
   std::optional<Symbol> sym = contextManager.lookup(name);
+
   if (!sym.has_value()) {
     defined = false;
     std::ostringstream oss;
@@ -64,6 +65,54 @@ bool isDefined(std::string name, int line, int column, std::list<Type>& type) {
   }
   return defined;
 }
+
+void printType(std::ostringstream& oss, std::list<Type> types) {
+  for (Type t : types) {
+    oss << typeToString(t) << " -> ";
+  }
+  oss << "." << std::endl;
+}
+
+bool checkTypeError(std::list<Type> expectedType, std::list<Type> funcallType) {
+  bool typeError = false;
+  if (expectedType.size() != funcallType.size()) {
+      typeError = true;
+  }
+  else {
+    for (int i = 0; i < funcallType.size(); ++i) {
+      if (expectedType.size() == 0 || funcallType.front() != expectedType.front())
+        typeError = true;
+      funcallType.pop_front();
+      expectedType.pop_front();
+    }
+  }
+  return typeError;
+}
+
+// permet de récupérer les types des paramètres lors des appels de fonctions
+std::list<Type> getTypes(std::list<std::shared_ptr<ASTNode>> nodes) {
+  std::list<Type> types;
+  for (std::shared_ptr<ASTNode> node : nodes) {
+   // It would have greate to have a TypedElement class :,)
+   if(std::shared_ptr<Funcall> fun = std::dynamic_pointer_cast<Funcall>(node)) {
+     // treat as a funcall
+     std::optional<Symbol> funSym = contextManager.lookup(fun->getFunctionName());
+     types.push_back(funSym.value().getType().back());
+   }
+   else if (std::shared_ptr<Variable> var = std::dynamic_pointer_cast<Variable>(node)) { // this is a variable
+     std::optional<Symbol> varSym = contextManager.lookup(var->getId());
+     types.push_back(varSym.value().getType().back());
+   }
+   else if (std::shared_ptr<Value> val = std::dynamic_pointer_cast<Value>(node)) { // this is a value
+     types.push_back(val->getType());
+   }
+   else {
+     errMgr.newError("Type error: this doesn't work");
+   }
+  }
+  return types;
+}
+
 }
 
 %token <long long>  INT
@@ -386,52 +435,24 @@ funcall:
           pb.newFuncall($1);
        }
        params')'
-       { // TODO: c'est la merde !!!!!!!!!!!!!
+       {
          std::list<Type> expectedType;
-         std::list<Type> funcallType;
          isDefined($1, @1.begin.line, @1.begin.column, expectedType);
          std::shared_ptr<Funcall> funcall = pb.createFuncall();
-         // get the funcall type
-         for (std::shared_ptr<ASTNode> param : funcall->getParams()) {
-           // It would have greate to have a TypedElement class :,)
-           if(std::shared_ptr<Funcall> fun = std::dynamic_pointer_cast<Funcall>(param)) {
-              // treat as a funcall
-              std::optional<Symbol> funSym = contextManager.lookup(fun->getFunctionName());
-              funcallType.push_back(funSym.value().getType().back());
-           }
-           else if (std::shared_ptr<Variable> var = std::dynamic_pointer_cast<Variable>(param)) { // this is a variable
-              std::optional<Symbol> varSym = contextManager.lookup(var->getId());
-              funcallType.push_back(varSym.value().getType().back());
-           }
-           else if (std::shared_ptr<Value> val = std::dynamic_pointer_cast<Value>(param)) { // this is a value
-              funcallType.push_back(val->getType());
-           }
-           else {
-             errMgr.newError("Type error: this doesn't work");
-           }
-         }
-         bool typeError = false;
-         expectedType.pop_back(); // get rid of the return type
-         if (expectedType.size() != funcallType.size())
-           typeError = true;
-         else {
-           for (int i = 0; i < funcallType.size(); ++i) {
-             if (expectedType.size() == 0 || funcallType.front() != expectedType.front())
-               typeError = true;
-             funcallType.pop_front();
-             expectedType.pop_front();
-           }
-         }
-         // with the expected funcall type compare
-         if (typeError) { // TODO: write a compare function
-           std::cout << $1 << std::endl;
-           for (Type t : expectedType) {
-             std::cout << "expected: " << t << std::endl;
-           }
-           for (Type t : funcallType) {
-             std::cout << "found: " << t << std::endl;
-           }
-           errMgr.newError("Type error: the expected type was: TODO, found: TODO\n");
+
+         // get the founded return type (types of the parameters)
+         std::list<Type> funcallType = getTypes(funcall->getParams());
+
+         expectedType.pop_back(); // remove the return type
+         bool typeError = checkTypeError(expectedType, funcallType);
+
+         if (typeError) {
+           std::ostringstream oss;
+           oss << "Type error: at " << @1 << " in " << $1 << ": the expected type was:" << std::endl;
+           printType(oss, expectedType);
+           oss << "founded:" << std::endl;
+           printType(oss, funcallType);
+           errMgr.newError(oss.str());
          }
          DEBUG("new funcall: " << $1);
          // check the type
