@@ -124,6 +124,19 @@
     name=fonctions variadiques,
     description={fonction qui prend un nombre indéfini de paramètres.}
 }
+\newglossaryentry{bytecode}
+{
+    name=bytecode,
+    description={code intermédiaire entre les instructions machine et le code
+    source. Il n'est pas directment exécutable par l'ordinateur.}
+}
+\newglossaryentry{gc}
+{
+    name=garbage collector,
+    description={(ramasse-miettes) outils inventé par John McCarthy qui permet
+    de collecter les zones mémoires non utilisées lors de l'exécution d'un
+    programme.}
+}
 
 
 %------------------------------------------------------------------------------%
@@ -257,9 +270,64 @@ outils informatiques qui permettent la réalisation de notre langage.\\
 
 \section{Contexte du projet}
 
-\subsection{Création d'un langage de programmation transilé}
+\subsection{Concept de langage transpilé}
+
+L'objectif du projet commun est de créer un outils qui pourra servir à faire des
+démonstrations pour présenter la filière génie logiciel. Étant donné le fait que
+le code fait partie intégrante du développement logiciel nous avons décidé de
+créer un langage de programmation simple pouvant servir à présenter le concept
+de programmation.\\
+
+Il existe quatre familles de langages de programmations. La première est celle
+des langages compilés comme le C ou le C++. Le principe est de transformer le
+code source en assembleur puis de générer un exécutable. Cette méthode est la
+plus complexe, cependant les langages compilés sont généralement les plus
+rapides.
+
+La seconde méthode pour exécuter du code est l'utilisation d'une machine
+virtuelle. Le code source du langage est traduit en un code de bas niveau, le
+\gls{bytecode}, qui est ensuite exécuté par une machine virtuelle. C'est par exemple
+le cas du langage Java.
+
+La troisième famille est celle des langages interprétés. Ici c'est
+l'interpréteur qui se charge directement de l'exécution du code source, sans
+passer par une représentation intermédiaire comme le \gls{bytecode}.
+
+La dernière famille est celle que nous allons étudier lors de la réalisation de
+ce projet, ce sont les langages transpilés. L'objectif d'un transpileur et de
+traduire le code source dans un autre langage. Le principal avantage du
+transpileur est qu'il permet de déléguer les taches complexes au compilateur du
+langage cible. Par exemple, cela évite d'avoir à écrire un \gls{gc} pour gérer
+la mémoire.
+
+\subsection{Les fonctionnalités du langage}
+
+Notre objectif global est de pouvoir écrire du code dans un fichier puis
+utiliser notre transpileur pour générer un fichier python (qui sera exécuté avec
+sous python3). Le langage doit être simple mais doit tout de même les
+fonctionnalités suivantes :
+
+Le langage doit permettre le stockage d'information dans des variables. Nous
+souhaitons que notre langage possède trois types de données, les caractères, les
+entiers et les flottants. Étant donné que l'objectif du projet est de pouvoir
+présenter la programmation, il est intéressant d'utiliser un langage qui possède
+des types car cela permet de mieux comprendre comment l'ordinateur gère les
+données.
+
+On doit aussi avoir la possibilité d'écrire des fonctions et des procédures
+paramétrées qui pourront être utilisés dans différents endroits du programmes.
+
+De plus, le langage devra posséder des structures de contrôles permettant la
+création de conditions et de boucles.
+
+Enfin, il doit aussi intégrer des fonctions arithmétiques permettant les
+opérations de bases, des fonctions booléennes permettant de faire des
+tests ainsi que des fonctions permettant des actions d'entrée et de sortie
+(affichage console).
 
 \subsection{Analyse du problème}
+
+% TODO: diagramme de gantt
 
 \section{Réalisation et conception}
 
@@ -925,7 +993,7 @@ l'arborescence de la table jusqu'aux \textbf{scope} global. En effet, les
 
 Pour l'implémentation, nous suivrons le diagramme ci-dessous. Les symboles sont
 stockés dans une \textbf{unordered\_map} qui est une table de hachage qui
-permettra de récupérer les symboles avec leurs identifiants. De plus, la table
+permettra l'accès aux valeurs avec l'identifiant. De plus, la table
 possède un liste de sous tables qui et un pointeur sur la table mère qui sera
 utilisé par la méthode \textbf{lookup} pour la recherche de symbole comme
 expliqué précédemment.
@@ -959,6 +1027,8 @@ expliqué précédemment.
 
 \subsection{Le transpileur}
 % TODO
+
+\section{Résultats et discussions}
 
 %------------------------------------------------------------------------------%
 %                                 bibliography                                 %
