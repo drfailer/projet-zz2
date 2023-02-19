@@ -504,6 +504,16 @@ assignement:
              if (isDefined($v, @v.begin.line, @v.begin.column, type)) {
                // TODO: check the type of the symbol and raise a warning if cast
                // needed
+               Type icType = getType($ic);
+               if (type.back() != icType) {
+                 std::ostringstream oss;
+                 oss << "assignment at " << @1
+                     << " " << $v << " id of type "
+                     << typeToString(type.back())
+                     << " but the value assigned is of type "
+                     << typeToString(icType) << std::endl;
+                 errMgr.newWarning(oss.str());
+               }
                pb.pushBlock(std::make_shared<Assignement>(Variable($v,
                  type.back()), $ic));
              }
@@ -640,10 +650,8 @@ int main(int argc, char **argv) {
     interpreter::Scanner scanner{ is , std::cerr };
     interpreter::Parser parser{ &scanner };
     parser.parse();
-    if (errMgr.getErrors()) {
-      errMgr.report();
-    }
-    else {
+    errMgr.report();
+    if (!errMgr.getErrors()) {
       pb.display();
     }
   }
@@ -651,10 +659,8 @@ int main(int argc, char **argv) {
     interpreter::Scanner scanner{ std::cin, std::cerr };
     interpreter::Parser parser{ &scanner };
     parser.parse();
-    if (errMgr.getErrors()) {
-      errMgr.report();
-    }
-    else {
+    errMgr.report();
+    if (!errMgr.getErrors()) {
       pb.display();
     }
   }
