@@ -451,7 +451,7 @@ Nous n'avons pas implémenter de fonction d'affichage similaire à \textbf{print
 en C. La première raison est le fait que notre langage ne supporte pas les
 \gls{varFonc}. De plus, l'ajout de ce type de fonctions d'affichage nécessite la
 gestion d'une chaine de formatage, ce qui aurai grandement augmenté la
-complexité de notre grammaire si nous avion voulu l'intégrer directement au
+complexité de notre grammaire si nous avions voulu l'intégrer directement au
 langage.
 
 \paragraph{Exemple de code}
@@ -515,7 +515,7 @@ représenté par des classes, où chaque nœud de l'arbre a sa propre classe.\\
 
 Toutes les classes de l'arbre sont stockées dans le fichier
 \lstinline{AST/AST.hpp} et héritent toutes d'une classe abstraite
-\lstinline{ASTNode}. L'emploi de l'héritage ici est très important car
+\lstinline{ASTNode}. L'emploi de l'héritage ici est important car
 nous profiterons par la suite des avantages du polymorphisme pour stocker des
 opérations de différents types. La classe \lstinline{ASTNode} est abstraite car
 elle ne doit pas être instanciée, il faut que chaque nœud ai un type concret
@@ -628,10 +628,11 @@ commentaires.\\~\\
 \phantomsection
 \paragraph{Implémentation}
 
-L'outil utilisé pour générer le lexeur est \textbf{GNU Flex} (Fast LEXical
-analyser generator). Il permet de générer le code C++ du lexeur à partir d'un
-fichier. Dans notre cas, le fichier utilisé sera \textbf{main\_cpp.l} et possède
-la structure suivante \cite{compilerFlexBison} :
+Comme évoqué précédemment, l'outil utilisé pour générer le lexeur est
+\textbf{GNU Flex} (Fast LEXical analyser generator). Il permet de générer le
+code C++ du lexeur à partir d'un fichier. Dans notre cas, le fichier utilisé
+sera \textbf{main\_cpp.l} et possède la structure suivante
+\cite{compilerFlexBison} :
 
 \begin{code}
 // code C++, options et declarations de raccourcis
@@ -699,11 +700,15 @@ identifier [a-z]({alpha}|{digit}|_)*
 
 \noindent
 
+On peut déjà noter que nous venons de définir l'identifiant qui correspond aux
+noms des variables et fonctions et que cela correspond bien à ce qui été énoncé
+dans la grammaire.\\
+
 Dans la seconde partie du fichier, on définit des règles et des actions. À noter
 que l'on peut utiliser les raccourcis définis précédemment en mettant leurs noms
 entre accolades comme fait ci-dessous pour \textbf{identifier}. La définition
 d'une règle suit le principe suivant, on commence par donner une suite de
-caractères qui sera consommée. Ensuite met du code entre accolades, et ce code
+caractères qui sera consommée. Ensuite ajoute du code entre accolades, qui
 sera exécuté quand le lexeur consommera la chaine. Par exemple, si on prend la
 première ligne ci-dessous, quand le lexeur trouvera le mot \textbf{for}, il
 affichera \textit{L\_for} dans le terminal puis retournera le token \textbf{FOR}.
@@ -746,7 +751,7 @@ la partie \textit{9 The Generated Scanner} du manuel pour Flex
 Cette macro permet de définir le type de la fonction \textbf{lex}, ici,
 on a pour paramètre \textcolor{purple}{yylval} (qui comme dit précédemment permet
 de transmettre des valeurs à bison) et \textcolor{purple}{yylloc} qui doit être
-fourni quand on utiliser les positions dans le parseur (pour avoir le numéro de
+fourni quand on utilise les positions dans le parseur (pour avoir le numéro de
 ligne en cas d'erreur par exemple), mais cela nécessite une option particulière
 pour bison.
 
@@ -785,15 +790,12 @@ Les tokens apparaissant sont : \\
 convertit une description de grammaire en un programme C++ qui analyse cette
 même grammaire.\\
 
-L'article \cite{compilerFlexBison} s'est encore une fois révélé très utile pour
-la réalisation du fichier nécessaire à Bison\\~\\
-
 Le fichier \textbf{main\_cpp.y} contient le code qui permet de générer le
 parseur avec Bison. Toutes les règles syntaxiques qui définissent la grammaire
 du langage y sont comprises. Chaque règle va contenir des bloques de code qui
 seront exécutés au moment où le parseur la reconnait, ce code permet de
-construire l'ABS (Abstract Syntaxic Tree) du programme ainsi que de faire de la
-vérification sur les symboles (définition et type).\\
+construire l'ABS du programme ainsi que de faire de la vérification sur les
+symboles (définition et type), comme nous le verrons plus tard.\\
 
 La structure du fichier \textbf{main\_cpp.y} est similaire à celle du lexeur :
 
@@ -817,13 +819,14 @@ Les tokens sont définis en début de fichier avec la syntaxe suivante:
 %token <std::string> IDENTIFIER
 \end{code}\leavevmode\newline
 
+% TODO: expliquer mieux
 À noter que l'on peut spécifier le type de l'élément, ce qui sera utile pour
 récupérer les valeurs retournées par le lexeur.\\~\\
 
 
-Bison permet de construire le parser, qui va reconnaître des éléments de syntaxe
+Bison permet de construire le parseur, qui va reconnaître des éléments de syntaxe
 et non pas juste des mots clés. Par exemple, on peut définir une règle pour
-reconnaître une suite d'inclusion de fichiers :\\
+reconnaître une suite d'inclusion de fichiers :\\ % TODO: changer l'exemple
 
 \begin{code}[language=c++]
 includes: %empty
@@ -882,7 +885,7 @@ value: INT {
 
 Pour la génération du code, on a deux options :
 \begin{itemize}
-\item utiliser des instruction très simples => sorte de bytecode
+  \item utiliser des instruction très simples (comme du \gls{bytecode})
 \item créer un code objet où tous les éléments sont des objets.
 \end{itemize}\leavevmode\\~\\
 
@@ -949,7 +952,7 @@ vérifier qu'une fonctions prend les bon paramètres.
 Du fait que nous allons devoir faire de la détection d'erreurs, nous créerons
 une nouvelle classe qui permettra de stocker tous les messages d'erreurs (et
 avertissements) au fil de l'exécution du parseur. Ces messages seront affichés à
-la fin une fois le tous code source traité. À noter que la présence d'erreurs
+la fin une fois tout le code source traité. À noter que la présence d'erreurs
 empêche la compilation.
 
 \subsubsection{Gestion des symboles}
@@ -964,7 +967,7 @@ Commençons par étudier la composition d'un symbole. Chaque symbole est compos�
 d'un nom qui lui sert d'identifiant, d'un type et d'un genre. Le genre est une
 énumération qui suis le même principe que dans \cite{power2000symbol}. Le type
 du symbole est une liste de \textbf{Type} qui est une énumération décrite dans
-l'AST, il a la même utilité que pour les éléments typées \ref{sec:eltTypes}.
+l'AST, il a la même utilité que pour les éléments typées (voir \ref{sec:eltTypes}).
 
 \begin{figure}[h!]
   \begin{center}
@@ -974,12 +977,12 @@ l'AST, il a la même utilité que pour les éléments typées \ref{sec:eltTypes}
 \end{figure}
 
 Pour implémenter la table des symbole nous nous sommes inspiré du schéma suivant
-\cite{symtableGenius}. Ici la table des symboles est une table de tables, et
-chaque sous table correspond à une zone de code dans laquelle peuvent être
+\cite{symtableGenius}. Ici la table des symboles est une table de tables.
+Chaque sous table correspond à une zone de code dans laquelle peuvent être
 définis des symboles (\textbf{scope}). Cette représentation est intéressante car
 elle permet de pouvoir aisément vérifier si un symbole existe en remontant
-l'arborescence de la table jusqu'aux \textbf{scope} global. En effet, les
-éléments stockés dans la table mère sont toujours accessibles.
+l'arborescence de la table jusqu'aux \textbf{scope} global. Les éléments stockés
+dans la table mère sont toujours accessibles.
 \clearpage
 
 \begin{figure}[h!]
@@ -989,14 +992,16 @@ l'arborescence de la table jusqu'aux \textbf{scope} global. En effet, les
   \end{center}
 \end{figure}
 
-% TODO diagramme de classe
-
 Pour l'implémentation, nous suivrons le diagramme ci-dessous. Les symboles sont
 stockés dans une \textbf{unordered\_map} qui est une table de hachage qui
 permettra l'accès aux valeurs avec l'identifiant. De plus, la table
 possède un liste de sous tables qui et un pointeur sur la table mère qui sera
 utilisé par la méthode \textbf{lookup} pour la recherche de symbole comme
-expliqué précédemment.
+expliqué précédemment. À noter que la méthode \textbf{lookup} ne retourne pas
+directement un symbole. Elle utilise la classe \lstinline{std::optional} et
+retourne une valeur vide dans le cas ou le symbole recherché n'a pas été trouvé,
+ce qui est pratique étant donné le fait que C++ ne possède pas de valeur nulle.
+Une autre solution aurait été de retourner un pointeur.
 
 \begin{figure}[h!]
   \begin{center}
@@ -1005,9 +1010,43 @@ expliqué précédemment.
   \end{center}
 \end{figure}
 
+Nous avons donc une table des symboles qui nous permet de connaître tous les
+éléments nommés du programme, leur porté ainsi que leur type. Dans la partie
+suivante, nous détaillerons le fonctionnement de l'objet responsable de la
+création de la table dans le parseur.
+
+\clearpage
 \paragraph{Gestion du contexte}
 
-% TODO: context manager
+Nous avons une table des symboles, cependant il nous faut un moyen de gérer les
+\textit{scopes}, et donc de gérer l'arborescence de la table. Pour ce faire nous
+aurons une classe \textbf{ContextManager} qui permettra de créer des nouveaux
+nœuds dans l'arborescence de la table des symboles à chaque fois que l'on entre
+dans une nouveau \textit{scope}. La structure de cette classe est la suivante :
+
+\begin{figure}[h!]
+  \begin{center}
+  \includegraphics[scale=0.5]{../ressources/diagrams/contextManager.png}
+  \caption{Diagramme de classe : ContextManager}
+  \end{center}
+\end{figure}
+
+Le \textbf{ContextManager} possède un attribut \textbf{currentScope} qui est pointeur sur
+la sous table qui contient le scope courant. La classe possède aussi deux
+méthodes permettant de renter ou sortir d'un scope. La méthode
+\textbf{enterScope} créer une nouvelle sous table dans la table des symboles et
+pointe dessus avec \textbf{currentScope}. Lorsqu'on sort du scope courant, on
+retourne dans le \textit{scope père}, la méthode va donc faire pointer
+\textbf{currentScope} sur la table mère. Enfin cette classe possède des méthodes
+pour ajouter ou rechercher des symboles qui font appel au méthode de la sous
+table courante.\\
+
+Le \textbf{ContextManager} permet donc de créer une table des symboles dans le
+parseur, ainsi que de pouvoir faire toutes les vérifications décrites dans la
+partie précédente. La partie suivante concerne la création d'une classe pour la
+gestion des erreurs de compilation. Nous verrons ensuite comment combiner toutes
+ces classes dans le parseur pour pouvoir collecter et afficher toutes les
+erreurs de types et de définitions.
 
 \subsubsection{Gestion des erreurs}
 
@@ -1027,6 +1066,8 @@ expliqué précédemment.
 
 \subsection{Le transpileur}
 % TODO
+
+\subsection{Mise en œuvre du projet}
 
 \section{Résultats et discussions}
 

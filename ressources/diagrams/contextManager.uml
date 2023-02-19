@@ -1,0 +1,15 @@
+@startuml
+skinparam classAttributeIconSize 0
+skinparam groupInheritance 3
+
+class ContextManager {
+  -currentScope: Symtable
+  +enterScope(): void
+  +leaveScope(): void
+  +getScope(): Symtable
+  +newSymbol(std::string name, Type type, Kind kind): void
+  +lookup(std::string name): optional<Symbol>
+}
+
+@enduml
+
