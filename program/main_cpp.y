@@ -90,6 +90,19 @@ bool checkTypeError(std::list<Type> expectedType, std::list<Type> funcallType) {
   return typeError;
 }
 
+bool checkType(std::string name, int line, int column, Type expected, Type founed)
+{
+  if (expected != founed) {
+   std::ostringstream oss;
+   oss << "assignment at " << line << ":" << column
+       << " " << name << " is of type "
+       << typeToString(expected)
+       << " but the value assigned is of type "
+       << typeToString(founed) << std::endl;
+   errMgr.newWarning(oss.str());
+  }
+}
+
 // d'avoir le type d'un symbol inline
 Type getType(std::shared_ptr<ASTNode> node) {
   Type type = VOID;
@@ -505,15 +518,7 @@ assignement:
                // TODO: check the type of the symbol and raise a warning if cast
                // needed
                Type icType = getType($ic);
-               if (type.back() != icType) {
-                 std::ostringstream oss;
-                 oss << "assignment at " << @1
-                     << " " << $v << " id of type "
-                     << typeToString(type.back())
-                     << " but the value assigned is of type "
-                     << typeToString(icType) << std::endl;
-                 errMgr.newWarning(oss.str());
-               }
+               checkType($v, @v.begin.line, @v.begin.column, type.back(), icType);
                pb.pushBlock(std::make_shared<Assignement>(Variable($v,
                  type.back()), $ic));
              }
@@ -616,6 +621,9 @@ for:
      std::list<Type> type;
      if (isDefined($v, @v.begin.line, @v.begin.column, type)) {
        v = Variable($v, type.back());
+       checkType("RANGE_BEGIN", @b.begin.line, @b.begin.column, type.back(), getType($b));
+       checkType("RANGE_END", @e.begin.line, @e.begin.column, type.back(), getType($e));
+       checkType("RANGE_STEP", @s.begin.line, @s.begin.column, type.back(), getType($s));
      }
      $$ = pb.createFor(v, $b, $e, $s, $ops);
      contextManager.leaveScope();
