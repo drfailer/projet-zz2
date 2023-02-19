@@ -1,5 +1,6 @@
 pfd: rapport.tex refs.bib
 	pdflatex rapport.tex
+	makeglossaries rapport
 	biber rapport
 	pdflatex rapport.tex
 	pdflatex rapport.tex

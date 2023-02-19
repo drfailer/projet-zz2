@@ -40,3 +40,8 @@ program/build
 program/location.hh
 program/position.hh
 rapport/rapport.lof
+rapport/rapport.glg
+rapport/rapport.glo
+rapport/rapport.gls
+rapport/rapport.glsdefs
+rapport/rapport.ist
