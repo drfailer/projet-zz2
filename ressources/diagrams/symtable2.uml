@@ -1,25 +1,14 @@
 @startuml
 skinparam classattributeiconsize 0
 
-class symbol {
-  -name: string
-  -type: type
-  -scope: symbolstable
-  -address: int
+class Symtable {
+  -table: unordered_map<string, Symbol>
+  -childScopes: list<Symtable>
+  -mother: Symtable
+  +getChildScopes(): list<Symtable>
+  +getMother(): Symtable
+  +lookup(string name): optional<Symbol>
+  +void addScope(Symtable): void
+  +void add(string name, Type type, Kind kind): void
 }
-
-class symbolstable {
-  -table: hashtable<symbolstable>
-  -scopeelts: hashtable<symbol>
-  +isdefined()
-  +install()
-  +delete()
-}
-
-symbolstable o-- symbol
-
-note "là la table des symboles est une liste de sous tables qui contiennent les\n\
-  symboles pour chaque scope, en gros, tout ce qui est déclaré au niveau le plus\n\
-  haut sera des fonction est des variables globlales et au plus bas, ce sera des\n\
-  variables statiques, ..." as n1
 @enduml

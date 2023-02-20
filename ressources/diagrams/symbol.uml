@@ -1,0 +1,21 @@
+@startuml
+skinparam classattributeiconsize 0
+hide empty methods
+
+enum Kind {
+  FUN_PARAM
+  LOCAL_VAR
+  FUNCTION
+}
+Symbol --> Kind
+
+class Symbol {
+  -name: string
+  -type: list<Type>
+  -kind: Kind
+
+  +getKind(): Kind
+  +getType(): Type
+  +getName(): string
+}
+@enduml

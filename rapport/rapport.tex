@@ -1,13 +1,14 @@
-\documentclass[a4paper]{article}
+\documentclass[a4paper]{article}%{{{
 
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
 \usepackage{textcomp}
 \usepackage{url}
 \usepackage{hyperref}
-\usepackage[top=2.5cm,bottom=2.5cm,right=2.5cm,left=2.5cm]{geometry}
+\usepackage[top=2.5cm,bottom=2.5cm,right=2cm,left=3cm]{geometry}
 \usepackage[french]{babel}
 \usepackage[backend=biber,style=ieee]{biblatex}
+\usepackage{glossaries}
 %\usepackage{titletoc}% http://ctan.org/pkg/titletoc
 \usepackage{qtree}
 \usepackage{listings}
@@ -25,52 +26,52 @@
 \definecolor{backpink}{rgb}{1,0.94,0.95}
 
 \lstdefinestyle{codestyle}{
-    backgroundcolor=\color{backcolour},   
+    backgroundcolor=\color{backcolour},
     commentstyle=\color{codegreen},
     keywordstyle=\color{magenta},
     numberstyle=\tiny\color{codegray},
     stringstyle=\color{teal},
     basicstyle=\ttfamily\footnotesize,
-    breakatwhitespace=false,         
-    breaklines=true,                 
-    captionpos=b,                    
-    keepspaces=true,                 
-    %numbers=left,                    
-    %numbersep=5pt,                  
-    showspaces=false,                
+    breakatwhitespace=false,
+    breaklines=true,
+    captionpos=b,
+    keepspaces=true,
+    %numbers=left,
+    %numbersep=5pt,
+    showspaces=false,
     showstringspaces=false,
-    showtabs=false,                  
+    showtabs=false,
     tabsize=2
 }
 
 \lstdefinestyle{grammarstyle}{
-    backgroundcolor=\color{backpink},   
+    backgroundcolor=\color{backpink},
     commentstyle=\color{codegreen},
     keywordstyle=\color{purple},
     numberstyle=\tiny\color{codegray},
     stringstyle=\color{teal},
     basicstyle=\ttfamily\footnotesize,
-    breakatwhitespace=false,         
-    breaklines=true,                 
-    captionpos=b,                    
-    keepspaces=true,                 
-    %numbers=left,                    
-    %numbersep=5pt,                  
-    showspaces=false,                
+    breakatwhitespace=false,
+    breaklines=true,
+    captionpos=b,
+    keepspaces=true,
+    %numbers=left,
+    %numbersep=5pt,
+    showspaces=false,
     showstringspaces=false,
-    showtabs=false,                  
+    showtabs=false,
     tabsize=2
 }
 
 \lstnewenvironment{code}[1][]
-  {\noindent\minipage{\linewidth}\medskip 
+  {\noindent\minipage{\linewidth}\medskip
    \lstset{basicstyle=\ttfamily\footnotesize,frame=single,#1,upquote=true}
     \lstset{style=codestyle}
      }
   {\endminipage}
 
  \lstnewenvironment{grammar}[1][]
-  {\noindent\minipage{\linewidth}\medskip 
+  {\noindent\minipage{\linewidth}\medskip
    \lstset{basicstyle=\ttfamily\footnotesize,frame=single,#1,upquote=true}
    \lstset{style=grammarstyle}
    }
@@ -98,6 +99,38 @@
 \author{Franck ALONSO, CHASSAGNOL Rémi}
 \date{\today}
 \end{titlepage}
+%}}}
+%===============Glossaire==============
+\makeglossaries
+\newglossaryentry{ast}
+{
+    name=AST,
+    description={(Abstract Syntax Tree) structure sous forme d'arbre utilisée
+                 pour représenter une grammaire.}
+}
+\newglossaryentry{bnf}
+{
+    name=forme de Backus-Naur,
+    description={métalangage utilisé pour décire les langages de programmation.}
+}
+\newglossaryentry{varFonc}
+{
+    name=fonctions variadiques,
+    description={fonction qui prend un nombre indéfini de paramètres.}
+}
+\newglossaryentry{bytecode}
+{
+    name=bytecode,
+    description={code intermédiaire entre les instructions machine et le code
+    source. Il n'est pas directment exécutable par l'ordinateur.}
+}
+\newglossaryentry{gc}
+{
+    name=garbage collector,
+    description={(ramasse-miettes) outils inventé par John McCarthy qui permet
+    de collecter les zones mémoires non utilisées lors de l'exécution d'un
+    programme.}
+}
 
 
 %------------------------------------------------------------------------------%
@@ -107,19 +140,21 @@
 \input{titlepage.tex}
 \clearpage{}
 
-
 %------------------------------------------------------------------------------%
-%                                Remerciements                                 %
+%                                Remerciements
 %------------------------------------------------------------------------------%
-\section*{Remerciements}
+\section{Remerciements}
 
 \doublespacing
-\large
-Nous tenons à exprimer notre profonde gratitude à :\\
-- Notre encadrant et cher professeur M. Loïc YON pour al qualité de son encadrement, et pour nous avoir guidées durant toute la période du projet.\\
-- Mme Murielle MOUZAT, notre professeur de communication pour son aide précieuse et indispensable pour la réussite de notre projet de 2\up{ème} année.\\
+\large % TODO: reformuler
 
-\noindent Finalement, nous exprimons nos vifs remerciements à toute personne ayant participée de près ou de loin au bon déroulement de ce projet.
+Nous tenons à remercier Loïc YON pour nous avoir guidé et conseillé lors de la
+réalisation du projet. Nous remercions aussi Murielle MOUZAT pour l'aide qu'elle
+nous a fourni à travers son cours pour la rédaction de ce rapport. Parmi nos
+professeurs, nous souhaitons aussi remercier Alexis PEREDA pour ses conseils sur
+l'utilisation de C++ et pour avoir partagé ses connaissances sur les
+compilateurs ainsi que Yves-Jean DANIEL pour m'avoir conseillé l'utilisation de
+Flex et Bison pour l'écriture d'un parseur.
 
 \normalsize
 \onehalfspacing
@@ -127,112 +162,322 @@ Nous tenons à exprimer notre profonde gratitude à :\\
 \clearpage{}
 
 %------------------------------------------------------------------------------%
-%                               Table of contents                              %
+%                               Table of contents
 %------------------------------------------------------------------------------%
 \pagenumbering{arabic}
 \thispagestyle{empty}
 \tableofcontents
 \clearpage{}
 
-
 %------------------------------------------------------------------------------%
-%                               Table of figures                               %
+%                               Table of figures
 %------------------------------------------------------------------------------%
-%\listoffigures
+\listoffigures
 \clearpage{}
 
 
 %------------------------------------------------------------------------------%
-%                              Résumé et Abstract                              %
+%                              Résumé et Abstract
 %------------------------------------------------------------------------------%
-
-\setcounter{secnumdepth}{0}
+\setcounter{secnumdepth}{3}
 \section{Résumé}
-L'objectif de ce projet est la création d'un langage \textbf{interprété} en \textbf{C++} dans le but de faire découvrir l'informatique et la programmation à des collégiens et lycéens. Ce projet rentre dans le cadre du sujet commun de la filière F2, qui concerne la conception d’outils et plus généralement en développement logiciel.\\
 
-Le projet, réalisé sous Visual Studio Code, utilisera un \textbf{lexeur} et \textbf{parseur} pour pouvoir reconnaitre notre \textbf{}{langage de programmation} voulu.
+Ce projet s'inscrit dans le cadre du projet commun de la filière génie logiciel
+dont l'objectif est la création d'outils de démonstration servant à présenter la
+filière. Notre travail a consisté en la création d'un langage de programmation
+transpilé simple. Le programme doit lire un fichier de code source et de le
+traduire en code python. Il doit être capable de détecter les erreurs de
+syntaxes et de les spécifier à l'utilisateur. De plus, le langage est à typage
+statique, de ce fait, le programme doit aussi être capable de détecter les
+erreurs de types.\\
+
+Le développement a été réalisé avec le langage C++ et emploi le paradigme objet.
+De plus, nous avons utilisé les outils GNU Flex et GNU Bison pour la création du
+parseur. À noter que le programme ne nécessite pas de système d'exploitation
+particulier, cependant, il requière l'installation des outils cités précédemment
+ainsi qu'une version de python3 pour fonctionner. % TODO: la fin ?
 \\~\\
 
 \noindent
-Mots-clés : \textbf{C++}, \textbf{interpréteur}, \textbf{lexeur}, \textbf{parseur},  \textbf{langage de programmation}
+Mots-clés : \textbf{C++}, \textbf{transpileur}, \textbf{lexeur}, \textbf{parseur},
+\textbf{flex}, \textbf{bison},  \textbf{langage de programmation}
 \\[2\baselineskip]
 
 \section{Abstract}
-The objective of this project is the creation of an \textbf{interpreted} language  in \textbf{C++} in order to introduce computer science and programming to middle and high school students. This project falls within the framework of the common subject of the F2 major, which relates to the design of tools and more generally in software development.\\
 
-The project, coded with Visual Studio Code, uses a \textbf{lexeur} and \textbf{parser} to be able to recognize our desired \textbf{}{programming language}.
+This project is a part of the common project of the software development
+pathway. The objective is to create a tool for presenting software development.
+Our work consisted in the creation of a simple transpiled programming language.
+The program has to be able to read a source code file and generate a python
+program. It must detect syntax errors in the and report theme to the user.
+Furthermore, the language is statically typed so the program also has to detect
+and report type errors.\\
+
+The development has been done using C++ and object oriented programming.
+Moreover, we have used the tools GNU Flex and GNU Bison to generate our parser.
+We can notice that the program doesn't require any particular operating system,
+however the tools previously quoted and a version of python3 have to be
+installed.
 \\~\\
 
 \noindent
-Keywords : \textbf{C++}, \textbf{interpreter}, \textbf{lexer}, \textbf{parser},  \textbf{programming language}
+Keywords : \textbf{C++}, \textbf{transpiler}, \textbf{lexer}, \textbf{parser},
+\textbf{flex}, \textbf{bison}, \textbf{programming language}
 
 \clearpage{}
 
-
 %------------------------------------------------------------------------------%
-%                                 Introduction                                 %
+%                                 Introduction
 %------------------------------------------------------------------------------%
+\clearpage
 \section{Introduction}
 \large
-Dans le cardre du projet de 2\up{ème} année à l'ISIMA, nous avons choisi de réalisé un travail concernant le sujet commun de la filière F2, Génie Logiciel et Systèmes d'Informations. Le but du projet est de pouvoir montrer à des élèves de collèges et lycées ce que la filière ingénieur permet de faire.\\
+Dans le cadre du projet de 2\up{ème} année à l'ISIMA, nous avons choisi de
+réaliser un travail concernant le sujet commun de la filière 2, génie logiciel
+et systèmes d'informations. Le but du projet commun est la création d'outils de
+démonstration servant à présenter la filière.\\
 
-Le domaine étant vaste, nous avons choisi de concevoir un langage informatique simple en C++ avec comme principal objectif de faire comprendre aux élèves la notion de fonction. Ce langage devait posséder une interface graphique, mais cette tâche s'est avérée trop ambitieuse pour un travail de 60 heures.\\
+Nous souhaitions au départ, créer un langage de programmation interprété ainsi
+qu'un IDE, cependant, ce projet s'est avéré trop ambitieux pour être réalisé en
+60 heures. Pour simplifier, nous avons décidé de concevoir un langage transpilé,
+délégant ainsi une partie des tâches complexes comme la gestion de la mémoire à
+un compilateur existant.\\
 
-Le projet, en plus de sa valeur pédagogique, nous permet de nous familiariser avec les concepts de compilateur, interpreteur et arbre syntaxique.\\
+Ce projet permettra de présenter un langage de programmation très simple pour
+introduire des lycéen à la programmation. De plus, il pourra constituer une
+maquette pour les élèves de l'ISIMA souhaitant étudier le fonctionnement des
+compilateurs.\\
 
-Pour présenter ce projet, nous commencerons par la forme du langage à créer souhaité, puis nous détaillerons sa structure. Une fois familier avec les différentes étapes de son implémentation,  nous introduirons les concepts et outils informatiques qui permettent la réalisation de notre langage.\\
+Pour présenter ce projet, nous commencerons par la forme du langage à créer
+souhaité, puis nous détaillerons sa structure. Une fois familiarisé avec les
+différentes étapes de son implémentation,  nous introduirons les concepts et
+outils informatiques qui permettent la réalisation de notre langage.\\
 
 \normalsize
 \clearpage{}
 
+%------------------------------------------------------------------------------%
+%                                     Plan                                     %
+%------------------------------------------------------------------------------%
 
+% NOTE: les partie ne sont pas très équilibrées
 
-\section{Résumé des références}
+\part{Contexte du projet}
+
+\section{Concept de langage transpilé}
+
+L'objectif du projet commun est de créer un outils qui pourra servir à faire des
+démonstrations pour présenter la filière génie logiciel. Étant donné le fait que
+le code fait partie intégrante du développement logiciel nous avons décidé de
+créer un langage de programmation simple pouvant servir à présenter le concept
+de programmation.\\
+
+Il existe quatre familles de langages de programmations. La première est celle
+des langages compilés comme le C ou le C++. Le principe est de transformer le
+code source en assembleur puis de générer un exécutable. Cette méthode est la
+plus complexe, cependant les langages compilés sont généralement les plus
+rapides.
+
+La seconde méthode pour exécuter du code est l'utilisation d'une machine
+virtuelle. Le code source du langage est traduit en un code de bas niveau, le
+\gls{bytecode}, qui est ensuite exécuté par une machine virtuelle. C'est par exemple
+le cas du langage Java.
+
+La troisième famille est celle des langages interprétés. Ici c'est
+l'interpréteur qui se charge directement de l'exécution du code source, sans
+passer par une représentation intermédiaire comme le \gls{bytecode}.
+
+La dernière famille est celle que nous allons étudier lors de la réalisation de
+ce projet, ce sont les langages transpilés. L'objectif d'un transpileur et de
+traduire le code source dans un autre langage. Le principal avantage du
+transpileur est qu'il permet de déléguer les taches complexes au compilateur du
+langage cible. Par exemple, cela évite d'avoir à écrire un \gls{gc} pour gérer
+la mémoire.
+
+\section{Les fonctionnalités du langage}
+
+Notre objectif global est de pouvoir écrire du code dans un fichier puis
+utiliser notre transpileur pour générer un fichier python (qui sera exécuté avec
+sous python3). Le langage doit être simple mais doit tout de même les
+fonctionnalités suivantes :
+
+Le langage doit permettre le stockage d'information dans des variables. Nous
+souhaitons que notre langage possède trois types de données, les caractères, les
+entiers et les flottants. Étant donné que l'objectif du projet est de pouvoir
+présenter la programmation, il est intéressant d'utiliser un langage qui possède
+des types car cela permet de mieux comprendre comment l'ordinateur gère les
+données.
+
+On doit aussi avoir la possibilité d'écrire des fonctions et des procédures
+paramétrées qui pourront être utilisés dans différents endroits du programmes.
+
+De plus, le langage devra posséder des structures de contrôles permettant la
+création de conditions et de boucles.
+
+Enfin, il doit aussi intégrer des fonctions arithmétiques permettant les
+opérations de bases, des fonctions booléennes permettant de faire des
+tests ainsi que des fonctions permettant des actions d'entrée et de sortie
+(affichage console).
+
+Étant donné le fait que notre langage pourra être utilisé pour faire des
+présentations lors de portes ouvertes, nous souhaitons aussi que la syntaxe soit
+assez éloignée de celle du langage python. Le but étant de pouvoir présenter
+un langage différent à des lycéens qui on pour la plupart déjà utilisé python.
+
+\section{Analyse du problème}
+
+% TODO: diagramme de gantt
+
+\part{Réalisation et conception}
+
+\section{Conception des éléments du langage}
+
+\subsection{Définition de la grammaire}
+
+Avant d'implémenter notre langage, il faut avoir une idée de sa grammaire.
+Puisque nous souhaitons utiliser ce langage à des fins pédagogiques, nous avons
+décidé de simplifier au maximum la syntaxe. Par exemple, nous avons choisit de
+supprimer tous les opérateurs, ainsi, toutes les opérations arithmétiques et
+booléennes auront la même syntaxe que les fonctions. Par exemple, $a+b$ s'écrira
+\textit{add}(\textbf{a}, \textbf{b}). De plus, pour différer au maximum de
+python, notre syntaxe s'inspirera de celle des langages \textbf{C} et
+\textbf{Rust}. Pour définir la grammaire de manière formelle, nous utiliserons
+la \gls{bnf}.
+
+\subsubsection*{Les variables}
+
+Pour stocker des données, notre langage utilise des variables dont la
+convention de nommage est la même qu'en \textbf{C}. Le langage est à typage
+statique, ce qui signifie que toutes les variables doivent être déclarées avec
+leur type avant d'être utilisées. Pour l'instant, nous possédons trois types :
+les entiers (\textit{int}), les nombre à virgule flottante (\textit{flt}) et les
+caractères (\textit{chr}). Voici la syntaxe pour déclarer une variable:
+
+\begin{grammar}
+<identifier> ::= 'a'-'z'( <alpha> | '0'-'9' )*
+<int> ::= "int"
+<flt> ::= "flt"
+<chr> ::= "chr"
+<type> ::= <int> | <flt> | <chr>
+<declaration> ::= <type> <identifier> ";"
+\end{grammar}\leavevmode\newline
+
+A noter qu'ici, on a une légère différence avec le C pour le nom des fonctions
+et des variable (\textbf{identifier} ici). En effet, le C permet aux noms de
+variables et de fonctions de pouvoir commencer par une majuscule. Ici, nous
+avons décidé de forcer les noms à commencer par une lettre minuscule, le non
+respect de cette règle entrainera une erreur de syntaxe.
+
+\subsubsection*{Les fonctions}
+
+La syntaxe pour les fonctions est la même qu'en Rust. Pour définir des
+fonctions, nous utilisons le mot clé \textbf{fn}, suivit du nom de la fonction
+avec ses paramètres entre parenthèses et enfin le bloque de code qui contient
+les instructions entre accolade. De plus, il faut spécifier le type de la valeur
+retour de la fonction en utilisant \textbf{-> type} quand c'est nécessaire.
+
+\begin{grammar}
+<function> ::= fn <identifier>"("<parameters>")" [ "->" <type> ] "{"<instructions>"}"
+\end{grammar}\leavevmode\newline
+
+Pour pouvoir retourner une valeur, il faudra utiliser le mot clé \textit{return}
+dans la fonction.
+
+\subsubsection*{Les structures de contrôle}
+
+Nous avons aussi ajouté les structures de contrôle présentes dans la plupart des
+langages de programmation. Il y a une structure \textit{if} qui permet de tester
+une condition. Un \textit{if} peut-être suivit d'un bloque \textit{else} si
+besoin. À noter cependant que cette grammaire n'autorise pas les \textit{else
+if}, dans ce cas il faudra mettre la nouvelle condition à l'intérieur du bloque
+de code du \textit{else}. La grammaire autorise aussi les boucles
+\textit{while}, et la syntaxe est la même qu'en C. Enfin, il y a la boucle
+\textit{for} qui utilise la règle \textit{range} qui contient trois valeurs
+séparé par des virgules. C'est trois valeurs correspondent au début et à la fin
+de boucle et au pas. Par exemple, \lstinline{range(0, 10, 1)} vas générer une
+boucle ou la variable de boucle prendra les valeurs de 0 à 9 avec un pas de 1.
+Il est obligatoire de toujours spécifier ces trois valeurs au \textit{range}.
+
+\begin{grammar}
+<if> ::= if "("<condition>")" "{"<instructions>"}" [ else "{" <instructions>"}" ]
+
+<while> ::= while "("<condition>")" "{" <instructions> "}"
+
+<range> ::= range "("<valueSymbol>, <valueSymbol>, <valueSymbol>")"
+<for> ::= for <identifier> in <range> "{"<instructions>"}"
+\end{grammar}\leavevmode\newline
+
+On rappel que même si la grammaire ne le précise pas, toute variable doit être
+déclarée avant d'être utilisée, il faudra donc déclarer la variable de boucle
+utilisée dans un \textit{for}.
+
+\subsubsection*{Les opérations}
+\label{sec:operator}
+
+Comme dit précédemment, tous le langage ne comporte pas d'opérateur donc toutes
+les opérations se font à l'aide de fonctions directement intégrées dans le
+transpileur. Voici une liste des opérations possibles :
+
+\begin{center}
+\begin{tabular}{ | c | c | }
+    \hline
+    opération & syntaxe\\
+    \hline
+    \textbf{a} + \textbf{b} & \textit{add}(\textbf{a}, \textbf{b})\\
+    \hline
+    \textbf{a} - \textbf{b} & \textit{mns}(\textbf{a}, \textbf{b})\\
+    \hline
+    \textbf{a} $\times$ \textbf{b} & \textit{tms}(\textbf{a}, \textbf{b})\\
+    \hline
+    \textbf{a} $\div$ \textbf{b} & \textit{div}(\textbf{a}, \textbf{b})\\
+    \hline
+    \textbf{a} \textbf{==} \textbf{b} & \textit{eql}(\textbf{a}, \textbf{b})\\
+    \hline
+    \textbf{a} \textbf{<} \textbf{b} & \textit{inf}(\textbf{a}, \textbf{b})\\
+    \hline
+    \textbf{a} \textbf{>} \textbf{b} & \textit{sup}(\textbf{a}, \textbf{b})\\
+    \hline
+    \textbf{a} \textbf{<=} \textbf{b} & \textit{ieq}(\textbf{a}, \textbf{b})\\
+    \hline
+    \textbf{a} \textbf{>=} \textbf{b} & \textit{seq}(\textbf{a}, \textbf{b})\\
+    \hline
+    \textbf{not} \textbf{a} & \textit{not}(\textbf{a})\\
+    \hline
+\end{tabular}
+\end{center}
+
+\subsubsection*{Entrée et sortie}
+
+Le langage possède aussi la possibilité d'afficher et de lire du texte depuis la
+console. La lecture se fait avec la fonction \textit{read} qui prend en
+paramètre une variable qui stockera le résultat. Pour la l'affichage, il faudra
+utiliser la fonction \textit{print} qui peut être utilisée de deux manières :
 
 \begin{itemize}
-  \item La partie consultable de \cite{flexBisonHandbook} présentent les bases
-    de flex.
-  \item \cite{compilerFlexBison} présente la construction d'un compilateur avec
-    flex et bison. Le compilateur présenté utilise une \textbf{table des
-    symboles} ainsi qu'une sorte de \textbf{byte code}. Nous avons choisi
-    l'autre méthode qui consiste à utiliser un object-ABS plutot que directement
-    du byte code. Article très utilisé au départ pour la mise en place du
-    parseur/lexeur.
-  \item \cite{compilerTICH} explication du fonctionnement d'un compilateur.
-  \item \cite{compilerTILB} première version de l'article précédent.
-  \item \cite{crew1997astlog} création d'un analyser syntaxique pour du C/C++:
-    ASTROLOG. L'article par d'analyse syntaxique et de la construction
-    d'\textbf{ABS}.
-  \item \cite{cppparsing}: nous a permis d'avoir un exemple de code qui allie
-    flex et bison en C++ et non en C.
-  \item \cite{visser2002meta} L'objectif de l'article est de présenter
-    l'utilisation des \textbf{ABS} pour de la méta programmation. Il comporte
-    pas mal d'exemples sur les \textbf{ABS} donc je le trouve pertinant.
-  \item \cite{gagnon1998sablecc}: \textbf{ABS} en java.
+  \item \lstinline{print("Hello, World!")} : affiche du texte
+  \item \lstinline{print(variable)} : affichage d'une valeur.
 \end{itemize}
 
+Nous n'avons pas implémenter de fonction d'affichage similaire à \textbf{printf}
+en C. La première raison est le fait que notre langage ne supporte pas les
+\gls{varFonc}. De plus, l'ajout de ce type de fonctions d'affichage nécessite la
+gestion d'une chaine de formatage, ce qui aurai grandement augmenté la
+complexité de notre grammaire si nous avions voulu l'intégrer directement au
+langage.
 
-\clearpage{}
-\setcounter{secnumdepth}{1}
+\subsubsection*{Exemple de code}
 
-%------------------------------------------------------------------------------%
-%                        GRAMMAIRE DE NOTRE LANGAGE                            %
-%------------------------------------------------------------------------------%
-\section{Conception d'un langage informatique}
-
-\phantomsection
-\subsection{Grammaire de notre langage}
-
-Avant d'implémenter notre langage informatique, il faut avoir une idée de sa grammaire, c'est-à-dire son fonctionnement. Un de ces objectifs est d'initier les élèves de collèges et lycées à la notion de fonction informatique.\\
-C'est la raison pour laquelle les opérations permises par notre langage ne seront que des fonctions.\\
-
-\textbf{Exemple} \\
-Nous disposons de 2 variables \textbf{a} et \textbf{b}.\\
-La variable \textbf{a} est lue par commande de l'utilisateur tandis que la valeur 4 est assignée à \textbf{b}.\\
+Dans cet exemple, nous disposons de 2 variables \textbf{a} et \textbf{b}. La
+variable \textbf{a} est lue par commande de l'utilisateur tandis que la valeur 4
+est assignée à \textbf{b}.\\
 Nous cherchons ensuite à additionner les 2 variables avec la valeur 5. Nous avons alors la syntaxe suivante :\\
-- une fonction \textit{add3} qui additionne les valeurs de ses 3 paramètres\\
-- une fonction \textit{affiche} qui affiche sur l'écran le nombre passé en paramètre\\
-- une fonction \textit{main}, où se trouve toutes les commandes voulues de notre programme\\
+
+\begin{itemize}
+  \item une fonction \textit{add3} qui additionne les valeurs de ses 3 paramètres\\
+  \item une fonction \textit{affiche} qui affiche sur l'écran le nombre passé en paramètre\\
+  \item une fonction \textit{main}, où se trouve toutes les commandes voulues de notre programme\\
+\end{itemize}
+
 
 \begin{grammar}[language=C++]
 fn add3(int a, int b, int c) -> int {
@@ -250,48 +495,184 @@ fn main() {
     read(a);
     set(b, 4);
     affiche(add3(a, b, 5));
+}
 \end{grammar}\leavevmode\newline
+~\\
 
-La particularité de cette grammaire est que les opérations arithmétiques de base sont remplacées par des fonctions :\\
-\begin{center}
-\begin{tabular}{ | c | }
-    \hline
-    \textbf{a} + \textbf{b} devient \textit{add}(\textbf{a}, \textbf{b})\\
-    \hline
-    \textbf{a} - \textbf{b} devient \textit{mns}(\textbf{a}, \textbf{b})\\
-    \hline
-    \textbf{a} x \textbf{b} devient \textit{tms}(\textbf{a}, \textbf{b})\\
-    \hline
-    \textbf{a} / \textbf{b} devient \textit{div}(\textbf{a}, \textbf{b})\\
-    \hline
-\end{tabular}
-\end{center}
+Maintenant que nous avons défini la syntaxe du langage nous allons voir
+l'implémentation d'un outils qui nous sera utile pour la construction d'un
+programme.
 
 
 \clearpage{}
 
-%------------------------------------------------------------------------------%
-%                                      LEXER                                   %
-%------------------------------------------------------------------------------%
+\subsection{Arbre syntaxique}
 
-\section{Le lexeur}
+Pour donner un sens aux éléments textuels du langage, nous utiliserons une
+représentation sous forme d'arbre. On appel cela un arbre syntaxique ou
+\gls{ast}. Les arbres syntaxiques sont nés avec la
+théorie des langages et comme on peut le voir dans cet article
+\cite{compilerTICH}, les \gls{ast} sont très utilisés par les compilateurs car ce sont
+des structures plus simples à manipuler que du texte. Voici l'arbre syntaxique
+de la fonction \textit{add3} :
 
-\phantomsection
-\subsection{Définition}
+\begin{figure}[h]
+  \begin{center}
+  \includegraphics[scale=0.4]{img/ast1.png}
+  \caption{Exemple d'arbre syntaxique}
+  \end{center}
+\end{figure}
 
- Le lexeur, ou encore appelé analyseur lexical, a pour but de transformer le texte du code source en des unités lexicales, appelées \textit{tokens}. \\
- 
-\textbf{Exemple} \\
-    Pour l'expression simple \textbf{a = 2 * b} \\
-    Les tokens apparaissant sont : \\
-    \begin{center}
-    \begin{tabular}{ | c | c | }
+Pour cette partie, nous nous sommes inspiré d'un projet appelé \textbf{minijava}
+\cite{minijava} ainsi que d'un article \cite{gagnon1998sablecc} qui couvre aussi
+l'utilisation des \gls{ast} en java. Nous avons choisit l'approche objet, avec un AST
+représenté par des classes, où chaque nœud de l'arbre a sa propre classe.\\
+
+Toutes les classes de l'arbre sont stockées dans le fichier
+\lstinline{AST/AST.hpp} et héritent toutes d'une classe abstraite
+\lstinline{ASTNode}. L'emploi de l'héritage ici est important car
+nous profiterons par la suite des avantages du polymorphisme pour stocker des
+opérations de différents types. La classe \lstinline{ASTNode} est abstraite car
+elle ne doit pas être instanciée, il faut que chaque nœud ai un type concret
+utilisable dans le transpileur. Le diagramme de classes complet est disponible
+en annexe \ref{appendix:classAST}. Détaillons maintenant les parties
+importantes.
+
+\subsubsection*{Les bloques de code}
+
+La classe \lstinline{Block} correspond aux bloques de code en entre accolades.
+Elle possède une liste de nœuds qui sont les opérations contenues dans le
+bloque. Nous verrons dans la partie suivante comment les opérations sont
+récupérées dans le parseur pour pouvoir construire les bloques.
+
+\clearpage{}
+\subsubsection*{Les conteneurs d'opérations}
+
+La classes \lstinline{Statement} correspond aux éléments qui contiennent des
+blocks de code. Cela comprend les fonctions et les structures de contrôles. La
+grammaire ne permet pas l'emploi des bloques ailleurs. Comme on peut le voir sur
+le diagramme suivant, la class \lstinline{Statement} permet de transmettre un
+\lstinline{Block} par héritage aux structures de contrôles et aux fonctions.
+
+\begin{figure}[h!]
+  \begin{center}
+  \includegraphics[scale=0.5]{../ressources/diagrams/stmts.png}
+  \caption{Diagramme de classe: Statement}
+  \end{center}
+\end{figure}
+
+De plus, on peut aussi voir sur ce diagramme la composition de la classe
+fonctions ainsi que celles des classes des structures de contrôle.
+
+La classe \textit{Function} possède un attribut \textit{id} qui correspond au nom de la
+fonction. Elle possède aussi un liste de variables qui sont ses paramètres ainsi
+qu'un type de retour (le type \textit{Type} est détaillé plus loin).
+
+La classe \textit{For} possède une variable qui est la variable de boucle et les
+trois valeurs fourni par le \textit{range} décrites précédemment.
+
+La classe \textit{If} possède un nœud qui contiendra l'opération booléenne de la
+condition. Elle possède aussi un second \textit{Block} qui contient les
+instructions du \textit{else} s'il y en a un.
+
+Enfin la classe \textit{While} possède comme \textit{If}, un nœud pour la
+condition.
+
+\subsubsection*{Les opérations}
+
+Les opérations sont traitées avec la classe \lstinline{OperationBinaire} qui
+correspond à tous les opérateurs. Cette classe possède deux attributs de type
+\textit{ASTNode} qui représentent les parties gauche et droite d'une opération
+binaire. Pour ne pas trop alourdir le schéma ci-dessous, seul la classe
+\textit{AddOP} a été représentée. Cependant, toutes les fonctions décrites dans
+partie \ref{sec:operator} ont une classe qui hérite de
+\lstinline{OperationBinaire}.
+\clearpage
+
+\begin{figure}[h!]
+  \begin{center}
+  \includegraphics[scale=0.5]{../ressources/diagrams/binaryOp.png}
+  \caption{Diagamme de classe: BinaryOperation}
+  \end{center}
+\end{figure}
+
+\subsubsection*{Les éléments typé}
+\label{sec:eltTypes}
+
+Les fonctions, les valeurs et les variables possède un champ type. \textbf{Type}
+est une énumération qui possède les éléments suivant :
+
+\begin{figure}[h!]
+  \begin{center}
+  \includegraphics[scale=0.5]{../ressources/diagrams/Type.png}
+  \caption{Enumération Type}
+  \end{center}
+\end{figure}
+
+Le champ INT correspond au type des entiers, le champ FLT au type des flottants
+et le champ CHR au type des caractères. Le type VOID est utilisé pour le type de
+retour des procédures et il est aussi utilisé par le parseur pour créer des
+variables qui n'ont pas été déclarées.
+
+\subsubsection*{Les valeurs}
+
+Le dernier élément de l'AST que nous traiterons est la classe \lstinline{Value}
+qui permet de représenter les valeurs utilisé dans code. Comme on peut le voir
+sur le diagramme ci-dessous, cette classe possède deux attributs, \textit{type}
+qui représente le type de la valeur et \textit{value} qui permet de stocker la
+valeur. Le type \textit{type\_t} est une union qui contient un caractère, un
+entier et un flottant et permet donc de stocker des valeurs pour ces trois
+types.
+
+\begin{figure}[h!]
+  \begin{center}
+  \includegraphics[scale=0.5]{../ressources/diagrams/value.png}
+  \caption{Diagramme de classe: Value}
+  \end{center}
+\end{figure}
+~\\
+
+Nous avons définit la grammaire du langage et déterminer les différents éléments
+qui vont composer notre arbre syntaxique. Dans la partie suivante nous écrirons
+la grammaire décrite précédemment dans le langage de bison et nous montrerons
+la construction d'un programme en utilisant les classes de l'AST que nous
+venons de décrire.
+
+
+\clearpage{}
+
+\section{Construction de l'AST}
+
+Dans cette partie nous expliquerons la création d'un parseur en utilisant les
+outils \textbf{GNU Flex} et \textbf{GNU Bison}. De plus, nous détaillerons la
+génération de l'AST en utilisant les classes décrites précédemment. Pour cette
+partie, nous nous sommes aidé d'un article \cite{compilerFlexBison} qui présente
+la construction d'un compilateur avec Flex et Bison en C. Pour porter le code en
+C++, nous avons utilisé la documentation officielle des deux outils ainsi qu'un
+article qui nous a permis d'avoir un squelette de base pour le lexeur et le
+parseur \cite{cppparsing}.
+
+\subsection{Le lexeur}
+
+%\phantomsection
+\subsubsection*{Définition}
+
+Le lexeur, ou encore appelé analyseur lexical, a pour but de transformer le
+texte du code source en des unités lexicales, appelées \textit{tokens}
+\cite{flexBisonHandbook}. \\
+
+\subsubsection*{Exemple}
+
+Pour l'expression simple \textbf{a = 2 * b} \\
+Les tokens apparaissant sont : \\
+\begin{center}
+  \begin{tabular}{ | c | c | }
     \hline
-    \textbf{Token} & \textbf{Sa nature} \\ 
+    \textbf{Token} & \textbf{Sa nature} \\
     \hline
-    a & Identificateur de variable \\ 
+    a & Identificateur de variable \\
     \hline
-    = & Symbole d'affectation \\  
+    = & Symbole d'affectation \\
     \hline
     2 & Valeur entière \\
     \hline
@@ -299,40 +680,78 @@ La particularité de cette grammaire est que les opérations arithmétiques de b
     \hline
     b & Identificateur de variable \\
     \hline
-\end{tabular}
+  \end{tabular}
 \end{center}
 
-Le lexeur a également pour rôle de supprimer les informations inutiles, généralement du caractère espace et des commentaires.\\~\\
+Le lexeur a également pour rôle de supprimer les informations inutiles,
+généralement du caractère blancs (espaces et tabulations) et des
+commentaires.\\~\\
 
+%\phantomsection
+\subsubsection*{Implémentation}
 
-\phantomsection
-\subsection{Implémentation}
-
-L'outil utilisé pour générer un lexeur à partir du code précédent est FLEX (Fast LEXical analyser generator). Au lieu d'écrire un lexeur à partir de zéro, FLEX permet d'avoir un lexeur en donnant seulement les modèles des expressions régulières ainsi que le langage de travail (c++ dans notre cas).\\~\\
-\noindent
-Le fichier \textbf{main\_cpp.l} contient le code qui permet de générer le lexeur avec FLEX. Les token doivent-être définis dans \textbf{main\_cpp.y} au préalable.
-À noter que l'on peut utiliser la variable `yylval` pour transmettre des
-éléments au parser.\\
-
-La structure du fichier \textbf{main\_cpp.l} est la suivante :
+Comme évoqué précédemment, l'outil utilisé pour générer le lexeur est
+\textbf{GNU Flex} (Fast LEXical analyser generator). Il permet de générer le
+code C++ du lexeur à partir d'un fichier. Dans notre cas, le fichier utilisé
+sera \textbf{main\_cpp.l} et possède la structure suivante
+\cite{compilerFlexBison} :
 
 \begin{code}
-C and parser declaration
+// code C++, options et declarations de raccourcis
 
 %%
-Grammar rules and actions
+// Definition des tokens et actions
 
 %%
-C subroutings
+// Fonctions C++
 \end{code}\leavevmode\newline
 
-
 \noindent
-On peut definir des règles dans les déclarations du lexeur :
+
+Dans la première partie en haut du fichier, on place les inclusions de
+bibliothèques C/C++ ainsi que des options pour flex.
 
 \begin{code}
-%option c++ interactive noyywrap noyylineno nodefault outfile="lexer.cpp"
+%{
+#include "parser.hpp"
+#include "lexer.hpp"
+%}
 
+%option c++ interactive noyywrap yylineno nodefault outfile="lexer.cpp"
+\end{code}\leavevmode\newline
+
+Détail des fonctions utilisée :
+\begin{itemize}
+  \item \textbf{c++} : indique qu'on travail avec du cpp et non du c
+  \item \textbf{interactive} : utile quand on utlise \textbf{std::in}. Le
+    scanner interactif regarde plus de caractères avant de générer un token
+    (plus lent mais permet de lutter contre les ambiguitées)
+  \item \textbf{noyywrap} : ne pas appeler \textbf{yywrap()} qui permet de parser plusieurs fichiers
+  \item \textbf{nodefault} : pas de scanner par défaut (=> on doit tout implémenter)
+  \item \textbf{outfile:"file.cpp"} : permet de definir le fichier de sortie
+\end{itemize}\leavevmode\\
+
+% TODO: dvlp sur les règles
+Après les options on peut définir des raccourcis en utilisant des expressions
+régulières. Par exemple, dans le code ci-dessous, nous avons définit les règles
+suivantes :
+
+\begin{itemize}
+  \item \textbf{alpha :} un caractère alphabétique est composé d'une lettre
+    minuscule ou d'une lettre majuscule.
+  \item \textbf{digit :} les chiffres sont les caractères entre 0 et 9.
+  \item \textbf{int :} les entiers correspondes à une suite de chiffres et
+    peuvent être positifs ou négatifs.
+  \item \textbf{float :} similaire aux entiers sauf qu'ici on a obligatoirement
+    un point suivit d'une suite de chiffre à la fin.
+  \item \textbf{char :} les caractère sont toujours écrit entre \textbf{'} (par
+    exemple \textbf{'a'}).
+  \item \textbf{identifier :} correspond aux noms de fonctions et de variables
+    et suit le standard du C. Un identifiant commence par une lettre minuscule
+    et peut être suivit d'une suite de lettres, de nombre et de \textbf{\_}.
+\end{itemize}
+
+\begin{code}
 alpha [a-zA-Z]
 digit [0-9]
 int [+-]?{digit}+
@@ -342,19 +761,23 @@ identifier [a-z]({alpha}|{digit}|_)*
 \end{code}\leavevmode\newline
 
 \noindent
-Concernant la ligne d'option :
-\begin{itemize}
-\item \textbf{c++} : indique qu'on travail avec du cpp et non du c
-\item \textbf{interactive} : utile quand on utlise \textbf{std::in}. Le scanner interactif regarde plus de caractères avant de générer un token (plus lent mais permet de lutter contre les ambiguitées)
-\item \textbf{noyywrap} : ne pas appeler \textbf{yywrap()} qui permet de parser plusieurs fichiers
-\item \textbf{noyylineno}: désactive l'enregistrement des lignes (\textbf{yylineno})
-\item \textbf{nodefault} : pas de scanner par défaut (=> on doit tout implémenter)
-\item \textbf{outfile:"file.cpp"} : permet de definir le fichier de sortie
-\end{itemize}\leavevmode\\[3\baselineskip]
 
+On peut déjà noter que nous venons de définir l'identifiant qui correspond aux
+noms des variables et fonctions et que cela correspond bien à ce qui été énoncé
+dans la grammaire.\\
 
-\noindent
-Dans les règles, on suit toujours le même principe, on indique les caractères à reconaitre puis on exécute du code :\\
+Dans la seconde partie du fichier, on définit des règles et des actions. À noter
+que l'on peut utiliser les raccourcis définis précédemment en mettant leurs noms
+entre accolades comme fait ci-dessous pour \textbf{identifier}. La définition
+d'une règle suit le principe suivant, on commence par donner une suite de
+caractères qui sera consommée. Ensuite ajoute du code entre accolades, qui
+sera exécuté quand le lexeur consommera la chaine. Par exemple, si on prend la
+première ligne ci-dessous, quand le lexeur trouvera le mot \textbf{for}, il
+affichera \textit{L\_for} dans le terminal puis retournera le token \textbf{FOR}.
+
+À noter que les tokens disponibles dans l'espace de nom \textbf{Parser::token}
+doivent être définis dans le ficher bison que l'on détaillera dans la partie
+suivante.
 
 \begin{code}
 for          { AFFICHE("L_for"); return Parser::token::FOR; }
@@ -366,68 +789,86 @@ for          { AFFICHE("L_for"); return Parser::token::FOR; }
 \end{code}\leavevmode\newline
 
 \noindent
-Ici on a accès à la variable \textbf{yylval} qui est un \textbf{Parser::semantic\_type*} et qui possède une méthode \textbf{build} qui nous permet de transmettre des valeurs à bison.\\
-Ces valeurs sont accessible via les variables de bison: \textbf{\$2}. La variable
-\textbf{yytext} contient le text traité par flex. De plus, dans le code, on retourne
-les \textit{tokens}. Ces \textbf{tokens} sont définis dans le fichier de bison.
-\newline
 
-La fonction appelée par défaut est \textbf{yylex}, cependant, pour pouvoir travailler avec bison, nous devons fournir nos propres fonctions, pour ce faire on utilise la macro \textbf{YY\_DECL} (cf: **The generated scanner** dans la doc).
+Ici on a accès à la variable \textcolor{purple}{yylval} de type
+\textcolor{purple}{Parser::semantic\_type*} qui possède une méthode
+\textcolor{purple}{build} permettant de transmettre des valeurs à bison.\\
+
+% TODO: ça doit pas être là je pense
+% Ces valeurs sont accessibles via les variables de bison: \textcolor{purple}{\$2}. La variable
+% \textcolor{purple}{yytext} contient le text traité par Flex. De plus, dans le code, on retourne
+% les \textit{tokens}. Ces \textbf{tokens} sont définis dans le fichier de bison.
+% \newline
+
+La fonction appelée par défaut est \textcolor{purple}{yylex}, cependant, pour
+pouvoir travailler avec bison, nous devons fournir nos propres fonctions, pour
+ce faire on utilise la macro \textcolor{purple}{YY\_DECL}, comme expliqué dans
+la partie \textit{9 The Generated Scanner} du manuel pour Flex
+\cite{flexmanual}.
 
 \begin{code}
-#define YY_DECL int interpreter::Scanner::lex(interpreter::Parser::semantic_type *yylval)
+#define YY_DECL int interpreter::Scanner::lex(Parser::semantic_type *yylval, Parser::location_type *yylloc)
 \end{code}\leavevmode\\~\\
+
+Cette macro permet de définir le type de la fonction \textbf{lex}, ici,
+on a pour paramètre \textcolor{purple}{yylval} (qui comme dit précédemment permet
+de transmettre des valeurs à bison) et \textcolor{purple}{yylloc} qui doit être
+fourni quand on utilise les positions dans le parseur (pour avoir le numéro de
+ligne en cas d'erreur par exemple), mais cela nécessite une option particulière
+pour bison.
 
 \clearpage{}
 
+\subsection{Le parseur}
+
+%\phantomsection
+\subsubsection*{Définition}
+
+Également appelé analyseur syntaxique, son rôle principal est la vérification de
+la syntaxe du code en regroupant les tokens selon une structure suivant des
+règles syntaxiques. \\
 
 
+\subsubsection*{Exemple}
 
-%------------------------------------------------------------------------------%
-%                                      PARSER                                  %
-%------------------------------------------------------------------------------%
+Pour l'expression simple \textbf{a = 2 * b} \\
+Les tokens apparaissant sont : \\
+\begin{center}
+\begin{tabular}{ | c | c | c | }
+\hline
+\textbf{Arbre syntaxique} & \textbf{Évaluation de 2 * b} & \textbf{Affectation de a} \\
+\hline
+\Tree[.= a  [.* 2 b ]] &
+    \Tree[.= a  2*b ] &
+        a = 2 * b\\
+\hline
+\end{tabular}
+\end{center}
 
-\section{Le parseur}
+%\phantomsection
+\subsubsection*{Implémentation}
 
-\phantomsection
-\subsection{Définition}
+À l'instar de Flex pour le lexeur, Bison est un générateur de grammaire qui
+convertit une description de grammaire en un programme C++ qui analyse cette
+même grammaire.\\
 
-Également appelé analyseur syntaxique, son rôle principal est la vérification de la syntaxe du code en regroupant les tokens selon une structure suivant des rêgles syntaxiques. \\
+Le fichier \textbf{main\_cpp.y} contient le code qui permet de générer le
+parseur avec Bison. Toutes les règles syntaxiques qui définissent la grammaire
+du langage y sont comprises. Chaque règle va contenir des bloques de code qui
+seront exécutés au moment où le parseur la reconnait, ce code permet de
+construire l'ABS du programme ainsi que de faire de la vérification sur les
+symboles (définition et type), comme nous le verrons plus tard.\\
 
-
-    \textbf{Exemple} \\
-    Pour l'expression simple \textbf{a = 2 * b} \\
-    Les tokens apparaissant sont : \\
-    \begin{center}
-    \begin{tabular}{ | c | c | c | }
-    \hline
-    \textbf{Arbre syntaxique} & \textbf{Évaluation de 2 * b} & \textbf{Affectation de a} \\ 
-    \hline
-    \Tree[.= a  [.* 2 b ]] & 
-        \Tree[.= a  2*b ] &             
-            a = 2 * b\\
-    \hline
-    \end{tabular}
-    \end{center}
-
-\phantomsection
-\subsection{Implémentation}
-
-À l'instar de FLEX pour le lexeur, Bison est un générateur de grammaire qui convertit une description de grammaire en un programme c++ qui analyse cette même grammaire.\\~\\
- Le fichier \textbf{main\_cpp.y} contient le code qui permet de générer le parseur avec Bison. Toutes les règles syntaxiques qui définissent la grammaire du langage y sont comprises.
-Chaque règle va contenir des blocks de code qui seront exécutés au moment où le parseur la reconnait, ce code permet de créer des objets qui formeront l'ABS (Abstract Syntaxic Tree) du programme.\\
-
-
-La structure du fichier \textbf{main\_cpp.y} est identique au lexeur :
+La structure du fichier \textbf{main\_cpp.y} est similaire à celle du lexeur :
 
 \begin{code}
-C and parser declaration
+// C++, options, et declaration des tokens
 
 %%
-Grammar rules and actions
+// Regles de grammaire
 
 %%
-C subroutings
+// fonctions C++
 \end{code}\leavevmode\newline
 
 Les tokens sont définis en début de fichier avec la syntaxe suivante:
@@ -440,13 +881,14 @@ Les tokens sont définis en début de fichier avec la syntaxe suivante:
 %token <std::string> IDENTIFIER
 \end{code}\leavevmode\newline
 
+% TODO: expliquer mieux
 À noter que l'on peut spécifier le type de l'élément, ce qui sera utile pour
 récupérer les valeurs retournées par le lexeur.\\~\\
 
 
-Bison permet de construire le parser, qui va reconnaître des éléments de syntaxe
+Bison permet de construire le parseur, qui va reconnaître des éléments de syntaxe
 et non pas juste des mots clés. Par exemple, on peut définir une règle pour
-reconnaître une suite d'inclusion de fichiers :\\
+reconnaître une suite d'inclusion de fichiers :\\ % TODO: changer l'exemple
 
 \begin{code}[language=c++]
 includes: %empty
@@ -454,11 +896,21 @@ includes: %empty
        ;
 \end{code}\leavevmode\newline
 
-Ici, on définie une règle \textbf{includes} qui décrit la syntaxe des \textit{includes}. Selon cette règle, une suite d'inclusions est soit vide, soit elle comporte une inclusion, suivit d'une suite d'inclusion (`|` signifie "ou"). Il faut noter que la syntaxe est "récursive", ce qui nous permet de définir une suite d'éléments.
-Enfin, les mots en majuscule sont les tokens retournés par le lexeur.\\
+Ici, on définie une règle \textbf{includes} qui décrit la syntaxe des
+\textit{includes}. Selon cette règle, une suite d'inclusions est soit vide, soit
+elle comporte une inclusion, suivit d'une suite d'inclusion (`|` signifie "ou").
+Il faut noter que la syntaxe est "récursive", ce qui nous permet de définir une
+suite d'éléments. Enfin, les mots en majuscule sont les tokens retournés par le
+lexeur.\\
 
 On peut ajouter des blocks de codes qui seront exécutés au moment où le parseur
-atteint l'élément qui précède le block. Dans l'exemple ci-dessous, le block sera appelé une fois que Bison aura parser le \textcolor{red}{;}. À noter que l'on peut accéder aux éléments retournés par FLEX ; ici, \textcolor{blue}{\$2} fait référence au second élément de la règle qui est \textcolor{cyan}{IDENTIFIER}. Le type de \textcolor{orange}{IDENTIFIER} a été défini comme étant une \textcolor{teal}{std::string}. Le block de code nous permet donc de créer une nouvelle inclusion et de récupérer le nom de la bibliothèque.\\
+atteint l'élément qui précède le block. Dans l'exemple ci-dessous, le block sera
+appelé une fois que Bison aura parser le \textcolor{purple}{;}. À noter que l'on
+peut accéder aux éléments retournés par Flex ; ici, \textcolor{purple}{\$2} fait
+référence au second élément de la règle qui est \textcolor{purple}{IDENTIFIER}.
+Le type de \textcolor{purple}{IDENTIFIER} a été défini comme étant une
+\textcolor{purple}{std::string}. Le block de code nous permet donc de créer une
+nouvelle inclusion et de récupérer le nom de la bibliothèque.\\
 
 \begin{code}[language=c++]
 includes: %empty
@@ -495,9 +947,9 @@ value: INT {
 
 Pour la génération du code, on a deux options :
 \begin{itemize}
-\item utiliser des instruction très simples => sorte de bytecode
+  \item utiliser des instruction très simples (comme du \gls{bytecode})
 \item créer un code objet où tous les éléments sont des objets.
-\end{itemize}\leavevmode\\
+\end{itemize}\leavevmode\\~\\
 
 \underline{Choix de la représentation objet} :
 \begin{itemize}
@@ -508,9 +960,272 @@ Pour la génération du code, on a deux options :
 
 \clearpage{}
 
+\subsection{Fabrique à programme}
+
+Pour construire l'arbre syntaxique dans le programme, nous utiliserons
+la classe \textbf{ProgramBuilder}. Cette classe permet de stocker des éléments
+comme le nom de la fonction courante ou les commendes récupérée par le parseur.
+De plus cette classe permet d'instancier les éléments de l'AST pour construire
+le programme. Le diagramme de cette classe est le suivant :
+
+\begin{figure}[h]
+  \begin{center}
+  \includegraphics[scale=0.5]{../ressources/diagrams/program-builder.png}
+  \caption{Diagramme de classe : ProgramBuilder}
+  \end{center}
+\end{figure}
+
+On peut noter sur ce diagramme que l'on a des fonctions de créations qui
+permettent de créer les éléments de l'AST définis dans la première partie. De
+plus la classe est composé du programme, auquel elle ajoute les fonctions et les
+fichiers inclus. % note: ça va changer
+
+L'emploi de cette classe permet de limiter le code dans le parseur mais aussi de
+pouvoir récupérer des éléments dans des piles quand on ne connait pas leurs
+nombre. Par exemple, pour les \textbf{Block}, on ne sait pas combien de
+commandes ils contiennent, c'est pourquoi le \textbf{ProgramBuilder} possède une
+pile qui permet d'ajouter les commandes au bloques ainsi que d'avoir accès au
+dernier bloque pour construire les \textbf{Statement}. Il en est de même pour
+les paramètres de fonctions, dans ce cas nous avons une liste de liste. Si une
+fonction \textbf{A} prend le résultat d'une autre fonction \textbf{B} en
+paramètre (\textit{A(..., B(...), ...)}), la dernière liste contient les
+paramètres de \textbf{B} au moment ou \textbf{B} est traitée. À l'origine, ce
+choix avait été fait car il permet de toujours avoir accès aux éléments qui sont
+en train d'être récupérer depuis n'importe quel endroit du parseur. Cependant,
+cette fonctionnalité n'est pas utilisée, il aurait donc été plus simple de
+construire ces listes en utilisant les valeurs retour de bison.\\
+% NOTE: je sais plus parler
+
+Le \textbf{ProgramBuilder} permet donc de stocker les éléments important ainsi
+que de construire le \textbf{Program} au fur et à mesure de l'exécution du
+parseur.
+
+
+\section{Analyse des symboles}
+
+Dans cette partie, nous allons créer une table des symboles qui, de façon
+similaire à ce que l'on voit dans \cite{compilerFlexBison}, permet de vérifier
+si les symboles (variables et fonctions) utilisés ont bien été déclarés.
+Cependant, ici notre table des symboles sera plus complexe du fait que les
+symboles peuvent avoir des portées différentes. De plus la table des symboles
+nous permettra aussi de faire de la vérification de types pour par exemple,
+vérifier qu'une fonctions prend les bon paramètres.
+
+Du fait que nous allons devoir faire de la détection d'erreurs, nous créerons
+une nouvelle classe qui permettra de stocker tous les messages d'erreurs (et
+avertissements) au fil de l'exécution du parseur. Ces messages seront affichés à
+la fin une fois tout le code source traité. À noter que la présence d'erreurs
+empêche la compilation.
+
+\subsection{Gestion des symboles}
+
+\subsubsection*{La table des symboles}
+
+Pour la création de notre table des symboles nous utiliserons la méthode
+présenté dans cet article \cite{power2000symbol} que nous avons simplifié pour
+la récupération et la recherche de symboles.\\
+
+Commençons par étudier la composition d'un symbole. Chaque symbole est composé
+d'un nom qui lui sert d'identifiant, d'un type et d'un genre. Le genre est une
+énumération qui suis le même principe que dans \cite{power2000symbol}. Le type
+du symbole est une liste de \textbf{Type} qui est une énumération décrite dans
+l'AST, il a la même utilité que pour les éléments typées (voir \ref{sec:eltTypes}).
+
+\begin{figure}[h!]
+  \begin{center}
+  \includegraphics[scale=0.5]{../ressources/diagrams/symbol.png}
+  \caption{Diagramme de classe : Symbol}
+  \end{center}
+\end{figure}
+
+Pour implémenter la table des symbole nous nous sommes inspiré du schéma suivant
+\cite{symtableGenius}. Ici la table des symboles est une table de tables.
+Chaque sous table correspond à une zone de code dans laquelle peuvent être
+définis des symboles (\textbf{scope}). Cette représentation est intéressante car
+elle permet de pouvoir aisément vérifier si un symbole existe en remontant
+l'arborescence de la table jusqu'aux \textbf{scope} global. Les éléments stockés
+dans la table mère sont toujours accessibles.
+\clearpage
+
+\begin{figure}[h!]
+  \begin{center}
+  \includegraphics[scale=0.5]{./img/symtable.png}
+  \caption{Structure de la table des symboles}
+  \end{center}
+\end{figure}
+
+Pour l'implémentation, nous suivrons le diagramme ci-dessous. Les symboles sont
+stockés dans une \textbf{unordered\_map} qui est une table de hachage qui
+permettra l'accès aux valeurs avec l'identifiant. De plus, la table
+possède un liste de sous tables qui et un pointeur sur la table mère qui sera
+utilisé par la méthode \textbf{lookup} pour la recherche de symbole comme
+expliqué précédemment. À noter que la méthode \textbf{lookup} ne retourne pas
+directement un symbole. Elle utilise la classe \lstinline{std::optional} et
+retourne une valeur vide dans le cas ou le symbole recherché n'a pas été trouvé,
+ce qui est pratique étant donné le fait que C++ ne possède pas de valeur nulle.
+Une autre solution aurait été de retourner un pointeur.
+
+\begin{figure}[h!]
+  \begin{center}
+  \includegraphics[scale=0.5]{../ressources/diagrams/symtable2.png}
+  \caption{Diagramme de classe : Symtable}
+  \end{center}
+\end{figure}
+
+Nous avons donc une table des symboles qui nous permet de connaître tous les
+éléments nommés du programme, leur porté ainsi que leur type. Dans la partie
+suivante, nous détaillerons le fonctionnement de l'objet responsable de la
+création de la table dans le parseur.
+
+\clearpage
+\subsubsection*{Gestion du contexte}
+
+Nous avons une table des symboles, cependant il nous faut un moyen de gérer les
+\textit{scopes}, et donc de gérer l'arborescence de la table. Pour ce faire nous
+aurons une classe \textbf{ContextManager} qui permettra de créer des nouveaux
+nœuds dans l'arborescence de la table des symboles à chaque fois que l'on entre
+dans une nouveau \textit{scope}. La structure de cette classe est la suivante :
+
+\begin{figure}[h!]
+  \begin{center}
+  \includegraphics[scale=0.5]{../ressources/diagrams/contextManager.png}
+  \caption{Diagramme de classe : ContextManager}
+  \end{center}
+\end{figure}
+
+Le \textbf{ContextManager} possède un attribut \textbf{currentScope} qui est pointeur sur
+la sous table qui contient le scope courant. La classe possède aussi deux
+méthodes permettant de renter ou sortir d'un scope. La méthode
+\textbf{enterScope} créer une nouvelle sous table dans la table des symboles et
+pointe dessus avec \textbf{currentScope}. Lorsqu'on sort du scope courant, on
+retourne dans le \textit{scope père}, la méthode va donc faire pointer
+\textbf{currentScope} sur la table mère. Enfin cette classe possède des méthodes
+pour ajouter ou rechercher des symboles qui font appel au méthode de la sous
+table courante.\\
+
+Le \textbf{ContextManager} permet donc de créer une table des symboles dans le
+parseur, ainsi que de pouvoir faire toutes les vérifications décrites dans la
+partie précédente. La partie suivante concerne la création d'une classe pour la
+gestion des erreurs de compilation. Nous verrons ensuite comment combiner toutes
+ces classes dans le parseur pour pouvoir collecter et afficher toutes les
+erreurs de types et de définitions.
+
+\subsection{Gestion des erreurs}
+
+L'objectif de cette partie est de pouvoir vérifier si les éléments du programmes
+ont bien été définis et possèdent les bon type. Dans le cas contraire, cela va
+impliquer de devoir retourner les erreurs qui conviennent. Pour ce faire, nous
+avons une classe dédiée à la collections des erreurs et des avertissements dans
+le parseur, \lstinline{ErrorManager}.
+
+Comme on peut le voir ci-dessous sur le diagramme, c'est une classe très simple
+qui ne possède que deux attributs. Le premier et un flux de caractères qui va
+permettre de stocker tous les messages d'erreurs. Le second est un booleen, il
+est initialisé à \textit{false} au départ et passe à \textit{true} quand une
+erreurs est enregistrée. Cet attributs sert à savoir si on doit compiler ou pas
+quand le parseur a consommé tous le texte. En effet, seules les erreurs de
+syntaxes sont bloquantes, et cause un arrêt du parseur avec un retour non nul.
+Cependant, il n'est pas nécessaire de planter au niveau du parseur pour les
+erreurs de types. De ce fait il nous est possible de récupérer toutes les
+erreurs de type dans un programme qui ne comporte pas d'erreur de syntaxe et
+donc de rendre la correction d'erreurs plus rapide.
+
+\begin{figure}[h!]
+  \begin{center}
+  \includegraphics[scale=0.5]{../ressources/diagrams/errMgr.png}
+  \caption{Diagramme de classe : ErrorsManager}
+  \end{center}
+\end{figure}
+
+Concernant les méthodes, la classe possède une méthode \textit{report} qui doit
+être appelée après le parseur et affiche tous les messages enregistrés. La
+classes possède aussi deux méthodes permettant l'ajout de nouvelles erreurs et
+de nouveaux avertissements. La différence entre les deux est que les
+avertissements ne vont pas empêcher la transpilation. Par exemple, un
+avertissement peut être levé lors de l'affectation d'un caractère à une variable
+de type entier. Ici, l'avertissement va permettre de signifier à l'utilisateur
+que les type diffères, cependant, ce dernier souhaite peut-être extraire le
+numéro ASCII du caractère assigné, il ne faut donc pas planter dans ce genre de
+cas.\\~\\
+
+
+\subsection{Traitement des des symboles dans le parseur}
+
+\subsubsection*{Vérification des définitions}
+
+% définition des variables
+% définition des fonction
+
+\subsubsection*{Vérification des types}
+% fonction
+% set
+% vérifcation du return
+
+\section{Le transpileur}
+% TODO
+
+\section{Mise en œuvre du projet}
+
+\part{Résultats et discussions}
+
 %------------------------------------------------------------------------------%
 %                                 bibliography                                 %
 %------------------------------------------------------------------------------%
+\clearpage{}
 \printbibliography[keyword={paper},title={Biliographie}]
 \printbibliography[keyword={web},title={Webographie}]
+
+%------------------------------------------------------------------------------%
+%                             Affiche le glossaire                             %
+%------------------------------------------------------------------------------%
+\clearpage
+\printglossaries
+
+\appendix
+
+\clearpage{}
+\section{Diagramme de classes de l'AST}\label{appendix:classAST}
+
+\begin{figure}[h]
+  \begin{center}
+  \rotatebox[origin=c]{90}{\includegraphics[scale=0.22]{../ressources/diagrams/ast.png}}
+  \end{center}
+\end{figure}
+
 \end{document}
+
+
+%------------------------------------------------------------------------------%
+%               Résumé des réfs (à supprimer à la dernière version
+%------------------------------------------------------------------------------%
+% \section{Résumé des références}{{{
+%
+% \begin{itemize}
+%   \item La partie consultable de \cite{flexBisonHandbook} présentent les bases
+%     de flex.
+%   \item \cite{compilerFlexBison} présente la construction d'un compilateur avec
+%     flex et bison. Le compilateur présenté utilise une \textbf{table des
+%     symboles} ainsi qu'une sorte de \textbf{byte code}. Nous avons choisi
+%     l'autre méthode qui consiste à utiliser un object-ABS plutot que directement
+%     du byte code. Article très utilisé au départ pour la mise en place du
+%     parseur/lexeur.
+%   \item \cite{flexmanual}: manuel d'utilisation de Flex.
+%   \item \cite{cppparsing}: nous a permis d'avoir un exemple de code qui allie
+%     flex et bison en C++ et non en C.
+%
+%
+%   \item \cite{compilerTICH} explication du fonctionnement d'un compilateur.
+%   \item \cite{compilerTILB} première version de l'article précédent.
+%   \item \cite{crew1997astlog} création d'un analyser syntaxique pour du C/C++:
+%     ASTROLOG. L'article par d'analyse syntaxique et de la construction
+%     d'\textbf{ABS}.
+%
+%   \item \cite{visser2002meta} L'objectif de l'article est de présenter
+%     l'utilisation des \textbf{ABS} pour de la méta programmation. Il comporte
+%     pas mal d'exemples sur les \textbf{ABS} donc je le trouve pertinant.
+%   \item \cite{gagnon1998sablecc}: \textbf{ABS} en java.
+% \end{itemize}
+%
+%
+% \clearpage{}
+% \setcounter{secnumdepth}{1}}}}

@@ -1,0 +1,15 @@
+digraph G {
+    add3 -> params;
+    add3 -> block;
+    add1[label="add"];
+    add2[label="add"]
+    params -> "int a";
+    params -> "int b";
+    params -> "int c";
+    block -> return;
+    return -> add1;
+    add1 -> a;
+    add1 -> add2;
+    add2 -> b;
+    add2 -> c;
+}
