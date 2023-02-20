@@ -90,7 +90,7 @@ bool checkTypeError(std::list<Type> expectedType, std::list<Type> funcallType) {
   return typeError;
 }
 
-bool checkType(std::string name, int line, int column, Type expected, Type founed)
+void checkType(std::string name, int line, int column, Type expected, Type founed)
 {
   if (expected != founed) {
    std::ostringstream oss;
@@ -658,6 +658,11 @@ int main(int argc, char **argv) {
     interpreter::Scanner scanner{ is , std::cerr };
     interpreter::Parser parser{ &scanner };
     parser.parse();
+    // loock for main
+    std::optional<Symbol> sym = contextManager.lookup("main");
+    if (!sym.has_value()) {
+      errMgr.newError("no entry point.");
+    }
     errMgr.report();
     if (!errMgr.getErrors()) {
       pb.display();
