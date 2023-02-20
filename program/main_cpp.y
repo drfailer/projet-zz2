@@ -3,6 +3,7 @@
 #include <string>
 #include <FlexLexer.h>
 #include <fstream>
+#include <filesystem>
 #include "AST/AST.hpp"
 #include "AST/ProgramBuilder.hpp"
 #include "symtable/Symtable.hpp"
@@ -665,10 +666,14 @@ int main(int argc, char **argv) {
     }
     errMgr.report();
     if (!errMgr.getErrors()) {
-      std::cout << "start compiling" << std::endl;
       std::ofstream fs("a.out");
       pb.getProgram()->compile(fs);
-      std::cout << "end compiling" << std::endl;
+      std::filesystem::permissions(
+        "a.out",
+        std::filesystem::perms::owner_exec | std::filesystem::perms::group_exec
+        | std::filesystem::perms::others_exec,
+        std::filesystem::perm_options::add
+      );
       // pb.display();
     }
   }

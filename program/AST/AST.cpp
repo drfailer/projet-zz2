@@ -211,7 +211,11 @@ void Declaration::display()
   std::cout << ")" << std::endl;
 }
 
-void Declaration::compile(std::ofstream&, int) {}
+void Declaration::compile(std::ofstream& fs, int lvl)
+{
+  indent(fs, lvl);
+  fs << "# " << typeToString(variable.getType()) << " " << variable.getId();
+}
 
 /* -------------------------------------------------------------------------- */
 
@@ -296,7 +300,7 @@ void If::compile(std::ofstream& fs, int lvl)
   block->compile(fs, lvl);
   if (elseBlock != nullptr) {
     indent(fs, lvl);
-    fs << "else:";
+    fs << "else:" << std::endl;
     elseBlock->compile(fs, lvl);
   }
 }
@@ -329,13 +333,14 @@ void For::compile(std::ofstream& fs, int lvl)
   indent(fs, lvl);
   fs << "for ";
   var.compile(fs, 0);
-  fs << " in rang(";
+  fs << " in range(";
   begin->compile(fs, 0);
   fs << ",";
   end->compile(fs, 0);
   fs << ",";
   step->compile(fs, 0);
   fs << "):" << std::endl;
+  block->compile(fs, lvl);
 }
 
 /* -------------------------------------------------------------------------- */
@@ -644,7 +649,7 @@ void Print::compile(std::ofstream& fs, int lvl)
   else {
     content->compile(fs, 0);
   }
-  fs << ")";
+  fs << ",end=\"\")";
 }
 
 Read::Read(Variable variable): variable(variable)
@@ -661,9 +666,18 @@ void Read::display()
 void Read::compile(std::ofstream& fs, int lvl)
 {
   indent(fs, lvl);
-  fs << "input(";
   variable.compile(fs, 0);
-  fs << ")";
+  switch (variable.getType()) {
+    case INT:
+      fs << " = int(input())";
+      break;
+    case FLT:
+      fs << " = flt(input())";
+      break;
+    default:
+      fs << " = input()";
+      break;
+  }
 }
 
 /******************************************************************************/
