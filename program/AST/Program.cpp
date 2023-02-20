@@ -33,10 +33,10 @@ std::list<std::shared_ptr<Function>> Program::getFunctions() const
   return functions;
 }
 
-void Program::compile(std::fstream& fs)
+void Program::compile(std::ofstream& fs)
 {
-  fs << "# generated using ISIMA's transpiler" << std::endl;
-  fs << "#!/usr/bin/env python3" << std::endl << std::endl;
+  fs << "#!/usr/bin/env python3" << std::endl;
+  fs << "# generated using ISIMA's transpiler" << std::endl << std::endl;
   for (std::shared_ptr<Function> function : functions) {
     function->compile(fs, 0);
     fs << std::endl;

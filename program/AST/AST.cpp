@@ -7,7 +7,7 @@
 #include <string>
 #include <type_traits>
 
-void indent(std::fstream& fs, int lvl) {
+void indent(std::ofstream& fs, int lvl) {
   for (int i = 0; i < lvl; ++i) {
     fs << '\t';
   }
@@ -50,7 +50,7 @@ void Value::display()
   }
 }
 
-void Value::compile(std::fstream& fs, int lvl)
+void Value::compile(std::ofstream& fs, int lvl)
 {
   switch (type) {
     case INT:
@@ -88,7 +88,7 @@ Type Variable::getType() const
   return type;
 }
 
-void Variable::compile(std::fstream& fs, int lvl)
+void Variable::compile(std::ofstream& fs, int lvl)
 {
   fs << id;
 }
@@ -112,15 +112,17 @@ Function::Function(std::string id, std::list<Variable> params,
 {
 }
 
-void Function::compile(std::fstream& fs, int lvl)
+void Function::compile(std::ofstream& fs, int lvl)
 {
   fs << "def " << id << "(";
-  std::list<Variable> tmp = params;
-  tmp.front().compile(fs, 0);
-  tmp.pop_front();
-  for (Variable v : tmp) {
-    fs << ",";
-    v.compile(fs, 0);
+  if (params.size() > 0) {
+    std::list<Variable> tmp = params;
+    tmp.front().compile(fs, 0);
+    tmp.pop_front();
+    for (Variable v : tmp) {
+      fs << ",";
+      v.compile(fs, 0);
+    }
   }
   fs << "):" << std::endl;
   block->compile(fs, 0);
@@ -137,7 +139,7 @@ void Include::display()
   std::cout << "Include(" << libName << ")" << std::endl;
 }
 
-void Include::compile(std::fstream&, int) {}
+void Include::compile(std::ofstream&, int) {}
 
 /* -------------------------------------------------------------------------- */
 
@@ -165,7 +167,7 @@ void Block::display()
   std::cout << ")" << std::endl;
 }
 
-void Block::compile(std::fstream& fs, int lvl)
+void Block::compile(std::ofstream& fs, int lvl)
 {
   for (std::shared_ptr<ASTNode> op : operations) {
     op->compile(fs, lvl + 1);
@@ -188,7 +190,7 @@ void Assignement::display()
   std::cout << ")" << std::endl;
 }
 
-void Assignement::compile(std::fstream& fs, int lvl)
+void Assignement::compile(std::ofstream& fs, int lvl)
 {
   indent(fs, lvl);
   variable.compile(fs, lvl); // TODO: gérer le cast
@@ -209,7 +211,7 @@ void Declaration::display()
   std::cout << ")" << std::endl;
 }
 
-void Declaration::compile(std::fstream&, int) {}
+void Declaration::compile(std::ofstream&, int) {}
 
 /* -------------------------------------------------------------------------- */
 
@@ -239,7 +241,7 @@ std::string Funcall::getFunctionName() const
   return functionName;
 }
 
-void Funcall::compile(std::fstream& fs, int lvl) {
+void Funcall::compile(std::ofstream& fs, int lvl) {
   indent(fs, lvl);
   fs << functionName << "(";
   for (std::shared_ptr<ASTNode> p : params) {
@@ -285,7 +287,7 @@ void If::display()
   std::cout << ")" << std::endl;
 }
 
-void If::compile(std::fstream& fs, int lvl)
+void If::compile(std::ofstream& fs, int lvl)
 {
   indent(fs, lvl);
   fs << "if ";
@@ -321,7 +323,7 @@ void For::display()
   std::cout << ")" << std::endl;
 }
 
-void For::compile(std::fstream& fs, int lvl)
+void For::compile(std::ofstream& fs, int lvl)
 {
   // TODO: vérifier les type et cast si besoin
   indent(fs, lvl);
@@ -351,7 +353,7 @@ void While::display()
   std::cout << ")" << std::endl;
 }
 
-void While::compile(std::fstream& fs, int lvl)
+void While::compile(std::ofstream& fs, int lvl)
 {
   indent(fs, lvl);
   fs << "while ";
@@ -390,7 +392,7 @@ void AddOP::display()
   BinaryOperation::display();
 }
 
-void AddOP::compile(std::fstream& fs, int lvl)
+void AddOP::compile(std::ofstream& fs, int lvl)
 {
   left->compile(fs, 0);
   fs << "+";
@@ -407,7 +409,7 @@ void MnsOP::display()
   BinaryOperation::display();
 }
 
-void MnsOP::compile(std::fstream& fs, int lvl)
+void MnsOP::compile(std::ofstream& fs, int lvl)
 {
   left->compile(fs, 0);
   fs << "-";
@@ -425,7 +427,7 @@ void TmsOP::display()
   BinaryOperation::display();
 }
 
-void TmsOP::compile(std::fstream& fs, int lvl)
+void TmsOP::compile(std::ofstream& fs, int lvl)
 {
   left->compile(fs, 0);
   fs << "*";
@@ -442,7 +444,7 @@ void DivOP::display()
   BinaryOperation::display();
 }
 
-void DivOP::compile(std::fstream& fs, int lvl)
+void DivOP::compile(std::ofstream& fs, int lvl)
 {
   left->compile(fs, 0);
   fs << "/";
@@ -463,7 +465,7 @@ void EqlOP::display()
   BinaryOperation::display();
 }
 
-void EqlOP::compile(std::fstream& fs, int lvl)
+void EqlOP::compile(std::ofstream& fs, int lvl)
 {
   left->compile(fs, 0);
   fs << "==";
@@ -480,7 +482,7 @@ void SupOP::display()
   BinaryOperation::display();
 }
 
-void SupOP::compile(std::fstream& fs, int lvl)
+void SupOP::compile(std::ofstream& fs, int lvl)
 {
   left->compile(fs, 0);
   fs << ">";
@@ -497,7 +499,7 @@ void InfOP::display()
   BinaryOperation::display();
 }
 
-void InfOP::compile(std::fstream& fs, int lvl)
+void InfOP::compile(std::ofstream& fs, int lvl)
 {
   left->compile(fs, 0);
   fs << "<";
@@ -514,7 +516,7 @@ void SeqOP::display()
   BinaryOperation::display();
 }
 
-void SeqOP::compile(std::fstream& fs, int lvl)
+void SeqOP::compile(std::ofstream& fs, int lvl)
 {
   left->compile(fs, 0);
   fs << ">=";
@@ -531,7 +533,7 @@ void IeqOP::display()
   BinaryOperation::display();
 }
 
-void IeqOP::compile(std::fstream& fs, int lvl)
+void IeqOP::compile(std::ofstream& fs, int lvl)
 {
   left->compile(fs, 0);
   fs << "<=";
@@ -548,7 +550,7 @@ void OrOP::display()
   BinaryOperation::display();
 }
 
-void OrOP::compile(std::fstream& fs, int lvl)
+void OrOP::compile(std::ofstream& fs, int lvl)
 {
   left->compile(fs, 0);
   fs << " or ";
@@ -565,7 +567,7 @@ void AndOP::display()
   BinaryOperation::display();
 }
 
-void AndOP::compile(std::fstream& fs, int lvl)
+void AndOP::compile(std::ofstream& fs, int lvl)
 {
   left->compile(fs, 0);
   fs << " and ";
@@ -582,7 +584,7 @@ void XorOP::display()
   BinaryOperation::display();
 }
 
-void XorOP::compile(std::fstream& fs, int lvl)
+void XorOP::compile(std::ofstream& fs, int lvl)
 {
   left->compile(fs, 0); // TODO
   fs << " and ";
@@ -599,7 +601,7 @@ void NotOP::display()
   std::cout << ")";
 }
 
-void NotOP::compile(std::fstream& fs, int lvl)
+void NotOP::compile(std::ofstream& fs, int lvl)
 {
   fs << "not(";
   param->compile(fs, 0);
@@ -632,12 +634,12 @@ void Print::display()
   std::cout << ");" << std::endl;
 }
 
-void Print::compile(std::fstream& fs, int lvl)
+void Print::compile(std::ofstream& fs, int lvl)
 {
   indent(fs, lvl);
   fs << "print(";
   if (content == nullptr) {
-    fs << "\"" << str << "\"";
+    fs << str;
   }
   else {
     content->compile(fs, 0);
@@ -656,7 +658,7 @@ void Read::display()
   std::cout << ")" << std::endl;
 }
 
-void Read::compile(std::fstream& fs, int lvl)
+void Read::compile(std::ofstream& fs, int lvl)
 {
   indent(fs, lvl);
   fs << "input(";
@@ -679,7 +681,7 @@ void Return::display()
   std::cout << ")";
 }
 
-void Return::compile(std::fstream& fs, int lvl)
+void Return::compile(std::ofstream& fs, int lvl)
 {
   indent(fs, lvl);
   fs << "return ";

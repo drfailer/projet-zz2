@@ -19,7 +19,7 @@ class Program
     Program();
     void addInclude(std::shared_ptr<Include>);
     void addFunction(std::shared_ptr<Function>);
-    void compile(std::fstream&);
+    void compile(std::ofstream&);
     void display();
 };
 

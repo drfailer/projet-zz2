@@ -665,8 +665,10 @@ int main(int argc, char **argv) {
     }
     errMgr.report();
     if (!errMgr.getErrors()) {
-      std::fstream fs("a.out");
+      std::cout << "start compiling" << std::endl;
+      std::ofstream fs("a.out");
       pb.getProgram()->compile(fs);
+      std::cout << "end compiling" << std::endl;
       // pb.display();
     }
   }
