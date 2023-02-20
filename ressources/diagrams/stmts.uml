@@ -10,7 +10,7 @@ class Statement {
 Statement <|-- Function
 Function o-- Variable
 class Function {
-  -name: string
+  -id: string
   -params: list<Variable>
   -returnType: Type
 }
@@ -19,19 +19,21 @@ Statement <|-- If
 If o-- ASTNode
 class If {
   -condition: ASTNode
+  -Block: elseBlock
 }
 
 Statement <|-- For
 For *-- ASTNode
+For *-- Variable
 class For {
-  -var: string
+  -var: Variable
   -begin: ASTNode
   -end: ASTNode
   -step: ASTNode
 }
 
 Statement <|-- While
-If o-- ASTNode
+While o-- ASTNode
 class While {
   -condition: ASTNode
 }

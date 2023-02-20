@@ -537,14 +537,17 @@ importantes.
 
 La classe \lstinline{Block} correspond aux bloques de code en entre accolades.
 Elle possède une liste de nœuds qui sont les opérations contenues dans le
-bloque.
+bloque. Nous verrons dans la partie suivante comment les opérations sont
+récupérées dans le parseur pour pouvoir construire les bloques.
 
 \clearpage{}
 \subsubsection*{Les conteneurs d'opérations}
 
 La classes \lstinline{Statement} correspond aux éléments qui contiennent des
 blocks de code. Cela comprend les fonctions et les structures de contrôles. La
-grammaire ne permet pas l'emploi des bloques ailleurs.
+grammaire ne permet pas l'emploi des bloques ailleurs. Comme on peut le voir sur
+le diagramme suivant, la class \lstinline{Statement} permet de transmettre un
+\lstinline{Block} par héritage aux structures de contrôles et aux fonctions.
 
 \begin{figure}[h!]
   \begin{center}
@@ -552,6 +555,8 @@ grammaire ne permet pas l'emploi des bloques ailleurs.
   \caption{Diagramme de classe: Statement}
   \end{center}
 \end{figure}
+
+% TODO: détailler struct controle et fonctions
 
 \subsubsection*{Les opérations}
 
