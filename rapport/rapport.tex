@@ -143,7 +143,7 @@
 %------------------------------------------------------------------------------%
 %                                Remerciements
 %------------------------------------------------------------------------------%
-\section*{Remerciements}
+\section{Remerciements}
 
 \doublespacing
 \large % TODO: reformuler
@@ -180,7 +180,7 @@ Flex et Bison pour l'écriture d'un parseur.
 %                              Résumé et Abstract
 %------------------------------------------------------------------------------%
 \setcounter{secnumdepth}{3}
-\section*{Résumé}
+\section{Résumé}
 
 Ce projet s'inscrit dans le cadre du projet commun de la filière génie logiciel
 dont l'objectif est la création d'outils de démonstration servant à présenter la
@@ -203,7 +203,7 @@ Mots-clés : \textbf{C++}, \textbf{transpileur}, \textbf{lexeur}, \textbf{parseu
 \textbf{flex}, \textbf{bison},  \textbf{langage de programmation}
 \\[2\baselineskip]
 
-\section*{Abstract}
+\section{Abstract}
 
 This project is a part of the common project of the software development
 pathway. The objective is to create a tool for presenting software development.
@@ -230,7 +230,7 @@ Keywords : \textbf{C++}, \textbf{transpiler}, \textbf{lexer}, \textbf{parser},
 %                                 Introduction
 %------------------------------------------------------------------------------%
 \clearpage
-\section*{Introduction}
+\section{Introduction}
 \large
 Dans le cadre du projet de 2\up{ème} année à l'ISIMA, nous avons choisi de
 réaliser un travail concernant le sujet commun de la filière 2, génie logiciel
@@ -412,6 +412,7 @@ déclarée avant d'être utilisée, il faudra donc déclarer la variable de bouc
 utilisée dans un \textit{for}.
 
 \subsubsection*{Les opérations}
+\label{sec:operator}
 
 Comme dit précédemment, tous le langage ne comporte pas d'opérateur donc toutes
 les opérations se font à l'aide de fonctions directement intégrées dans le
@@ -470,11 +471,12 @@ Dans cet exemple, nous disposons de 2 variables \textbf{a} et \textbf{b}. La
 variable \textbf{a} est lue par commande de l'utilisateur tandis que la valeur 4
 est assignée à \textbf{b}.\\
 Nous cherchons ensuite à additionner les 2 variables avec la valeur 5. Nous avons alors la syntaxe suivante :\\
-- une fonction \textit{add3} qui additionne les valeurs de ses 3 paramètres\\
-- une fonction \textit{affiche} qui affiche sur l'écran le nombre passé en paramètre\\
-- une fonction \textit{main}, où se trouve toutes les commandes voulues de notre programme\\
 
-% section  (end)
+\begin{itemize}
+  \item une fonction \textit{add3} qui additionne les valeurs de ses 3 paramètres\\
+  \item une fonction \textit{affiche} qui affiche sur l'écran le nombre passé en paramètre\\
+  \item une fonction \textit{main}, où se trouve toutes les commandes voulues de notre programme\\
+\end{itemize}
 
 
 \begin{grammar}[language=C++]
@@ -495,8 +497,11 @@ fn main() {
     affiche(add3(a, b, 5));
 }
 \end{grammar}\leavevmode\newline
+~\\
 
-% TODO: synthèse et transition
+Maintenant que nous avons défini la syntaxe du langage nous allons voir
+l'implémentation d'un outils qui nous sera utile pour la construction d'un
+programme.
 
 
 \clearpage{}
@@ -556,12 +561,33 @@ le diagramme suivant, la class \lstinline{Statement} permet de transmettre un
   \end{center}
 \end{figure}
 
-% TODO: détailler struct controle et fonctions
+De plus, on peut aussi voir sur ce diagramme la composition de la classe
+fonctions ainsi que celles des classes des structures de contrôle.
+
+La classe \textit{Function} possède un attribut \textit{id} qui correspond au nom de la
+fonction. Elle possède aussi un liste de variables qui sont ses paramètres ainsi
+qu'un type de retour (le type \textit{Type} est détaillé plus loin).
+
+La classe \textit{For} possède une variable qui est la variable de boucle et les
+trois valeurs fourni par le \textit{range} décrites précédemment.
+
+La classe \textit{If} possède un nœud qui contiendra l'opération booléenne de la
+condition. Elle possède aussi un second \textit{Block} qui contient les
+instructions du \textit{else} s'il y en a un.
+
+Enfin la classe \textit{While} possède comme \textit{If}, un nœud pour la
+condition.
 
 \subsubsection*{Les opérations}
 
 Les opérations sont traitées avec la classe \lstinline{OperationBinaire} qui
-correspond à tous les opérateurs.
+correspond à tous les opérateurs. Cette classe possède deux attributs de type
+\textit{ASTNode} qui représentent les parties gauche et droite d'une opération
+binaire. Pour ne pas trop alourdir le schéma ci-dessous, seul la classe
+\textit{AddOP} a été représentée. Cependant, toutes les fonctions décrites dans
+partie \ref{sec:operator} ont une classe qui hérite de
+\lstinline{OperationBinaire}.
+\clearpage
 
 \begin{figure}[h!]
   \begin{center}
@@ -570,7 +596,6 @@ correspond à tous les opérateurs.
   \end{center}
 \end{figure}
 
-\clearpage{}
 \subsubsection*{Les éléments typé}
 \label{sec:eltTypes}
 
@@ -584,12 +609,34 @@ est une énumération qui possède les éléments suivant :
   \end{center}
 \end{figure}
 
-Les valeurs et les variable possède un simple type, et les fonctions possède une
-liste de \textbf{Type} qui contient le type des paramètres suivit du type de
-retour de la fonction. À noter que pour stocker une valeur, on utilise une union
-composé d'un entier, d'un double et d'un char. De ce fait, \textbf{Value} peut
-contenir n'importe quel type de valeur et le champ à utiliser est déterminé par
-le type de la valeur.
+Le champ INT correspond au type des entiers, le champ FLT au type des flottants
+et le champ CHR au type des caractères. Le type VOID est utilisé pour le type de
+retour des procédures et il est aussi utilisé par le parseur pour créer des
+variables qui n'ont pas été déclarées.
+
+\subsubsection*{Les valeurs}
+
+Le dernier élément de l'AST que nous traiterons est la classe \lstinline{Value}
+qui permet de représenter les valeurs utilisé dans code. Comme on peut le voir
+sur le diagramme ci-dessous, cette classe possède deux attributs, \textit{type}
+qui représente le type de la valeur et \textit{value} qui permet de stocker la
+valeur. Le type \textit{type\_t} est une union qui contient un caractère, un
+entier et un flottant et permet donc de stocker des valeurs pour ces trois
+types.
+
+\begin{figure}[h!]
+  \begin{center}
+  \includegraphics[scale=0.5]{../ressources/diagrams/value.png}
+  \caption{Diagramme de classe: Value}
+  \end{center}
+\end{figure}
+~\\
+
+Nous avons définit la grammaire du langage et déterminer les différents éléments
+qui vont composer notre arbre syntaxique. Dans la partie suivante nous écrirons
+la grammaire décrite précédemment dans le langage de bison et nous montrerons
+la construction d'un programme en utilisant les classes de l'AST que nous
+venons de décrire.
 
 
 \clearpage{}
@@ -607,7 +654,7 @@ parseur \cite{cppparsing}.
 
 \subsection{Le lexeur}
 
-\phantomsection
+%\phantomsection
 \subsubsection*{Définition}
 
 Le lexeur, ou encore appelé analyseur lexical, a pour but de transformer le
@@ -640,7 +687,7 @@ Le lexeur a également pour rôle de supprimer les informations inutiles,
 généralement du caractère blancs (espaces et tabulations) et des
 commentaires.\\~\\
 
-\phantomsection
+%\phantomsection
 \subsubsection*{Implémentation}
 
 Comme évoqué précédemment, l'outil utilisé pour générer le lexeur est
@@ -774,7 +821,7 @@ pour bison.
 
 \subsection{Le parseur}
 
-\phantomsection
+%\phantomsection
 \subsubsection*{Définition}
 
 Également appelé analyseur syntaxique, son rôle principal est la vérification de
@@ -798,7 +845,7 @@ Les tokens apparaissant sont : \\
 \end{tabular}
 \end{center}
 
-\phantomsection
+%\phantomsection
 \subsubsection*{Implémentation}
 
 À l'instar de Flex pour le lexeur, Bison est un générateur de grammaire qui
@@ -1065,7 +1112,42 @@ erreurs de types et de définitions.
 
 \subsection{Gestion des erreurs}
 
-% TODO: errorMgr
+L'objectif de cette partie est de pouvoir vérifier si les éléments du programmes
+ont bien été définis et possèdent les bon type. Dans le cas contraire, cela va
+impliquer de devoir retourner les erreurs qui conviennent. Pour ce faire, nous
+avons une classe dédiée à la collections des erreurs et des avertissements dans
+le parseur, \lstinline{ErrorManager}.
+
+Comme on peut le voir ci-dessous sur le diagramme, c'est une classe très simple
+qui ne possède que deux attributs. Le premier et un flux de caractères qui va
+permettre de stocker tous les messages d'erreurs. Le second est un booleen, il
+est initialisé à \textit{false} au départ et passe à \textit{true} quand une
+erreurs est enregistrée. Cet attributs sert à savoir si on doit compiler ou pas
+quand le parseur a consommé tous le texte. En effet, seules les erreurs de
+syntaxes sont bloquantes, et cause un arrêt du parseur avec un retour non nul.
+Cependant, il n'est pas nécessaire de planter au niveau du parseur pour les
+erreurs de types. De ce fait il nous est possible de récupérer toutes les
+erreurs de type dans un programme qui ne comporte pas d'erreur de syntaxe et
+donc de rendre la correction d'erreurs plus rapide.
+
+\begin{figure}[h!]
+  \begin{center}
+  \includegraphics[scale=0.5]{../ressources/diagrams/errMgr.png}
+  \caption{Diagramme de classe : ErrorsManager}
+  \end{center}
+\end{figure}
+
+Concernant les méthodes, la classe possède une méthode \textit{report} qui doit
+être appelée après le parseur et affiche tous les messages enregistrés. La
+classes possède aussi deux méthodes permettant l'ajout de nouvelles erreurs et
+de nouveaux avertissements. La différence entre les deux est que les
+avertissements ne vont pas empêcher la transpilation. Par exemple, un
+avertissement peut être levé lors de l'affectation d'un caractère à une variable
+de type entier. Ici, l'avertissement va permettre de signifier à l'utilisateur
+que les type diffères, cependant, ce dernier souhaite peut-être extraire le
+numéro ASCII du caractère assigné, il ne faut donc pas planter dans ce genre de
+cas.\\~\\
+
 
 \subsection{Traitement des des symboles dans le parseur}
 
