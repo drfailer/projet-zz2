@@ -1,10 +1,17 @@
 #include "AST.hpp"
+#include <fstream>
 #include <iostream>
 #include <list>
 #include <memory>
 #include <ostream>
 #include <string>
 #include <type_traits>
+
+void indent(std::fstream& fs, int lvl) {
+  for (int i = 0; i < lvl; ++i) {
+    fs << '\t';
+  }
+}
 
 /* -------------------------------------------------------------------------- */
 
@@ -43,6 +50,23 @@ void Value::display()
   }
 }
 
+void Value::compile(std::fstream& fs, int lvl)
+{
+  switch (type) {
+    case INT:
+      fs << value.i;
+      break;
+    case FLT:
+      fs << value.f;
+      break;
+    case CHR:
+      fs << "'" << value.c << "'";
+      break;
+    default:
+      break;
+  }
+}
+
 /* -------------------------------------------------------------------------- */
 
 Variable::Variable(std::string id, Type type): id(id), type(type)
@@ -64,6 +88,11 @@ Type Variable::getType() const
   return type;
 }
 
+void Variable::compile(std::fstream& fs, int lvl)
+{
+  fs << id;
+}
+
 /* -------------------------------------------------------------------------- */
 
 void Function::display() {
@@ -81,6 +110,20 @@ Function::Function(std::string id, std::list<Variable> params,
     std::shared_ptr<Block> instructions, std::list<Type> type):
   Statement(instructions), id(id), params(params), type(type)
 {
+}
+
+void Function::compile(std::fstream& fs, int lvl)
+{
+  fs << "def " << id << "(";
+  std::list<Variable> tmp = params;
+  tmp.front().compile(fs, 0);
+  tmp.pop_front();
+  for (Variable v : tmp) {
+    fs << ",";
+    v.compile(fs, 0);
+  }
+  fs << "):" << std::endl;
+  block->compile(fs, 0);
 }
 
 /* -------------------------------------------------------------------------- */
@@ -120,6 +163,14 @@ void Block::display()
   std::cout << ")" << std::endl;
 }
 
+void Block::compile(std::fstream& fs, int lvl)
+{
+  for (std::shared_ptr<ASTNode> op : operations) {
+    op->compile(fs, lvl + 1);
+    fs << std::endl;
+  }
+}
+
 /* -------------------------------------------------------------------------- */
 
 Assignement::Assignement(Variable variable, std::shared_ptr<ASTNode> value):
@@ -133,6 +184,14 @@ void Assignement::display()
   std::cout << ",";
   value->display();
   std::cout << ")" << std::endl;
+}
+
+void Assignement::compile(std::fstream& fs, int lvl)
+{
+  indent(fs, lvl);
+  variable.compile(fs, lvl); // TODO: gérer le cast
+  fs << "=";
+  value->compile(fs, lvl);
 }
 
 /* -------------------------------------------------------------------------- */
@@ -176,6 +235,15 @@ std::string Funcall::getFunctionName() const
   return functionName;
 }
 
+void Funcall::compile(std::fstream& fs, int lvl) {
+  indent(fs, lvl);
+  fs << functionName << "(";
+  for (std::shared_ptr<ASTNode> p : params) {
+    p->compile(fs, 0);
+  }
+  fs << ")";
+}
+
 /******************************************************************************/
 /*                                 statements                                 */
 /******************************************************************************/
@@ -213,6 +281,20 @@ void If::display()
   std::cout << ")" << std::endl;
 }
 
+void If::compile(std::fstream& fs, int lvl)
+{
+  indent(fs, lvl);
+  fs << "if ";
+  condition->compile(fs, 0);
+  fs << ":" << std::endl;
+  block->compile(fs, lvl);
+  if (elseBlock != nullptr) {
+    indent(fs, lvl);
+    fs << "else:";
+    elseBlock->compile(fs, lvl);
+  }
+}
+
 /* -------------------------------------------------------------------------- */
 
 For::For(Variable v, std::shared_ptr<ASTNode> begin, std::shared_ptr<ASTNode> end,
@@ -235,6 +317,21 @@ void For::display()
   std::cout << ")" << std::endl;
 }
 
+void For::compile(std::fstream& fs, int lvl)
+{
+  // TODO: vérifier les type et cast si besoin
+  indent(fs, lvl);
+  fs << "for ";
+  var.compile(fs, 0);
+  fs << " in rang(";
+  begin->compile(fs, 0);
+  fs << ",";
+  end->compile(fs, 0);
+  fs << ",";
+  step->compile(fs, 0);
+  fs << "):" << std::endl;
+}
+
 /* -------------------------------------------------------------------------- */
 
 While::While(std::shared_ptr<ASTNode> c, std::shared_ptr<Block> b):
@@ -248,6 +345,15 @@ void While::display()
   std::cout << ", ";
   Statement::display();
   std::cout << ")" << std::endl;
+}
+
+void While::compile(std::fstream& fs, int lvl)
+{
+  indent(fs, lvl);
+  fs << "while ";
+  condition->compile(fs, 0);
+  fs << ":" << std::endl;
+  block->compile(fs, lvl);
 }
 
 /******************************************************************************/
@@ -280,6 +386,13 @@ void AddOP::display()
   BinaryOperation::display();
 }
 
+void AddOP::compile(std::fstream& fs, int lvl)
+{
+  left->compile(fs, 0);
+  fs << "+";
+  right->compile(fs, 0);
+}
+
 MnsOP::MnsOP(std::shared_ptr<ASTNode> left, std::shared_ptr<ASTNode> right)
   : BinaryOperation(left, right)
 {}
@@ -288,6 +401,13 @@ void MnsOP::display()
 {
   std::cout << "MnsOP(";
   BinaryOperation::display();
+}
+
+void MnsOP::compile(std::fstream& fs, int lvl)
+{
+  left->compile(fs, 0);
+  fs << "-";
+  right->compile(fs, 0);
 }
 
 TmsOP::TmsOP(std::shared_ptr<ASTNode> left, std::shared_ptr<ASTNode> right)
@@ -301,6 +421,13 @@ void TmsOP::display()
   BinaryOperation::display();
 }
 
+void TmsOP::compile(std::fstream& fs, int lvl)
+{
+  left->compile(fs, 0);
+  fs << "*";
+  right->compile(fs, 0);
+}
+
 DivOP::DivOP(std::shared_ptr<ASTNode> left, std::shared_ptr<ASTNode> right)
   : BinaryOperation(left, right)
 {}
@@ -309,6 +436,13 @@ void DivOP::display()
 {
   std::cout << "DivOP(";
   BinaryOperation::display();
+}
+
+void DivOP::compile(std::fstream& fs, int lvl)
+{
+  left->compile(fs, 0);
+  fs << "/";
+  right->compile(fs, 0);
 }
 
 /******************************************************************************/
@@ -325,6 +459,13 @@ void EqlOP::display()
   BinaryOperation::display();
 }
 
+void EqlOP::compile(std::fstream& fs, int lvl)
+{
+  left->compile(fs, 0);
+  fs << "==";
+  right->compile(fs, 0);
+}
+
 SupOP::SupOP(std::shared_ptr<ASTNode> left, std::shared_ptr<ASTNode> right)
   : BinaryOperation(left, right)
 {}
@@ -333,6 +474,13 @@ void SupOP::display()
 {
   std::cout << "SupOP(";
   BinaryOperation::display();
+}
+
+void SupOP::compile(std::fstream& fs, int lvl)
+{
+  left->compile(fs, 0);
+  fs << ">";
+  right->compile(fs, 0);
 }
 
 InfOP::InfOP(std::shared_ptr<ASTNode> left, std::shared_ptr<ASTNode> right)
@@ -345,6 +493,13 @@ void InfOP::display()
   BinaryOperation::display();
 }
 
+void InfOP::compile(std::fstream& fs, int lvl)
+{
+  left->compile(fs, 0);
+  fs << "<";
+  right->compile(fs, 0);
+}
+
 SeqOP::SeqOP(std::shared_ptr<ASTNode> left, std::shared_ptr<ASTNode> right)
   : BinaryOperation(left, right)
 {}
@@ -353,6 +508,13 @@ void SeqOP::display()
 {
   std::cout << "SeqOP(";
   BinaryOperation::display();
+}
+
+void SeqOP::compile(std::fstream& fs, int lvl)
+{
+  left->compile(fs, 0);
+  fs << ">=";
+  right->compile(fs, 0);
 }
 
 IeqOP::IeqOP(std::shared_ptr<ASTNode> left, std::shared_ptr<ASTNode> right)
@@ -365,6 +527,13 @@ void IeqOP::display()
   BinaryOperation::display();
 }
 
+void IeqOP::compile(std::fstream& fs, int lvl)
+{
+  left->compile(fs, 0);
+  fs << "<=";
+  right->compile(fs, 0);
+}
+
 OrOP::OrOP(std::shared_ptr<ASTNode> left, std::shared_ptr<ASTNode> right)
   : BinaryOperation(left, right)
 {}
@@ -373,6 +542,13 @@ void OrOP::display()
 {
   std::cout << "OrOP(";
   BinaryOperation::display();
+}
+
+void OrOP::compile(std::fstream& fs, int lvl)
+{
+  left->compile(fs, 0);
+  fs << " or ";
+  right->compile(fs, 0);
 }
 
 AndOP::AndOP(std::shared_ptr<ASTNode> left, std::shared_ptr<ASTNode> right)
@@ -385,6 +561,13 @@ void AndOP::display()
   BinaryOperation::display();
 }
 
+void AndOP::compile(std::fstream& fs, int lvl)
+{
+  left->compile(fs, 0);
+  fs << " and ";
+  right->compile(fs, 0);
+}
+
 XorOP::XorOP(std::shared_ptr<ASTNode> left, std::shared_ptr<ASTNode> right)
   : BinaryOperation(left, right)
 {}
@@ -393,6 +576,13 @@ void XorOP::display()
 {
   std::cout << "XorOP(";
   BinaryOperation::display();
+}
+
+void XorOP::compile(std::fstream& fs, int lvl)
+{
+  left->compile(fs, 0); // TODO
+  fs << " and ";
+  right->compile(fs, 0);
 }
 
 NotOP::NotOP(std::shared_ptr<ASTNode> param): param(param)
@@ -404,6 +594,14 @@ void NotOP::display()
   param->display();
   std::cout << ")";
 }
+
+void NotOP::compile(std::fstream& fs, int lvl)
+{
+  fs << "not(";
+  param->compile(fs, 0);
+  fs << ") ";
+}
+
 
 /******************************************************************************/
 /*                                     IO                                     */
@@ -430,6 +628,19 @@ void Print::display()
   std::cout << ");" << std::endl;
 }
 
+void Print::compile(std::fstream& fs, int lvl)
+{
+  indent(fs, lvl);
+  fs << "print(";
+  if (content == nullptr) {
+    fs << "\"" << str << "\"";
+  }
+  else {
+    content->compile(fs, 0);
+  }
+  fs << ")";
+}
+
 Read::Read(Variable variable): variable(variable)
 {
 }
@@ -439,6 +650,14 @@ void Read::display()
   std::cout << "Read(";
   variable.display();
   std::cout << ")" << std::endl;
+}
+
+void Read::compile(std::fstream& fs, int lvl)
+{
+  indent(fs, lvl);
+  fs << "input(";
+  variable.compile(fs, 0);
+  fs << ")";
 }
 
 /******************************************************************************/
@@ -454,4 +673,9 @@ void Return::display()
   std::cout << "Return(";
   returnExpr->display();
   std::cout << ")";
+}
+
+void Return::compile(std::fstream& fs, int lvl)
+{
+  indent(fs, lvl);
 }
