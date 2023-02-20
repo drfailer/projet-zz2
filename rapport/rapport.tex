@@ -18,12 +18,6 @@
 \usepackage{geometry}
 \usepackage{titlesec}
 
-% option format paragraph
-\titleformat{\paragraph}
-{\normalfont\normalsize\bfseries}{\theparagraph}{1em}{}
-\titlespacing*{\paragraph}
-{0pt}{3.25ex plus 1ex minus .2ex}{1.5ex plus .2ex}
-
 \addbibresource{refs.bib}
 
 \definecolor{codegreen}{rgb}{0,0.6,0}
@@ -94,8 +88,8 @@
   bottom=25mm,
  }
 
- \titleformat*{\subsection}{\LARGE\bfseries}
- \titleformat*{\subsubsection}{\Large\bfseries}
+ \titleformat*{\section}{\LARGE\bfseries}
+ \titleformat*{\subsection}{\Large\bfseries}
 
 %================infos=================
 \pagenumbering{gobble}
@@ -149,18 +143,18 @@
 %------------------------------------------------------------------------------%
 %                                Remerciements
 %------------------------------------------------------------------------------%
-\subsection*{Remerciements}
+\section*{Remerciements}
 
 \doublespacing
 \large % TODO: reformuler
-Nous tenons à exprimer notre profonde gratitude à :\\
-- Notre encadrant et cher professeur M. Loïc YON pour al qualité de son
-  encadrement, et pour nous avoir guidées durant toute la période du projet.\\
-- Mme Murielle MOUZAT, notre professeur de communication pour son aide précieuse
-  et indispensable pour la réussite de notre projet de 2\up{ème} année.\\
 
-\noindent Finalement, nous exprimons nos vifs remerciements à toute personne
-ayant participée de près ou de loin au bon déroulement de ce projet.
+Nous tenons à remercier Loïc YON pour nous avoir guidé et conseillé lors de la
+réalisation du projet. Nous remercions aussi Murielle MOUZAT pour l'aide qu'elle
+nous a fourni à travers son cours pour la rédaction de ce rapport. Parmi nos
+professeurs, nous souhaitons aussi remercier Alexis PEREDA pour ses conseils sur
+l'utilisation de C++ et pour avoir partagé ses connaissances sur les
+compilateurs ainsi que Yves-Jean DANIEL pour m'avoir conseillé l'utilisation de
+Flex et Bison pour l'écriture d'un parseur.
 
 \normalsize
 \onehalfspacing
@@ -186,7 +180,7 @@ ayant participée de près ou de loin au bon déroulement de ce projet.
 %                              Résumé et Abstract
 %------------------------------------------------------------------------------%
 \setcounter{secnumdepth}{3}
-\subsection*{Résumé}
+\section*{Résumé}
 
 Ce projet s'inscrit dans le cadre du projet commun de la filière génie logiciel
 dont l'objectif est la création d'outils de démonstration servant à présenter la
@@ -209,7 +203,7 @@ Mots-clés : \textbf{C++}, \textbf{transpileur}, \textbf{lexeur}, \textbf{parseu
 \textbf{flex}, \textbf{bison},  \textbf{langage de programmation}
 \\[2\baselineskip]
 
-\subsection*{Abstract}
+\section*{Abstract}
 
 This project is a part of the common project of the software development
 pathway. The objective is to create a tool for presenting software development.
@@ -236,7 +230,7 @@ Keywords : \textbf{C++}, \textbf{transpiler}, \textbf{lexer}, \textbf{parser},
 %                                 Introduction
 %------------------------------------------------------------------------------%
 \clearpage
-\subsection*{Introduction}
+\section*{Introduction}
 \large
 Dans le cadre du projet de 2\up{ème} année à l'ISIMA, nous avons choisi de
 réaliser un travail concernant le sujet commun de la filière 2, génie logiciel
@@ -268,9 +262,9 @@ outils informatiques qui permettent la réalisation de notre langage.\\
 
 % NOTE: les partie ne sont pas très équilibrées
 
-\section{Contexte du projet}
+\part{Contexte du projet}
 
-\subsection{Concept de langage transpilé}
+\section{Concept de langage transpilé}
 
 L'objectif du projet commun est de créer un outils qui pourra servir à faire des
 démonstrations pour présenter la filière génie logiciel. Étant donné le fait que
@@ -300,7 +294,7 @@ transpileur est qu'il permet de déléguer les taches complexes au compilateur d
 langage cible. Par exemple, cela évite d'avoir à écrire un \gls{gc} pour gérer
 la mémoire.
 
-\subsection{Les fonctionnalités du langage}
+\section{Les fonctionnalités du langage}
 
 Notre objectif global est de pouvoir écrire du code dans un fichier puis
 utiliser notre transpileur pour générer un fichier python (qui sera exécuté avec
@@ -325,15 +319,20 @@ opérations de bases, des fonctions booléennes permettant de faire des
 tests ainsi que des fonctions permettant des actions d'entrée et de sortie
 (affichage console).
 
-\subsection{Analyse du problème}
+Étant donné le fait que notre langage pourra être utilisé pour faire des
+présentations lors de portes ouvertes, nous souhaitons aussi que la syntaxe soit
+assez éloignée de celle du langage python. Le but étant de pouvoir présenter
+un langage différent à des lycéens qui on pour la plupart déjà utilisé python.
+
+\section{Analyse du problème}
 
 % TODO: diagramme de gantt
 
-\section{Réalisation et conception}
+\part{Réalisation et conception}
 
-\subsection{Conception des éléments du langage}
+\section{Conception des éléments du langage}
 
-\subsubsection{Définition de la grammaire}
+\subsection{Définition de la grammaire}
 
 Avant d'implémenter notre langage, il faut avoir une idée de sa grammaire.
 Puisque nous souhaitons utiliser ce langage à des fins pédagogiques, nous avons
@@ -345,8 +344,7 @@ python, notre syntaxe s'inspirera de celle des langages \textbf{C} et
 \textbf{Rust}. Pour définir la grammaire de manière formelle, nous utiliserons
 la \gls{bnf}.
 
-\paragraph{Les variables}
-
+\subsubsection*{Les variables}
 
 Pour stocker des données, notre langage utilise des variables dont la
 convention de nommage est la même qu'en \textbf{C}. Le langage est à typage
@@ -365,20 +363,18 @@ caractères (\textit{chr}). Voici la syntaxe pour déclarer une variable:
 \end{grammar}\leavevmode\newline
 
 A noter qu'ici, on a une légère différence avec le C pour le nom des fonctions
-et des variable (\textbf{identifier} ici). En effet, la convention du C précise
-qu'un nom de variable ou de fonction doit commencer avec une lettre minuscule,
-cependant il est tout a fait possible de commencer un nom de variable par une
-majuscule. Dans notre cas, les noms commencent forcément par une minuscule ce
-qui force l'utilisateur à respecter notre guide de style.
+et des variable (\textbf{identifier} ici). En effet, le C permet aux noms de
+variables et de fonctions de pouvoir commencer par une majuscule. Ici, nous
+avons décidé de forcer les noms à commencer par une lettre minuscule, le non
+respect de cette règle entrainera une erreur de syntaxe.
 
+\subsubsection*{Les fonctions}
 
-\paragraph{Les fonctions}
-
-Pour définir des fonctions, nous utilisons le mot clé \textbf{fn}, suivit du nom
-de la fonction avec ses paramètres entre parenthèses et enfin le bloque de code
-qui contient les instructions entre accolade. De plus, il faut spécifier le type
-de la valeur retour de la fonction en utilisant \textbf{-> type} quand c'est
-nécessaire.
+La syntaxe pour les fonctions est la même qu'en Rust. Pour définir des
+fonctions, nous utilisons le mot clé \textbf{fn}, suivit du nom de la fonction
+avec ses paramètres entre parenthèses et enfin le bloque de code qui contient
+les instructions entre accolade. De plus, il faut spécifier le type de la valeur
+retour de la fonction en utilisant \textbf{-> type} quand c'est nécessaire.
 
 \begin{grammar}
 <function> ::= fn <identifier>"("<parameters>")" [ "->" <type> ] "{"<instructions>"}"
@@ -387,21 +383,35 @@ nécessaire.
 Pour pouvoir retourner une valeur, il faudra utiliser le mot clé \textit{return}
 dans la fonction.
 
-\paragraph{Les structures de contrôle}
+\subsubsection*{Les structures de contrôle}
 
 Nous avons aussi ajouté les structures de contrôle présentes dans la plupart des
-langages de programmation.
+langages de programmation. Il y a une structure \textit{if} qui permet de tester
+une condition. Un \textit{if} peut-être suivit d'un bloque \textit{else} si
+besoin. À noter cependant que cette grammaire n'autorise pas les \textit{else
+if}, dans ce cas il faudra mettre la nouvelle condition à l'intérieur du bloque
+de code du \textit{else}. La grammaire autorise aussi les boucles
+\textit{while}, et la syntaxe est la même qu'en C. Enfin, il y a la boucle
+\textit{for} qui utilise la règle \textit{range} qui contient trois valeurs
+séparé par des virgules. C'est trois valeurs correspondent au début et à la fin
+de boucle et au pas. Par exemple, \lstinline{range(0, 10, 1)} vas générer une
+boucle ou la variable de boucle prendra les valeurs de 0 à 9 avec un pas de 1.
+Il est obligatoire de toujours spécifier ces trois valeurs au \textit{range}.
 
 \begin{grammar}
 <if> ::= if "("<condition>")" "{"<instructions>"}" [ else "{" <instructions>"}" ]
 
+<while> ::= while "("<condition>")" "{" <instructions> "}"
+
 <range> ::= range "("<valueSymbol>, <valueSymbol>, <valueSymbol>")"
 <for> ::= for <identifier> in <range> "{"<instructions>"}"
-
-<while> ::= while "("<condition>")" "{" <instructions> "}"
 \end{grammar}\leavevmode\newline
 
-\paragraph{Les opérations}
+On rappel que même si la grammaire ne le précise pas, toute variable doit être
+déclarée avant d'être utilisée, il faudra donc déclarer la variable de boucle
+utilisée dans un \textit{for}.
+
+\subsubsection*{Les opérations}
 
 Comme dit précédemment, tous le langage ne comporte pas d'opérateur donc toutes
 les opérations se font à l'aide de fonctions directement intégrées dans le
@@ -435,7 +445,7 @@ transpileur. Voici une liste des opérations possibles :
 \end{tabular}
 \end{center}
 
-\paragraph{Entrée et sortie}
+\subsubsection*{Entrée et sortie}
 
 Le langage possède aussi la possibilité d'afficher et de lire du texte depuis la
 console. La lecture se fait avec la fonction \textit{read} qui prend en
@@ -454,7 +464,7 @@ gestion d'une chaine de formatage, ce qui aurai grandement augmenté la
 complexité de notre grammaire si nous avions voulu l'intégrer directement au
 langage.
 
-\paragraph{Exemple de code}
+\subsubsection*{Exemple de code}
 
 Dans cet exemple, nous disposons de 2 variables \textbf{a} et \textbf{b}. La
 variable \textbf{a} est lue par commande de l'utilisateur tandis que la valeur 4
@@ -464,7 +474,7 @@ Nous cherchons ensuite à additionner les 2 variables avec la valeur 5. Nous avo
 - une fonction \textit{affiche} qui affiche sur l'écran le nombre passé en paramètre\\
 - une fonction \textit{main}, où se trouve toutes les commandes voulues de notre programme\\
 
-% subsection  (end)
+% section  (end)
 
 
 \begin{grammar}[language=C++]
@@ -491,7 +501,7 @@ fn main() {
 
 \clearpage{}
 
-\subsubsection{Arbre syntaxique}
+\subsection{Arbre syntaxique}
 
 Pour donner un sens aux éléments textuels du langage, nous utiliserons une
 représentation sous forme d'arbre. On appel cela un arbre syntaxique ou
@@ -523,14 +533,14 @@ utilisable dans le transpileur. Le diagramme de classes complet est disponible
 en annexe \ref{appendix:classAST}. Détaillons maintenant les parties
 importantes.
 
-\paragraph{Les bloques de code}
+\subsubsection*{Les bloques de code}
 
 La classe \lstinline{Block} correspond aux bloques de code en entre accolades.
 Elle possède une liste de nœuds qui sont les opérations contenues dans le
 bloque.
 
 \clearpage{}
-\paragraph{Les conteneurs d'opérations}
+\subsubsection*{Les conteneurs d'opérations}
 
 La classes \lstinline{Statement} correspond aux éléments qui contiennent des
 blocks de code. Cela comprend les fonctions et les structures de contrôles. La
@@ -543,7 +553,7 @@ grammaire ne permet pas l'emploi des bloques ailleurs.
   \end{center}
 \end{figure}
 
-\paragraph{Les opérations}
+\subsubsection*{Les opérations}
 
 Les opérations sont traitées avec la classe \lstinline{OperationBinaire} qui
 correspond à tous les opérateurs.
@@ -556,7 +566,7 @@ correspond à tous les opérateurs.
 \end{figure}
 
 \clearpage{}
-\paragraph{Les éléments typé}
+\subsubsection*{Les éléments typé}
 \label{sec:eltTypes}
 
 Les fonctions, les valeurs et les variables possède un champ type. \textbf{Type}
@@ -579,7 +589,7 @@ le type de la valeur.
 
 \clearpage{}
 
-\subsection{Construction de l'AST}
+\section{Construction de l'AST}
 
 Dans cette partie nous expliquerons la création d'un parseur en utilisant les
 outils \textbf{GNU Flex} et \textbf{GNU Bison}. De plus, nous détaillerons la
@@ -590,16 +600,16 @@ C++, nous avons utilisé la documentation officielle des deux outils ainsi qu'un
 article qui nous a permis d'avoir un squelette de base pour le lexeur et le
 parseur \cite{cppparsing}.
 
-\subsubsection{Le lexeur}
+\subsection{Le lexeur}
 
 \phantomsection
-\paragraph{Définition}
+\subsubsection*{Définition}
 
 Le lexeur, ou encore appelé analyseur lexical, a pour but de transformer le
 texte du code source en des unités lexicales, appelées \textit{tokens}
 \cite{flexBisonHandbook}. \\
 
-\paragraph{Exemple}
+\subsubsection*{Exemple}
 
 Pour l'expression simple \textbf{a = 2 * b} \\
 Les tokens apparaissant sont : \\
@@ -626,7 +636,7 @@ généralement du caractère blancs (espaces et tabulations) et des
 commentaires.\\~\\
 
 \phantomsection
-\paragraph{Implémentation}
+\subsubsection*{Implémentation}
 
 Comme évoqué précédemment, l'outil utilisé pour générer le lexeur est
 \textbf{GNU Flex} (Fast LEXical analyser generator). Il permet de générer le
@@ -757,17 +767,17 @@ pour bison.
 
 \clearpage{}
 
-\subsubsection{Le parseur}
+\subsection{Le parseur}
 
 \phantomsection
-\paragraph{Définition}
+\subsubsection*{Définition}
 
 Également appelé analyseur syntaxique, son rôle principal est la vérification de
 la syntaxe du code en regroupant les tokens selon une structure suivant des
 règles syntaxiques. \\
 
 
-\paragraph{Exemple}
+\subsubsection*{Exemple}
 
 Pour l'expression simple \textbf{a = 2 * b} \\
 Les tokens apparaissant sont : \\
@@ -784,7 +794,7 @@ Les tokens apparaissant sont : \\
 \end{center}
 
 \phantomsection
-\paragraph{Implémentation}
+\subsubsection*{Implémentation}
 
 À l'instar de Flex pour le lexeur, Bison est un générateur de grammaire qui
 convertit une description de grammaire en un programme C++ qui analyse cette
@@ -898,7 +908,7 @@ Pour la génération du code, on a deux options :
 
 \clearpage{}
 
-\subsubsection{Fabrique à programme}
+\subsection{Fabrique à programme}
 
 Pour construire l'arbre syntaxique dans le programme, nous utiliserons
 la classe \textbf{ProgramBuilder}. Cette classe permet de stocker des éléments
@@ -939,7 +949,7 @@ que de construire le \textbf{Program} au fur et à mesure de l'exécution du
 parseur.
 
 
-\subsection{Analyse des symboles}
+\section{Analyse des symboles}
 
 Dans cette partie, nous allons créer une table des symboles qui, de façon
 similaire à ce que l'on voit dans \cite{compilerFlexBison}, permet de vérifier
@@ -955,9 +965,9 @@ avertissements) au fil de l'exécution du parseur. Ces messages seront affichés
 la fin une fois tout le code source traité. À noter que la présence d'erreurs
 empêche la compilation.
 
-\subsubsection{Gestion des symboles}
+\subsection{Gestion des symboles}
 
-\paragraph{La table des symboles}
+\subsubsection*{La table des symboles}
 
 Pour la création de notre table des symboles nous utiliserons la méthode
 présenté dans cet article \cite{power2000symbol} que nous avons simplifié pour
@@ -1016,7 +1026,7 @@ suivante, nous détaillerons le fonctionnement de l'objet responsable de la
 création de la table dans le parseur.
 
 \clearpage
-\paragraph{Gestion du contexte}
+\subsubsection*{Gestion du contexte}
 
 Nous avons une table des symboles, cependant il nous faut un moyen de gérer les
 \textit{scopes}, et donc de gérer l'arborescence de la table. Pour ce faire nous
@@ -1048,28 +1058,28 @@ gestion des erreurs de compilation. Nous verrons ensuite comment combiner toutes
 ces classes dans le parseur pour pouvoir collecter et afficher toutes les
 erreurs de types et de définitions.
 
-\subsubsection{Gestion des erreurs}
+\subsection{Gestion des erreurs}
 
 % TODO: errorMgr
 
-\subsubsection{Traitement des des symboles dans le parseur}
+\subsection{Traitement des des symboles dans le parseur}
 
-\paragraph{Vérification des définitions}
+\subsubsection*{Vérification des définitions}
 
 % définition des variables
 % définition des fonction
 
-\paragraph{Vérification des types}
+\subsubsection*{Vérification des types}
 % fonction
 % set
 % vérifcation du return
 
-\subsection{Le transpileur}
+\section{Le transpileur}
 % TODO
 
-\subsection{Mise en œuvre du projet}
+\section{Mise en œuvre du projet}
 
-\section{Résultats et discussions}
+\part{Résultats et discussions}
 
 %------------------------------------------------------------------------------%
 %                                 bibliography                                 %
@@ -1087,7 +1097,7 @@ erreurs de types et de définitions.
 \appendix
 
 \clearpage{}
-\subsection{Diagramme de classes de l'AST}\label{appendix:classAST}
+\section{Diagramme de classes de l'AST}\label{appendix:classAST}
 
 \begin{figure}[h]
   \begin{center}
@@ -1101,7 +1111,7 @@ erreurs de types et de définitions.
 %------------------------------------------------------------------------------%
 %               Résumé des réfs (à supprimer à la dernière version
 %------------------------------------------------------------------------------%
-% \subsection{Résumé des références}{{{
+% \section{Résumé des références}{{{
 %
 % \begin{itemize}
 %   \item La partie consultable de \cite{flexBisonHandbook} présentent les bases
