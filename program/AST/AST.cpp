@@ -137,6 +137,8 @@ void Include::display()
   std::cout << "Include(" << libName << ")" << std::endl;
 }
 
+void Include::compile(std::fstream&, int) {}
+
 /* -------------------------------------------------------------------------- */
 
 Block::Block()
@@ -206,6 +208,8 @@ void Declaration::display()
   variable.display();
   std::cout << ")" << std::endl;
 }
+
+void Declaration::compile(std::fstream&, int) {}
 
 /* -------------------------------------------------------------------------- */
 
@@ -678,4 +682,6 @@ void Return::display()
 void Return::compile(std::fstream& fs, int lvl)
 {
   indent(fs, lvl);
+  fs << "return ";
+  returnExpr->compile(fs, 0);
 }

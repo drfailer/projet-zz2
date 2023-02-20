@@ -56,6 +56,7 @@ class Include : public ASTNode
 
   public:
     void display() override;
+    void compile(std::fstream&, int) override;
     Include(std::string);
 };
 
@@ -134,6 +135,7 @@ class Declaration : public ASTNode
 
   public:
     void display() override;
+    void compile(std::fstream&, int) override;
     Declaration(Variable);
 };
 

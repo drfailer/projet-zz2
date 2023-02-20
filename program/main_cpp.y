@@ -666,7 +666,7 @@ int main(int argc, char **argv) {
     errMgr.report();
     if (!errMgr.getErrors()) {
       std::fstream fs("a.out");
-      prgram.compile(fs);
+      pb.getProgram()->compile(fs);
       // pb.display();
     }
   }
