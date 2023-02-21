@@ -179,17 +179,17 @@ Flex et Bison pour l'écriture d'un parseur.
 %------------------------------------------------------------------------------%
 %                              Résumé et Abstract
 %------------------------------------------------------------------------------%
-\setcounter{secnumdepth}{3}
+%\setcounter{secnumdepth}{3}
 \section{Résumé}
 
 Ce projet s'inscrit dans le cadre du projet commun de la filière génie logiciel
 dont l'objectif est la création d'outils de démonstration servant à présenter la
 filière. Notre travail a consisté en la création d'un langage de programmation
-transpilé simple. Le programme doit lire un fichier de code source et de le
-traduire en code python. Il doit être capable de détecter les erreurs de
-syntaxes et de les spécifier à l'utilisateur. De plus, le langage est à typage
-statique, de ce fait, le programme doit aussi être capable de détecter les
-erreurs de types.\\
+transpilé simple avec une syntaxe similaire à celle du C. Le programme doit lire
+un fichier de code source et de le traduire en code python. Il doit être capable
+de détecter les erreurs de syntaxes et de les spécifier à l'utilisateur. De
+plus, le langage est à typage statique, de ce fait, le programme doit aussi être
+capable de détecter les erreurs de types.\\
 
 Le développement a été réalisé avec le langage C++ et emploi le paradigme objet.
 De plus, nous avons utilisé les outils GNU Flex et GNU Bison pour la création du
@@ -207,11 +207,11 @@ Mots-clés : \textbf{C++}, \textbf{transpileur}, \textbf{lexeur}, \textbf{parseu
 
 This project is a part of the common project of the software development
 pathway. The objective is to create a tool for presenting software development.
-Our work consisted in the creation of a simple transpiled programming language.
-The program has to be able to read a source code file and generate a python
-program. It must detect syntax errors in the and report theme to the user.
-Furthermore, the language is statically typed so the program also has to detect
-and report type errors.\\
+Our work consisted in the creation of a simple transpiled programming language
+with a syntax similar to C language. The program has to be able to read a source
+code file and generate a python program. It must detect syntax errors in the and
+report theme to the user. Furthermore, the language is statically typed so the
+program also has to detect and report type errors.\\
 
 The development has been done using C++ and object oriented programming.
 Moreover, we have used the tools GNU Flex and GNU Bison to generate our parser.
@@ -325,8 +325,6 @@ assez éloignée de celle du langage python. Le but étant de pouvoir présenter
 un langage différent à des lycéens qui on pour la plupart déjà utilisé python.
 
 \section{Analyse du problème}
-
-% TODO: diagramme de gantt
 
 \part{Réalisation et conception}
 
@@ -1029,7 +1027,12 @@ Commençons par étudier la composition d'un symbole. Chaque symbole est compos�
 d'un nom qui lui sert d'identifiant, d'un type et d'un genre. Le genre est une
 énumération qui suis le même principe que dans \cite{power2000symbol}. Le type
 du symbole est une liste de \textbf{Type} qui est une énumération décrite dans
-l'AST, il a la même utilité que pour les éléments typées (voir \ref{sec:eltTypes}).
+l'AST, il a la même utilité que pour les éléments typées (voir
+\ref{sec:eltTypes}). Ici nous stockons une liste de \textit{Type} et non
+juste un \textit{Type}. En effet le type d'une variable est bien composé d'un
+seul \textit{Type} (une liste de un élément) mais le type des fonctions ne
+correspond pas uniquement au type de la valeur de retour. Le type d'une fonction
+comprend aussi le type de chacun des paramètres.
 
 \begin{figure}[h!]
   \begin{center}
@@ -1148,23 +1151,124 @@ que les type diffères, cependant, ce dernier souhaite peut-être extraire le
 numéro ASCII du caractère assigné, il ne faut donc pas planter dans ce genre de
 cas.\\~\\
 
-
 \subsection{Traitement des des symboles dans le parseur}
+
+Dans cette partie, nous allons utiliser les composants implémentés précédemment
+pour les intégrer dans le parseur. Nous allons donc modifier les bloques de
+codes dans le fichier bison pour faire des vérifications lorsque c'est
+nécessaire.
 
 \subsubsection*{Vérification des définitions}
 
+Ici, notre objectif va être de vérifier que toutes les variables utilisées dans
+le code ont été déclarées au préalable. Nous vérifierons aussi que toutes les
+fonctions appelées dans le programme ont été définis. Enfin, il faudra aussi
+s'assurer de la définition d'un fonction \textit{main}. En effet, de façon
+similaire au C, la grammaire de notre langage n'autorise pas l'ajout
+d'instructions en à l'extérieur des fonction. De ce fait, tout programme doit
+avoir un point d'entré.\\
+
+Pour faire les vérifications, nous avons implémenté diverse fonctions. % TODO: détailler toutes les fonctions
+
 % définition des variables
+
+
 % définition des fonction
 
-\subsubsection*{Vérification des types}
-% fonction
+Le seul endroit du parseur où l'on a besoin de vérifier si un fonction existe
+est au niveau des appel de fonctions.
+
+% collection des symboles -> ordre du parseur => déclaration avant.
+% pk la fonction
+
+La vérification de la définition de la fonction \textit{main} se fait en
+dernier, juste avant de transpiler. Nous savons que quand le parseur à fini de
+tourner le \textit{ContextManager} est retourné au \textit{scope} global. Il
+suffit donc de vérifier que la méthode \textit{lookup} retourne bien une valeur
+lorsque l'on fait une recherche du symbole \textit{"main"}. À noter que du fait
+que la grammaire n'autorise pas de variable globale, il ne peut y avoir qu'un
+seul symbole nommé \textit{main} dans le \textit{scope} global, et celui ci
+correspond forcément à une fonction. Il n'est donc pas nécessaire d'utiliser
+l'attribut \textit{Kind}, cependant, si l'on souhaitait ajouter des variables
+globales, il faudrait faire plus de vérifications. De plus, nous n'avons pas
+implémenter la possibilité de donner des argument au programme, ce n'est donc
+pas géré dans cette partie. % TODO: vérifier que main n'a pas d'arguments
+
+\subsubsection*{Vérification des types} % TODO
+
+La seconde vérification à faire concerne les types des éléments.
+
 % set
+
+% fonction
+
+C'est pour les fonctions que la vérification du type est complexe. Comme dit
+précédemment, le type des fonctions comprend aussi leurs paramètres. La
+vérification se fait en deux phases. Au niveau des appels de fonctions, on va
+simplement vérifier le type de chacun des paramètres sans prendre en compte le
+type de retour. Par contre, lorsque la fonction est traitée comme une valeur, on
+ne regarde que le type de retour. Par exemple, si on regarde le code ci-dessous.
+
+\begin{grammar}[language=C++]
+  fonction1(a, 1, fonction2(3, 3));
+\end{grammar}\leavevmode\newline
+
+Dans cette exemple, on souhaite vérifier le type de \textit{fonction1}. Ici,
+c'est un appel de fonction, on va donc vérifier les paramètres. Lors de cette
+vérification, \textit{fonction2} sera traitée comme une valeur, on va donc
+comparer le type de la valeur de retour de \textit{fonction2} avec celui du
+dernier paramètre de \textit{fonction1}. À noter que la vérification des
+paramètres de \textit{fonction2} a été faite au moment où l'appel de fonction a
+été créer, donc avant la vérification de \textit{fonction1}.\\
+
+Par manque de temps, la conversion des types au niveau des appels de fonctions
+ne sera pas prise en charge. De ce fait, si une fonction prend en entrée un
+entier, il faudra obligatoirement lui donner une variable ou une valeur de type
+entier en paramètre pour ne pas avoir d'erreur. La conversion de type au niveau
+des variables peut cependant ce faire avec la fonction \textit{set}, le manque
+de cette fonctionnalité n'est donc pas un problème.
+
 % vérifcation du return
 
 \section{Le transpileur}
 % TODO
 
 \section{Mise en œuvre du projet}
+
+\subsection{Les outils utilisés}
+
+Pour la réalisation du code, nous avons utilisé divers outils.
+
+\subsubsection{Gestion de version}
+
+Pour la gestion de version nous avons utilisé \textbf{git}, avec un dépôt
+distant stocké sur github pour faciliter le partage du code. L'utilisation de
+git permet d'avoir un suivit des modifications ce qui est utile lorsqu'une
+mauvaise modification entraine de grosses erreurs. Le système de branche de git
+permet aussi d'avoir un suivit des fonctionnalités et de pouvoir facilement
+travailler à plusieurs. Cependant, du fait de la petite taille du projet et du
+faible nombre de personnes dans le groupe, nous n'avons pas eu besoin de mettre
+en place une méthode tel que gitFlow. Nous n'avons pas non plus eu le temps de
+mettre en place des tests automatisés bien que cela aurait pu être nécessaire
+sur la fin du projet pour tester le code python généré avec le transpileur. Une
+suite au projet nécessitera certainement la mise en place d'une tel structure de
+tests automatisés.\\
+
+\subsubsection{Compilation}
+
+Pour compiler le programme, nous avons au départ utilisé un \textit{Makefile}.
+Cependant, nous avons basculé sur \textit{cmake} au moment de la création de la
+table des symboles.
+
+\subsection{Les recherches} % NOTE: jsp si ça doit être là
+
+La plupart des articles utilisés pour ce projet vienne de la base \textit{google
+scholar}. Nous avons également utilisé la base \textit{techniques de
+l'ingénieur}.
+
+\subsection{Planification des tâches}
+
+% TODO: diagramme de gantt
 
 \part{Résultats et discussions}
 
