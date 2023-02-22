@@ -269,14 +269,15 @@ outils informatiques qui permettent la réalisation de notre langage.\\
 L'objectif du projet commun est de créer un outils qui pourra servir à faire des
 démonstrations pour présenter la filière génie logiciel. Étant donné le fait que
 le code fait partie intégrante du développement logiciel nous avons décidé de
-créer un langage de programmation simple pouvant servir à présenter le concept
-de programmation.\\
+créer un langage de programmation simple pouvant servir à l'initiation au
+développement ainsi qu'à certain concepts relatifs aux langages de
+programmation.\\
 
 Il existe quatre familles de langages de programmations. La première est celle
 des langages compilés comme le C ou le C++. Le principe est de transformer le
 code source en assembleur puis de générer un exécutable. Cette méthode est la
 plus complexe, cependant les langages compilés sont généralement les plus
-rapides.
+rapides et les plus légers.
 
 La seconde méthode pour exécuter du code est l'utilisation d'une machine
 virtuelle. Le code source du langage est traduit en un code de bas niveau, le
@@ -298,7 +299,7 @@ la mémoire.
 
 Notre objectif global est de pouvoir écrire du code dans un fichier puis
 utiliser notre transpileur pour générer un fichier python (qui sera exécuté avec
-sous python3). Le langage doit être simple mais doit tout de même les
+sous python3). Le langage doit être simple mais doit tout de même posséder les
 fonctionnalités suivantes :
 
 Le langage doit permettre le stockage d'information dans des variables. Nous
@@ -309,7 +310,9 @@ des types car cela permet de mieux comprendre comment l'ordinateur gère les
 données.
 
 On doit aussi avoir la possibilité d'écrire des fonctions et des procédures
-paramétrées qui pourront être utilisés dans différents endroits du programmes.
+paramétrées qui pourront être utilisées dans différents endroits du programmes.
+Ces procédures et fonctions pourront contenir une suite d'instructions dans un
+bloque de code.
 
 De plus, le langage devra posséder des structures de contrôles permettant la
 création de conditions et de boucles.
@@ -317,7 +320,7 @@ création de conditions et de boucles.
 Enfin, il doit aussi intégrer des fonctions arithmétiques permettant les
 opérations de bases, des fonctions booléennes permettant de faire des
 tests ainsi que des fonctions permettant des actions d'entrée et de sortie
-(affichage console).
+(affichage et récupération de données via la console).
 
 Étant donné le fait que notre langage pourra être utilisé pour faire des
 présentations lors de portes ouvertes, nous souhaitons aussi que la syntaxe soit
@@ -326,6 +329,49 @@ un langage différent à des lycéens qui on pour la plupart déjà utilisé pyt
 
 \section{Analyse du problème}
 
+Nous souhaitons créer un langage simple qui peut être écrit dans un fichier, la
+première chose à faire va donc être de définir sa syntaxe. La syntaxe du langage
+va dépendre des fonctionnalités décrites plus haut. Il faudra donc un moyen de
+déclarer des variables, des fonctions ou encore un moyen de délimiter les
+instructions.
+
+Étant donné le fait que notre langage doit être écrit dans un fichier texte, il
+faudra un moyen d'extraire les informations contenues dans le texte. L'outil
+généralement utilisé pour ce type de tache s'appelle un parseur, qui va
+permettre de reconnaitre des règle de grammaires dans le code source.
+
+Ensuite, il nous faudra un moyen de représenter les différentes instructions
+récupérées par le parseur. Pour ce faire, il existe plusieurs méthode comme par
+exemple, récupérer des instructions bas niveau (proche de l'assembleur) pour
+construire un programme. Une autre solution serait d'utiliser la programmation
+orienté objet pour gérer toutes les instructions du programme.
+
+Le code python généré par le transpileur ne doit pas contenir d'erreurs de
+syntaxes ou de problème de définitions de variables ou de fonctions. Il faudra
+donc faire toutes les vérifications nécessaires au préalable. Pour ce faire,
+nous devrons trouver les erreurs de syntaxes dans le programme de base ainsi que
+de faire des vérifications sur la définitions et le type des différents
+éléments. La traduction du code ne devra se faire que si le programme de base ne
+comporte aucune erreur. Il faudra donc un moyen de récupérer les erreurs de
+compilations ainsi qu'une table des symboles pour vérifier les définitions et
+les types.
+
+Pour la traduction du code il y a aussi plusieurs possibilités. Dans le cas ou
+on aurait des instructions de bas niveau, il faudrait tout traduire en python
+ce qui peut être complexe. Avec le modèle objet, on peut avoir un transpileur qui
+se charge de traduire les différents éléments ou avoir des méthodes de
+traductions pour chacun des éléments du programme. Il sera peut-être aussi
+nécessaire de modifier le programme récupéré avant la traduction. À noter que
+l'objectif du projet est de créer un langage assez simple, il n'y aura donc pas
+d'optimisation avant la traduction.\\
+
+Pour mener à bien le projet, il nous faudra donc un parseur pour reconnaitre la
+grammaire du langage et un moyen de représenter et de stocker les éléments du
+langage. Il nous faudra aussi un moyen de collecter les erreurs et une table des
+symboles pour vérifier les définitions et les types. Enfin il faudra faire la
+traduction des éléments du langage en code python.
+
+\clearpage
 \part{Réalisation et conception}
 
 \section{Conception des éléments du langage}
@@ -337,10 +383,9 @@ Puisque nous souhaitons utiliser ce langage à des fins pédagogiques, nous avon
 décidé de simplifier au maximum la syntaxe. Par exemple, nous avons choisit de
 supprimer tous les opérateurs, ainsi, toutes les opérations arithmétiques et
 booléennes auront la même syntaxe que les fonctions. Par exemple, $a+b$ s'écrira
-\textit{add}(\textbf{a}, \textbf{b}). De plus, pour différer au maximum de
-python, notre syntaxe s'inspirera de celle des langages \textbf{C} et
-\textbf{Rust}. Pour définir la grammaire de manière formelle, nous utiliserons
-la \gls{bnf}.
+\textit{add}(a, b). De plus, pour différer au maximum de python, notre syntaxe
+s'inspirera de celle des langages C et Rust. Pour définir la grammaire de
+manière formelle, nous utiliserons la \gls{bnf}.
 
 \subsubsection*{Les variables}
 
@@ -364,7 +409,9 @@ A noter qu'ici, on a une légère différence avec le C pour le nom des fonction
 et des variable (\textbf{identifier} ici). En effet, le C permet aux noms de
 variables et de fonctions de pouvoir commencer par une majuscule. Ici, nous
 avons décidé de forcer les noms à commencer par une lettre minuscule, le non
-respect de cette règle entrainera une erreur de syntaxe.
+respect de cette règle entrainera une erreur de syntaxe. Le but étant d'une part
+de différer encore plus de python et d'autre part de forcer l'application de
+notre guide de style.
 
 \subsubsection*{Les fonctions}
 
@@ -372,7 +419,7 @@ La syntaxe pour les fonctions est la même qu'en Rust. Pour définir des
 fonctions, nous utilisons le mot clé \textbf{fn}, suivit du nom de la fonction
 avec ses paramètres entre parenthèses et enfin le bloque de code qui contient
 les instructions entre accolade. De plus, il faut spécifier le type de la valeur
-retour de la fonction en utilisant \textbf{-> type} quand c'est nécessaire.
+de retour de la fonction en utilisant \textbf{-> type} quand c'est nécessaire.
 
 \begin{grammar}
 <function> ::= fn <identifier>"("<parameters>")" [ "->" <type> ] "{"<instructions>"}"
@@ -412,7 +459,7 @@ utilisée dans un \textit{for}.
 \subsubsection*{Les opérations}
 \label{sec:operator}
 
-Comme dit précédemment, tous le langage ne comporte pas d'opérateur donc toutes
+Comme dit précédemment, le langage ne comporte pas d'opérateur donc toutes
 les opérations se font à l'aide de fonctions directement intégrées dans le
 transpileur. Voici une liste des opérations possibles :
 
@@ -461,7 +508,28 @@ en C. La première raison est le fait que notre langage ne supporte pas les
 \gls{varFonc}. De plus, l'ajout de ce type de fonctions d'affichage nécessite la
 gestion d'une chaine de formatage, ce qui aurai grandement augmenté la
 complexité de notre grammaire si nous avions voulu l'intégrer directement au
-langage.
+langage. Voici la syntaxe pour ces fonction :
+
+\begin{grammar}
+  <print> ::= print"("<variable>")" | print"("<string>")"
+  <read> ::= read"("<variable>")"
+\end{grammar}\leavevmode\newline
+
+La règle \textit{string} utilisé ci-dessus correspond à une chaîne de caractères
+entourée de guillemets comme montré plus haut.
+
+\subsubsection*{Le programme}
+
+La syntaxe du programme est décrite ci-dessous. Un programme est composé de zéro
+ou plusieurs inclusion de fichiers ainsi qu'une ou plusieurs fonctions. La
+grammaire n'autorise donc pas l'ajout de code en dehors des fonctions, il ne
+sera donc pas possible de faire une programme avec juste une instruction
+d'affichage comme en python. De plus, il ne sera pas non plus possible de
+déclarer des variables globales.
+
+\begin{grammar}
+  <program> ::= <include>* | <function>+
+\end{grammar}\leavevmode\newline
 
 \subsubsection*{Exemple de code}
 
@@ -507,12 +575,12 @@ programme.
 \subsection{Arbre syntaxique}
 
 Pour donner un sens aux éléments textuels du langage, nous utiliserons une
-représentation sous forme d'arbre. On appel cela un arbre syntaxique ou
-\gls{ast}. Les arbres syntaxiques sont nés avec la
-théorie des langages et comme on peut le voir dans cet article
-\cite{compilerTICH}, les \gls{ast} sont très utilisés par les compilateurs car ce sont
-des structures plus simples à manipuler que du texte. Voici l'arbre syntaxique
-de la fonction \textit{add3} :
+représentation sous forme d'arbre, et donc la méthode qui emploi les objets. On
+appel cela un arbre syntaxique ou \gls{ast}. Les arbres syntaxiques sont nés
+avec la théorie des langages et comme on peut le voir dans cet article
+\cite{compilerTICH}, les \gls{ast} sont très utilisés par les compilateurs car
+ce sont des structures plus simples à manipuler que du texte. Voici l'arbre
+syntaxique de la fonction \textit{add3} :
 
 \begin{figure}[h]
   \begin{center}
@@ -549,7 +617,7 @@ récupérées dans le parseur pour pouvoir construire les bloques.
 La classes \lstinline{Statement} correspond aux éléments qui contiennent des
 blocks de code. Cela comprend les fonctions et les structures de contrôles. La
 grammaire ne permet pas l'emploi des bloques ailleurs. Comme on peut le voir sur
-le diagramme suivant, la class \lstinline{Statement} permet de transmettre un
+le diagramme suivant, la classe \lstinline{Statement} permet de transmettre un
 \lstinline{Block} par héritage aux structures de contrôles et aux fonctions.
 
 \begin{figure}[h!]
@@ -567,7 +635,7 @@ fonction. Elle possède aussi un liste de variables qui sont ses paramètres ain
 qu'un type de retour (le type \textit{Type} est détaillé plus loin).
 
 La classe \textit{For} possède une variable qui est la variable de boucle et les
-trois valeurs fourni par le \textit{range} décrites précédemment.
+trois valeurs fournis par le \textit{range} décrites précédemment.
 
 La classe \textit{If} possède un nœud qui contiendra l'opération booléenne de la
 condition. Elle possède aussi un second \textit{Block} qui contient les
@@ -597,8 +665,8 @@ partie \ref{sec:operator} ont une classe qui hérite de
 \subsubsection*{Les éléments typé}
 \label{sec:eltTypes}
 
-Les fonctions, les valeurs et les variables possède un champ type. \textbf{Type}
-est une énumération qui possède les éléments suivant :
+Les fonctions, les valeurs et les variables possède un champ type. Le type
+\textbf{Type} est une énumération qui possède les éléments suivant :
 
 \begin{figure}[h!]
   \begin{center}
@@ -615,7 +683,7 @@ variables qui n'ont pas été déclarées.
 \subsubsection*{Les valeurs}
 
 Le dernier élément de l'AST que nous traiterons est la classe \lstinline{Value}
-qui permet de représenter les valeurs utilisé dans code. Comme on peut le voir
+qui permet de représenter les valeurs utilisées dans code. Comme on peut le voir
 sur le diagramme ci-dessous, cette classe possède deux attributs, \textit{type}
 qui représente le type de la valeur et \textit{value} qui permet de stocker la
 valeur. Le type \textit{type\_t} est une union qui contient un caractère, un
@@ -880,65 +948,104 @@ Les tokens sont définis en début de fichier avec la syntaxe suivante:
 \end{code}\leavevmode\newline
 
 % TODO: expliquer mieux
-À noter que l'on peut spécifier le type de l'élément, ce qui sera utile pour
-récupérer les valeurs retournées par le lexeur.\\~\\
+
+On peut aussi voir dans le code ci-dessus que certains token possède un type.
+Cela permet de pouvoir récupérer les valeurs retournées par le lexeur. Il est
+aussi possible de déclarer le type d'une règle de grammaire pour que celle-ci
+puisse retourner une valeur comme nous le verrons plus loin.\\~\\
 
 
-Bison permet de construire le parseur, qui va reconnaître des éléments de syntaxe
-et non pas juste des mots clés. Par exemple, on peut définir une règle pour
-reconnaître une suite d'inclusion de fichiers :\\ % TODO: changer l'exemple
+L'objectif de bison est de pouvoir générer le code d'un parseur à partir des
+règles définis dans le fichier. Voici un exemple de règle :
 
 \begin{code}[language=c++]
-includes: %empty
-       | INCLUDE IDENTIFIER SEMI includes
-       ;
+function:
+        FN IDENTIFIER[name]'('paramDeclarations')' block[ops]
+        |
+        FN IDENTIFIER[name]'('paramDeclarations')' ARROW type[rt] block[ops]
+        ;
 \end{code}\leavevmode\newline
 
-Ici, on définie une règle \textbf{includes} qui décrit la syntaxe des
-\textit{includes}. Selon cette règle, une suite d'inclusions est soit vide, soit
-elle comporte une inclusion, suivit d'une suite d'inclusion (`|` signifie "ou").
-Il faut noter que la syntaxe est "récursive", ce qui nous permet de définir une
-suite d'éléments. Enfin, les mots en majuscule sont les tokens retournés par le
-lexeur.\\
+Dans le code ci-dessus, on définis la règle pour les fonctions. La définition
+d'une règle se fait de la façon suivant :
 
-On peut ajouter des blocks de codes qui seront exécutés au moment où le parseur
-atteint l'élément qui précède le block. Dans l'exemple ci-dessous, le block sera
-appelé une fois que Bison aura parser le \textcolor{purple}{;}. À noter que l'on
-peut accéder aux éléments retournés par Flex ; ici, \textcolor{purple}{\$2} fait
-référence au second élément de la règle qui est \textcolor{purple}{IDENTIFIER}.
-Le type de \textcolor{purple}{IDENTIFIER} a été défini comme étant une
-\textcolor{purple}{std::string}. Le block de code nous permet donc de créer une
-nouvelle inclusion et de récupérer le nom de la bibliothèque.\\
+\begin{itemize}
+  \item On donne le nom de la règle suivit de ':'.
+  \item On décrit ensuite la règle en utilisant les tokens ou directement des
+    caractères comme c'est le cas ci-dessus pour les parenthèses. On peut aussi
+    utiliser les autre règles définis dans le fichier, par exemple, ici on
+    utilise les paramètres, les bloque ainsi que les types.
+  \item Le caratère \textbf{'|'} est utilisé lorsque la règle est composée de
+    plusieurs sous règles. Dans le code ci-dessus, il y a deux sous règles pour
+    les fonction, une ou on spécifie le type de retour et l'autre ou on ne le
+    spécifie pas. À noter que l'on ne peut pas ajouter d'éléments optionnels
+    comme on pouvait le faire avec la \gls{bnf} entre \textbf{'[]'}. Dans ce cas
+    il faut définir plusieurs sous règles.
+\end{itemize}~\\
+
+On peut ajouter des bloques de codes qui seront exécutés au moment où le parseur
+atteint l'élément qui précède le bloque. Si on reprend l'exemple des fonction on
+obtient le code suivant :
 
 \begin{code}[language=c++]
-includes: %empty
-       |
-       INCLUDE IDENTIFIER SEMI
-       {
-         std::cout << "new include id: " << $2 << std::endl;
-         pb.addInclude(std::make_shared<Include>($2));
-       }
-       includes
-       ;
+function:
+        // premiere regle sans le type de retour
+        |
+        FN IDENTIFIER[name]'('paramDeclarations')' ARROW type[rt]
+        {
+          contextManager.newSymbol($name, $rt, FUNCTION);
+          contextManager.enterScope();
+        }
+        block[ops]
+        {
+          pb.createFunction($name, $ops, $rt);
+          contextManager.leaveScope();
+        }
+        ;
 \end{code}\leavevmode\newline
 
+Dans cet exemple on a ajouté deux bloques de code. Le premier sera exécuté juste
+avant de renter dans le bloquer d'instructions \textit{block} de la fonction. Le
+second sera exécuté une fois que le bloque d'instructions aura été traité. On
+peut voir que dans les bloques que nous venons d'ajouter, nous pouvont accéder
+au valeurs des différents éléments qui compose la règle. Par exemple,
+\textcolor{purple}{\$name} permet d'accéder à la valeur de l'identifiant et de la
+même façon, \textcolor{purple}{\$ops} permet de récupérer la valeur renvoyée par
+la règle \textbf{block}. À noter qu'ici tous les éléments que l'on doit accéder
+on été nommé, cependant, il n'est pas obligatoire d'ajouter un nom entre
+\textbf{'[]'}. Si il n'y a pas de nom, on utiliser des nombre, par exemple, s'il
+n'y avait pas \textbf{[name]} derrière \textbf{IDENTIFIER}, on aurait utilisé
+\textcolor{purple}{\$1} car c'est le premier élément qui possède une valeur (le
+token \textbf{FN} n'a pas de type et Flex ne retourne rien).\\
 
-Comme dit plus haut, on peut définir des types pour les tokens, ce qui permet de
-récupérer des valeurs:
+
+Comme dit plus haut, on peut définir une valeur de retour pour les règles, pour
+ce faire, il faut définir un type à la règle, dans la première partie en haut du
+fichier puis utiliser \textcolor{purple}{\$\$}. L'exemple ci-dessous correspond
+à la règle pour les valeurs, dans ce cas on on récupère la valeur retournée par
+Flex, puis on instancie une nouvelle \textit{Value} qui est ensuite retournée.
 
 \begin{code}[language=c++]
-value: INT {
-       std::cout << "new int: " << $1 << std::endl;
-       lastValue.i = $1;
-       lastValueType = INT;
-     } | FLOAT {
-       std::cout << "new double: " << $1 << std::endl;
-       lastValue.f = $1;
-       lastValueType = FLT;
-     } | CHAR {
-       std::cout << "new char: " << $1 << std::endl;
-       lastValue.c = $1;
-       lastValueType = CHR;
+// en haut du fichier
+%nterm <Value> value
+
+%%
+// regles
+
+value:
+     INT {
+       type_t v = { .i = $1 };
+       $$ = Value(v, INT);
+     }
+     |
+     FLOAT {
+       type_t v = { .f = $1 };
+       $$ = Value(v, FLT);
+     }
+     |
+     CHAR {
+       type_t v = { .c = $1 };
+       $$ = Value(v, CHR);
      }
      ;
 \end{code}\leavevmode\newline
