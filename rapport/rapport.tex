@@ -338,13 +338,20 @@ instructions.
 Étant donné le fait que notre langage doit être écrit dans un fichier texte, il
 faudra un moyen d'extraire les informations contenues dans le texte. L'outil
 généralement utilisé pour ce type de tache s'appelle un parseur, qui va
-permettre de reconnaitre des règle de grammaires dans le code source.
+permettre de reconnaitre des règle de grammaires dans le code source. Nous avons
+décidé de ne pas implémenter de parseur par nous même mais plutôt d'utiliser
+deux outils qui vont permettent la génération du code du parseur, Flex et Bison.
+C'est deux outils vont nous permettre de gagner du temps et d'avoir du code
+beaucoup plus efficace car les codes qu'ils génère sont très performant.
 
 Ensuite, il nous faudra un moyen de représenter les différentes instructions
 récupérées par le parseur. Pour ce faire, il existe plusieurs méthode comme par
 exemple, récupérer des instructions bas niveau (proche de l'assembleur) pour
 construire un programme. Une autre solution serait d'utiliser la programmation
-orienté objet pour gérer toutes les instructions du programme.
+orienté objet pour gérer toutes les instructions du programme. Nous choisirons
+l'approche objet car il sera beaucoup plus simple de générer le code python au
+moment de la transpilation. Le code bas niveau aurait peut-être été un meilleur
+choix si nous avions implémenté un interpréteur ou un compilateur.
 
 Le code python généré par le transpileur ne doit pas contenir d'erreurs de
 syntaxes ou de problème de définitions de variables ou de fonctions. Il faudra
@@ -356,14 +363,14 @@ comporte aucune erreur. Il faudra donc un moyen de récupérer les erreurs de
 compilations ainsi qu'une table des symboles pour vérifier les définitions et
 les types.
 
-Pour la traduction du code il y a aussi plusieurs possibilités. Dans le cas ou
-on aurait des instructions de bas niveau, il faudrait tout traduire en python
-ce qui peut être complexe. Avec le modèle objet, on peut avoir un transpileur qui
-se charge de traduire les différents éléments ou avoir des méthodes de
-traductions pour chacun des éléments du programme. Il sera peut-être aussi
-nécessaire de modifier le programme récupéré avant la traduction. À noter que
-l'objectif du projet est de créer un langage assez simple, il n'y aura donc pas
-d'optimisation avant la traduction.\\
+Pour la traduction du code il y a aussi plusieurs possibilités. Avec le modèle
+objet, on peut avoir un transpileur qui se charge de traduire les différents
+éléments ou avoir des méthodes de traductions pour chacun des éléments du
+programme. Il sera peut-être aussi nécessaire de modifier le programme récupéré
+avant la traduction. À noter que l'objectif du projet est de créer un langage
+assez simple, il n'y aura donc pas d'optimisation avant la traduction. Par
+manque de temps, nous choisirons l'option d'avoir des méthode de traduction des
+les objets des élément du langage.\\
 
 Pour mener à bien le projet, il nous faudra donc un parseur pour reconnaitre la
 grammaire du langage et un moyen de représenter et de stocker les éléments du
@@ -575,12 +582,11 @@ programme.
 \subsection{Arbre syntaxique}
 
 Pour donner un sens aux éléments textuels du langage, nous utiliserons une
-représentation sous forme d'arbre, et donc la méthode qui emploi les objets. On
-appel cela un arbre syntaxique ou \gls{ast}. Les arbres syntaxiques sont nés
-avec la théorie des langages et comme on peut le voir dans cet article
-\cite{compilerTICH}, les \gls{ast} sont très utilisés par les compilateurs car
-ce sont des structures plus simples à manipuler que du texte. Voici l'arbre
-syntaxique de la fonction \textit{add3} :
+représentation sous forme d'arbre. On appel cela un arbre syntaxique ou
+\gls{ast}. Les arbres syntaxiques sont nés avec la théorie des langages et comme
+on peut le voir dans cet article \cite{compilerTICH}, les \gls{ast} sont très
+utilisés par les compilateurs car ce sont des structures plus simples à
+manipuler que du texte. Voici l'arbre syntaxique de la fonction \textit{add3} :
 
 \begin{figure}[h]
   \begin{center}
@@ -1340,11 +1346,9 @@ de cette fonctionnalité n'est donc pas un problème.
 \section{Le transpileur}
 % TODO
 
-\section{Mise en œuvre du projet}
+\section{Déroulement du projet}
 
 \subsection{Les outils utilisés}
-
-Pour la réalisation du code, nous avons utilisé divers outils.
 
 \subsubsection{Gestion de version}
 
@@ -1365,19 +1369,34 @@ tests automatisés.\\
 
 Pour compiler le programme, nous avons au départ utilisé un \textit{Makefile}.
 Cependant, nous avons basculé sur \textit{cmake} au moment de la création de la
-table des symboles.
-
-\subsection{Les recherches} % NOTE: jsp si ça doit être là
-
-La plupart des articles utilisés pour ce projet vienne de la base \textit{google
-scholar}. Nous avons également utilisé la base \textit{techniques de
-l'ingénieur}.
+table des symboles. Cmake permet de générer un \textit{Makefile} très complet à
+partir d'un fichier de configuration. Un des avantages est que le fichier de
+configuration de \textit{cmake} est moins verbeux que \textit{Makefile} car il
+automatise la gestion des bibliothèques, des dépendances ainsi que des fichiers
+objets. De plus le langage de \textit{cmake} permet beaucoup de choses comme par
+exemple la possibilité de faire des conditions et des boucles. Cependant nous
+n'avons pas utilisé ses fonctionnalité. Nous avons tout de même utilisé l'ajout
+de cibles personnalisées pour la génération du lexeur et du parseur avec les
+commandes \textbf{flex} et \textbf{bison}.
 
 \subsection{Planification des tâches}
 
 % TODO: diagramme de gantt
 
+\clearpage
 \part{Résultats et discussions}
+
+\section{Fonctionnement du langage}
+
+\subsection{La grammaire}
+
+\subsection{Récupération des éléments du code}
+
+\subsection{Gestion des erreurs}
+
+\subsection{Le transpileur}
+
+\section{Discussion et perspectives}
 
 %------------------------------------------------------------------------------%
 %                                 bibliography                                 %
