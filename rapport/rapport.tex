@@ -1546,7 +1546,57 @@ d'utiliser la base \textit{ENI} mais les articles proposés ne nous on pas aidé
 
 \subsection{Planification des tâches}
 
-% TODO: diagramme de gantt
+Dans cette partie, nous allons voir comment les différentes tâches on été
+réalisées. Nous détaillerons deux diagrammes de Gantt, le premier correspondant
+à la planification que nous pension avoir en début de projet et le second à la
+planification réelle. Ces deux diagrammes sont extrêmement différents, en effet,
+nous étions au départ parti pour implémenter les différents composants les uns
+après les autres. Cependant, nos premières recherches nous ont apporté presque
+autant de questions que de réponses, nous somme donc partie sur une méthode plus
+itérative. Nous avons commencé par implémenter les composant dont nous étions
+sûr de l'utilité et du fonctionnement, pour avoir quelque chose de fonctionnel
+qui nous permette de faire des tests. La correction d'erreurs à donc été
+relativement simple étant donner que nous n'ajoutions que très peu de
+fonctionnalités à chaque fois. Cependant, nous avons eu beaucoup d'hésitation
+quand à nos choix d'implémentation et certaines parties du code ont été
+réécrites plusieurs fois.\\
+
+On peut donc voir sur ce premier diagramme que nous contions développer les
+éléments les uns après les autres. Nous contions commencer par l'AST puis
+implémenter le parseur, la table des symboles et le transpileur. À noter que
+nous n'avions pas encore prévue de créer un objet pour la gestion des erreurs.
+Ce diagramme est disponible en index \ref{appendix:expectedgantt} pour plus de
+lisibilité.
+
+\begin{figure}[h!]
+  \begin{center}
+  \includegraphics[scale=0.35]{./img/expected-gantt.png}
+  \caption{Diagramme de Gantt prévisionnel}
+  \end{center}
+\end{figure}
+
+Sur le diagramme réel, on peut constater que nous n'avons pas suivit le plan que
+nous avions défini pour les raisons expliquées plus haut. Cependant, on peut
+tout même voir que la table des symboles et le transpileur sont toujours fait
+séparément du reste. Si on observe les trois premières parties, on peut voir
+qu'elles correspondent à l'implémentation de l'AST et du parseur. De plus, si on
+compare le durées, on peut constater que la conception de ces deux premiers
+éléments on pris beaucoup plus de temps que nous l'avions prévu à cause de nos
+hésitations. Pour la table des symboles, la durée globale est a été assez bien
+respectée. Si on regarde dans le détail on voit que l'implémentation a été plus
+rapide que prévue mais nous avons du implémenter la gestion d'erreurs en plus.
+On peut enfin constater qu'étant donné le fait que les deux premières partie ont
+été plus longues, la temps consacré à l'implémentation du transpileur à été
+fortement réduit. Cela explique le fait que nous n'avons pas pu implémenter la
+solution idéale. On peut retrouver ce diagramme en index
+\ref{appendix:realgantt}.
+
+\begin{figure}[h!]
+  \begin{center}
+  \includegraphics[scale=0.35]{./img/real-project.png}
+  \caption{Diagramme de Gantt réel.}
+  \end{center}
+\end{figure}
 
 \clearpage
 \part{Résultats et discussions}
@@ -1562,6 +1612,10 @@ d'utiliser la base \textit{ENI} mais les articles proposés ne nous on pas aidé
 \subsection{Le transpileur}
 
 \section{Discussion et perspectives}
+
+\clearpage
+\section*{conclusion}
+\addcontentsline{toc}{section}{Conclusion}
 
 %------------------------------------------------------------------------------%
 %                                 bibliography                                 %
@@ -1585,6 +1639,26 @@ d'utiliser la base \textit{ENI} mais les articles proposés ne nous on pas aidé
 \begin{figure}[h]
   \begin{center}
   \rotatebox[origin=c]{90}{\includegraphics[scale=0.22]{../ressources/diagrams/ast.png}}
+  \end{center}
+\end{figure}
+
+\clearpage{}
+\section{Diagramme de Gantt prévisionnel}\label{appendix:expectedgantt}
+
+\begin{figure}[h!]
+  \begin{center}
+  \rotatebox[origin=c]{90}{\includegraphics[scale=0.5]{./img/expected-gantt.png}}
+  \caption{Diagramme de Gantt prévisionnel.}
+  \end{center}
+\end{figure}
+
+\clearpage{}
+\section{Diagramme de Gantt réel}\label{appendix:realgantt}
+
+\begin{figure}[h!]
+  \begin{center}
+  \rotatebox[origin=c]{90}{\includegraphics[scale=0.5]{./img/real-project.png}}
+  \caption{Diagramme de Gantt réel.}
   \end{center}
 \end{figure}
 
