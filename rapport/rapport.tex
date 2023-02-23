@@ -1618,7 +1618,7 @@ du projet.
 
 \section{Fonctionnement du langage}
 
-\subsection{La grammaire éléments du langages}
+\subsection{La grammaire et les éléments du langages}
 
 Au départ, les objectifs étaient de pouvoir créer des fonctions, des variables
 typées et pouvoir faire des opérations arithmétiques et booléennes. Nous
@@ -1682,6 +1682,32 @@ erreur comme le fait \textbf{gcc} par exemple.\\
 % TODO: exemple
 
 \subsection{Le transpileur}
+
+Le transpileur n'a au final pas été fait de façon convenable, cependant nous
+avons pu implémenter une solution qui nous permet de tester la génération de
+code python. Notre solution fonctionne car le langage est très simple mais il y
+a tout de même des problèmes. Le premier gros problème est le fait que les
+classes de l'AST de notre langage se charge de la traduction. Il aurait été
+préférable que les classes de l'arbre n'aient aucun lien avec le transpileur. En
+effet, si nous souhaitions changer le langage cible pour la traduction, ou
+encore remplacer le transpileur par un compilateur, il faudrait modifier l'AST
+ce qui ne devrait pas être le cas. De plus, comme nous l'avons dit, si nous
+souhaitions ajouter de nouvelle fonctionnalités au langage cela pourrait
+entrainer beaucoup de problèmes.
+
+Enfin, bien qu'il soit très simple, le langage possède tout de même une
+fonctionnalité qui n'est pas directement traduisible en python. En effet notre
+langage possède un opérateur \textit{XOR}, ce qui n'est pas le cas de python.
+Cela nous force à remplacer \textit{XOR(a, b)} directement par \textit{(a and
+(not b)) or ((not a) and b)}. C'est un problème pour l'optimisation car les
+expressions \textbf{a} et \textbf{b} sont évaluées plusieurs fois. Ici une
+modification de l'arbre aurait permis de créer deux variables avant la condition
+pour stocker les résultats des évaluations de \textbf{a} et \textbf{b}.\\
+
+Bien que ça ne soit pas idéal, notre solution nous a tout de même permis de
+tester notre langage pour différents programmes.
+
+% TODO: Exemple
 
 \section{Discussion et perspectives}
 
