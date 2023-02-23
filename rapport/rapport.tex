@@ -17,6 +17,8 @@
 \usepackage{graphicx}
 \usepackage{geometry}
 \usepackage{titlesec}
+\usepackage{chngcntr}
+\counterwithin*{section}{part}
 
 \addbibresource{refs.bib}
 
@@ -144,6 +146,13 @@
     description={Également appelé analyseur syntaxique, son rôle principal est la vérification de
     la syntaxe du code en regroupant les tokens selon une structure suivant des
     règles syntaxiques.}
+}
+\newglossaryentry{shebang}
+{
+    name=Shebang,
+    description={représenté par \textbf{\#!}, il se place en haut du fichier et
+    permet sur les systèmes UNIX de déclarer que le fichier est un script et
+    indique quel interpréteur doit être utilisé lors d'une exécution.}
 }
 
 
@@ -1456,7 +1465,7 @@ soit très lent). Dans ce cas extrême il y aurait beaucoup de modification à
 faire et il faudrait dérécursifier toutes les fonctions de l'AST d'origine pour
 créer l'AST de python.
 
-\subsection{Notre solution temporaire}
+\subsection{Notre solution}
 
 Par manque de temps, nous avons du improviser une solution qui n'utilise pas de
 deuxième arbre syntaxique. Nous avons donc décidé de directement faire la
@@ -1471,7 +1480,15 @@ Pour faire notre traduction, nous avons ajouté une méthode abstraite
 tous les éléments du langage. La méthode prend deux paramètre, le premier est un
 flux \lstinline{std::ofstream} qui permet d'écrire dans le fichier de sortie. Le
 second paramètre est un entier qui permet de connaitre le nombre de tabulations
-à écrire pour indenter le code car python fonctionne avec l'indentation.
+à écrire pour indenter le code car python fonctionne avec l'indentation. Ce
+nombre est incrémenté à chaque fois que l'on entre dans un bloque de code. La
+traductions est lancée par le \textit{ProgramBuilder} qui appel la méthode
+\textit{compile} de toutes les fonctions du programme. À noter que le
+\textit{ProgramBuilder} insère aussi un \gls{shebang} en haut du fichier pour
+pouvoir exécuter le programme comme un exécutable classique sur les systèmes
+UNIX. À noter que cela nécessite aussi fait d'ajouter les droits d'exécutions au
+fichier ce qui est fait dans la fonction \textit{main} après la traduction à
+l'aide de \lstinline{std::filesystem::permissions}.
 
 \section{Déroulement du projet}
 
@@ -1508,6 +1525,25 @@ commandes \textbf{flex} et \textbf{bison}.
 
 \subsection{Les recherches}
 
+Pour les recherches, nous avons commencé par faire des recherches globales sur le
+sujet pour avoir une idée du plan à suivre. Ces recherches nous on permis de
+déterminer les éléments dont nous avions besoin pour créer le langage. La suite
+des recherches s'est fait pendant l'implémentation des différents composants. Le
+but été d'effectuer des recherches plus précise sur le composant à implémenter
+pour prendre connaissances des différentes solutions et choisir celle que nous
+jugions la plus intéressante. Pour faire nos recherches, nous avons surtout
+utiliser \textit{google scholar} qui nous avait été recommandé pour avoir des
+documents scientifiques certifiés. Nous avons aussi utilisé la base de données
+\textit{technique de l'ingénieur} qui nous avait été présentée lors de la séance
+sur la recherche documentaire. C'est sur cette base que nous avons trouvé
+l'article concernant les compilateurs \cite{compilerTICH} qui nous a permis de
+commencer le projet. Enfin, pour certains points nous avons aussi utilisé
+\textit{google}, qui nous a notamment permis de trouver le tutoriel sur la mise
+en place de flex et bison en C++ \cite{cppparsing}.
+
+Trouver de bons documents n'a pas été simple, par exemple, nous avons essayé
+d'utiliser la base \textit{ENI} mais les articles proposés ne nous on pas aidé.
+
 \subsection{Planification des tâches}
 
 % TODO: diagramme de gantt
@@ -1530,6 +1566,7 @@ commandes \textbf{flex} et \textbf{bison}.
 %------------------------------------------------------------------------------%
 %                                 bibliography                                 %
 %------------------------------------------------------------------------------%
+\pagestyle{empty}
 \clearpage{}
 \printbibliography[keyword={paper},title={Biliographie}]
 \printbibliography[keyword={web},title={Webographie}]
