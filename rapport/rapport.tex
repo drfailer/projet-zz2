@@ -306,14 +306,14 @@ outils informatiques qui permettent la réalisation de notre langage.\\
 
 \section{Concept de langage transpilé}
 
-L'objectif du projet commun est de créer un outils qui pourra servir à faire des
+L'objectif du projet commun est de créer un outil qui pourra servir à faire des
 démonstrations pour présenter la filière génie logiciel. Étant donné le fait que
 le code fait partie intégrante du développement logiciel nous avons décidé de
 créer un langage de programmation simple pouvant servir à l'initiation au
 développement ainsi qu'à certain concepts relatifs aux langages de
 programmation.\\
 
-Il existe quatre familles de langages de programmations. La première est celle
+Il existe quatre familles de langages de programmation. La première est celle
 des langages compilés comme le C ou le C++. Le principe est de transformer le
 code source en assembleur puis de générer un exécutable. Cette méthode est la
 plus complexe, cependant les langages compilés sont généralement les plus
@@ -354,7 +354,7 @@ paramétrées qui pourront être utilisées dans différents endroits du program
 Ces procédures et fonctions pourront contenir une suite d'instructions dans un
 bloque de code.
 
-De plus, le langage devra posséder des structures de contrôles permettant la
+De plus, le langage devra posséder des structures de contrôle permettant la
 création de conditions et de boucles.
 
 Enfin, il doit aussi intégrer des fonctions arithmétiques permettant les
@@ -365,7 +365,7 @@ tests ainsi que des fonctions permettant des actions d'entrée et de sortie
 Étant donné le fait que notre langage pourra être utilisé pour faire des
 présentations lors de portes ouvertes, nous souhaitons aussi que la syntaxe soit
 assez éloignée de celle du langage python. Le but étant de pouvoir présenter
-un langage différent à des lycéens qui on pour la plupart déjà utilisé python.
+un langage différent à des lycéens qui ont pour la plupart déjà utilisé python.
 
 \section{Analyse du problème}
 
@@ -380,18 +380,19 @@ faudra un moyen d'extraire les informations contenues dans le texte. L'outil
 généralement utilisé pour ce type de tache s'appelle un \gls{parser}, qui va
 permettre de reconnaitre des règle de grammaires dans le code source. Nous avons
 décidé de ne pas implémenter de \gls{parser} par nous même mais plutôt d'utiliser
-deux outils qui vont permettent la génération du code du \gls{parser}, Flex et Bison.
+deux outils qui vont permettre la génération du code du \gls{parser}, Flex et Bison.
 C'est deux outils vont nous permettre de gagner du temps et d'avoir du code
-beaucoup plus efficace car les codes qu'ils génère sont très performant.
+beaucoup plus efficace car les codes qu'ils génèrent sont très performant.
 
 Ensuite, il nous faudra un moyen de représenter les différentes instructions
-récupérées par le \gls{parser}. Pour ce faire, il existe plusieurs méthode comme par
-exemple, récupérer des instructions bas niveau (proche de l'assembleur) pour
-construire un programme. Une autre solution serait d'utiliser la programmation
-orienté objet pour gérer toutes les instructions du programme. Nous choisirons
-l'approche objet car il sera beaucoup plus simple de générer le code python au
-moment de la transpilation. Le code bas niveau aurait peut-être été un meilleur
-choix si nous avions implémenté un interpréteur ou un compilateur.
+récupérées par le \gls{parser}. Pour ce faire, il existe plusieurs méthodes
+comme par exemple, récupérer des instructions bas niveau (proche de
+l'assembleur) pour construire un programme. Une autre solution serait d'utiliser
+la programmation orientée objet pour gérer toutes les instructions du programme.
+Nous choisirons l'approche objet car il sera beaucoup plus simple de générer le
+code python au moment de la transpilation. Le code bas niveau aurait peut-être
+été un meilleur choix si nous avions implémenté un interpréteur ou un
+compilateur.
 
 Le code python généré par le transpileur ne doit pas contenir d'erreurs de
 syntaxes ou de problème de définitions de variables ou de fonctions. Il faudra
@@ -405,12 +406,12 @@ les types.
 
 Pour la traduction du code il y a aussi plusieurs possibilités. Avec le modèle
 objet, on peut avoir un transpileur qui se charge de traduire les différents
-éléments ou avoir des méthodes de traductions pour chacun des éléments du
+éléments ou avoir des méthodes de traduction pour chacun des éléments du
 programme. Il sera peut-être aussi nécessaire de modifier le programme récupéré
 avant la traduction. À noter que l'objectif du projet est de créer un langage
 assez simple, il n'y aura donc pas d'optimisation avant la traduction. Par
 manque de temps, nous choisirons l'option d'avoir des méthode de traduction des
-les objets des élément du langage.\\
+les objets des éléments du langage.\\
 
 Pour mener à bien le projet, il nous faudra donc un \gls{parser} pour reconnaitre la
 grammaire du langage et un moyen de représenter et de stocker les éléments du
@@ -439,7 +440,7 @@ manière formelle, nous utiliserons la \gls{bnf}.
 Pour stocker des données, notre langage utilise des variables dont la
 convention de nommage est la même qu'en \textbf{C}. Le langage est à typage
 statique, ce qui signifie que toutes les variables doivent être déclarées avec
-leur type avant d'être utilisées. Pour l'instant, nous possédons trois types :
+un type avant d'être utilisées. Pour l'instant, nous possédons trois types :
 les entiers (\textit{int}), les nombre à virgule flottante (\textit{flt}) et les
 caractères (\textit{chr}). Voici la syntaxe pour déclarer une variable:
 
@@ -465,7 +466,7 @@ notre guide de style.
 La syntaxe pour les fonctions est la même qu'en Rust. Pour définir des
 fonctions, nous utilisons le mot clé \textbf{fn}, suivit du nom de la fonction
 avec ses paramètres entre parenthèses et enfin le bloque de code qui contient
-les instructions entre accolade. De plus, il faut spécifier le type de la valeur
+les instructions entre accolades. De plus, il faut spécifier le type de la valeur
 de retour de la fonction en utilisant \textbf{-> type} quand c'est nécessaire.
 
 \begin{grammar}
@@ -485,7 +486,7 @@ if}, dans ce cas il faudra mettre la nouvelle condition à l'intérieur du bloqu
 de code du \textit{else}. La grammaire autorise aussi les boucles
 \textit{while}, et la syntaxe est la même qu'en C. Enfin, il y a la boucle
 \textit{for} qui utilise la règle \textit{range} qui contient trois valeurs
-séparé par des virgules. C'est trois valeurs correspondent au début et à la fin
+séparées par des virgules. C'est trois valeurs correspondent au début et à la fin
 de boucle et au pas. Par exemple, \lstinline{range(0, 10, 1)} vas générer une
 boucle ou la variable de boucle prendra les valeurs de 0 à 9 avec un pas de 1.
 Il est obligatoire de toujours spécifier ces trois valeurs au \textit{range}.
@@ -553,7 +554,7 @@ utiliser la fonction \textit{print} qui peut être utilisée de deux manières :
 Nous n'avons pas implémenter de fonction d'affichage similaire à \textbf{printf}
 en C. La première raison est le fait que notre langage ne supporte pas les
 \gls{varFonc}. De plus, l'ajout de ce type de fonctions d'affichage nécessite la
-gestion d'une chaine de formatage, ce qui aurai grandement augmenté la
+gestion d'une chaine de formatage, ce qui aurait grandement augmenté la
 complexité de notre grammaire si nous avions voulu l'intégrer directement au
 langage. Voici la syntaxe pour ces fonction :
 
@@ -562,7 +563,7 @@ langage. Voici la syntaxe pour ces fonction :
   <read> ::= read"("<variable>")"
 \end{grammar}\leavevmode\newline
 
-La règle \textit{string} utilisé ci-dessus correspond à une chaîne de caractères
+La règle \textit{string} utilisée ci-dessus correspond à une chaîne de caractères
 entourée de guillemets comme montré plus haut.
 
 \subsubsection*{Le programme}
@@ -645,10 +646,10 @@ Toutes les classes de l'arbre sont stockées dans le fichier
 \lstinline{ASTNode}. L'emploi de l'héritage ici est important car
 nous profiterons par la suite des avantages du polymorphisme pour stocker des
 opérations de différents types. La classe \lstinline{ASTNode} est abstraite car
-elle ne doit pas être instanciée, il faut que chaque nœud ai un type concret
-utilisable dans le transpileur. À noter que pour l'utilisation du polymorphisme
+elle ne doit pas être instanciée, il faut que chaque nœud ait un type concret
+utilisable dans le transpileur. À noter que l'utilisation du polymorphisme
 avec une classe abstraite force l'utilisation de pointeurs et donc d'allocation
-dynamique. Étant donné qu'il y a beaucoup d'objet à gérer et que nous n'avons
+dynamique. Étant donné qu'il y a beaucoup d'objets à gérer et que nous n'avons
 pas de contrainte particulière en terme de performance mémoire, nous utiliserons
 \lstinline{std::shared_ptr} pour gérer tous nos pointeurs. Le diagramme de
 classes complet est disponible en annexe \ref{appendix:classAST}. Détaillons
@@ -665,10 +666,10 @@ récupérées dans le \gls{parser} pour pouvoir construire les bloques.
 \subsubsection*{Les conteneurs d'opérations}
 
 La classes \lstinline{Statement} correspond aux éléments qui contiennent des
-blocks de code. Cela comprend les fonctions et les structures de contrôles. La
+blocks de code. Cela comprend les fonctions et les structures de contrôle. La
 grammaire ne permet pas l'emploi des bloques ailleurs. Comme on peut le voir sur
 le diagramme suivant, la classe \lstinline{Statement} permet de transmettre un
-\lstinline{Block} par héritage aux structures de contrôles et aux fonctions.
+\lstinline{Block} par héritage aux structures de contrôle et aux fonctions.
 
 \begin{figure}[h!]
   \begin{center}
@@ -678,7 +679,7 @@ le diagramme suivant, la classe \lstinline{Statement} permet de transmettre un
 \end{figure}
 
 De plus, on peut aussi voir sur ce diagramme la composition de la classe
-fonctions ainsi que celles des classes des structures de contrôle.
+\textit{Function} ainsi que celles des classes des structures de contrôle.
 
 La classe \textit{Function} possède un attribut \textit{id} qui correspond au nom de la
 fonction. Elle possède aussi un liste de variables qui sont ses paramètres ainsi
@@ -700,7 +701,7 @@ Les opérations sont traitées avec la classe \lstinline{OperationBinaire} qui
 correspond à tous les opérateurs. Cette classe possède deux attributs de type
 \textit{ASTNode} qui représentent les parties gauche et droite d'une opération
 binaire. Pour ne pas trop alourdir le schéma ci-dessous, seul la classe
-\textit{AddOP} a été représentée. Cependant, toutes les fonctions décrites dans
+\textit{AddOP} a été représentée, cependant, toutes les fonctions décrites dans
 partie \ref{sec:operator} ont une classe qui hérite de
 \lstinline{OperationBinaire}.
 \clearpage
@@ -715,7 +716,7 @@ partie \ref{sec:operator} ont une classe qui hérite de
 \subsubsection*{Les éléments typé}
 \label{sec:eltTypes}
 
-Les fonctions, les valeurs et les variables possède un champ type. Le type
+Les fonctions, les valeurs et les variables possèdent un champ type. Le type
 \textbf{Type} est une énumération qui possède les éléments suivant :
 
 \begin{figure}[h!]
@@ -748,7 +749,7 @@ types.
 \end{figure}
 ~\\
 
-Nous avons définit la grammaire du langage et déterminer les différents éléments
+Nous avons définit la grammaire du langage et déterminé les différents éléments
 qui vont composer notre arbre syntaxique. Dans la partie suivante nous écrirons
 la grammaire décrite précédemment dans le langage de bison et nous montrerons
 la construction d'un programme en utilisant les classes de l'AST que nous
@@ -834,7 +835,7 @@ bibliothèques C/C++ ainsi que des options pour flex.
 %option c++ interactive noyywrap yylineno nodefault outfile="lexer.cpp"
 \end{code}\leavevmode\newline
 
-Détail des fonctions utilisée :
+Détail des fonctions utilisées :
 \begin{itemize}
   \item \textbf{c++} : indique qu'on travail avec du cpp et non du c
   \item \textbf{interactive} : utile quand on utlise \textbf{std::in}. Le
@@ -854,7 +855,7 @@ suivantes :
   \item \textbf{alpha :} un caractère alphabétique est composé d'une lettre
     minuscule ou d'une lettre majuscule.
   \item \textbf{digit :} les chiffres sont les caractères entre 0 et 9.
-  \item \textbf{int :} les entiers correspondes à une suite de chiffres et
+  \item \textbf{int :} les entiers correspondent à une suite de chiffres et
     peuvent être positifs ou négatifs.
   \item \textbf{float :} similaire aux entiers sauf qu'ici on a obligatoirement
     un point suivit d'une suite de chiffre à la fin.
@@ -937,7 +938,7 @@ pour bison.
 
 Dans cette partie nous allons utiliser le travail précédemment effectué sur le
 \gls{lexer} pour écrire des règles de grammaires. Nous détaillerons la
-composition de ces règles et en quoi elle permettent la construction de notre
+composition de ces règles et en quoi elles permettent la construction de notre
 arbre syntaxique.
 
 \subsubsection*{Exemple}
@@ -969,7 +970,7 @@ Le fichier \textbf{main\_cpp.y} contient le code qui permet de générer le
 du langage y sont comprises. Chaque règle va contenir des bloques de code qui
 seront exécutés au moment où le \gls{parser} la reconnait, ce code permet de
 construire l'ABS du programme ainsi que de faire de la vérification sur les
-symboles (définition et type), comme nous le verrons plus tard.\\
+symboles, comme nous le verrons plus tard.\\
 
 La structure du fichier \textbf{main\_cpp.y} est similaire à celle du \gls{lexer} :
 
@@ -995,7 +996,7 @@ Les tokens sont définis en début de fichier avec la syntaxe suivante:
 
 % TODO: expliquer mieux
 
-On peut aussi voir dans le code ci-dessus que certains token possède un type.
+On peut aussi voir dans le code ci-dessus que certains token possèdent un type.
 Cela permet de pouvoir récupérer les valeurs retournées par le \gls{lexer}. Il est
 aussi possible de déclarer le type d'une règle de grammaire pour que celle-ci
 puisse retourner une valeur comme nous le verrons plus loin.\\~\\
@@ -1052,15 +1053,15 @@ function:
 \end{code}\leavevmode\newline
 
 Dans cet exemple on a ajouté deux bloques de code. Le premier sera exécuté juste
-avant de renter dans le bloquer d'instructions \textit{block} de la fonction. Le
+avant de renter dans le bloque d'instructions \textit{block} de la fonction. Le
 second sera exécuté une fois que le bloque d'instructions aura été traité. On
 peut voir que dans les bloques que nous venons d'ajouter, nous pouvont accéder
-au valeurs des différents éléments qui compose la règle. Par exemple,
+au valeurs des différents éléments qui composent la règle. Par exemple,
 \textcolor{purple}{\$name} permet d'accéder à la valeur de l'identifiant et de la
 même façon, \textcolor{purple}{\$ops} permet de récupérer la valeur renvoyée par
 la règle \textbf{block}. À noter qu'ici tous les éléments que l'on doit accéder
-on été nommé, cependant, il n'est pas obligatoire d'ajouter un nom entre
-\textbf{'[]'}. Si il n'y a pas de nom, on utiliser des nombre, par exemple, s'il
+ont été nommés, cependant, il n'est pas obligatoire d'ajouter un nom entre
+\textbf{'[]'}. Si il n'y a pas de nom, on utilise des nombre, par exemple, s'il
 n'y avait pas \textbf{[name]} derrière \textbf{IDENTIFIER}, on aurait utilisé
 \textcolor{purple}{\$1} car c'est le premier élément qui possède une valeur (le
 token \textbf{FN} n'a pas de type et Flex ne retourne rien).\\
@@ -1099,7 +1100,7 @@ value:
 
 Pour la génération du code, on a deux options :
 \begin{itemize}
-  \item utiliser des instruction très simples (comme du \gls{bytecode})
+  \item utiliser des instructions très simples (comme du \gls{bytecode})
 \item créer un code objet où tous les éléments sont des objets.
 \end{itemize}\leavevmode\\~\\
 
@@ -1107,7 +1108,11 @@ Pour la génération du code, on a deux options :
 \begin{itemize}
 \item plus simple à comprendre et à visualiser
 \item plus compliqué à générer: on peut générer du bytecode au fil de
-  l'exécution du \gls{parser}, en utilisant des \textcolor{orange}{goto} pour sauter de block d'instruction en block d'instruction. Pour le code objet, les éléments à l'intérieurs des blocks doivent être créés avant le block, et le block est détecté avant les instructions, il faut donc stocker les instructions.
+  l'exécution du \gls{parser}, en utilisant des \textcolor{orange}{goto} pour
+    sauter de bloques d'instructions en bloques d'instructions. Pour le code objet,
+    les éléments à l'intérieur des bloques doivent être créés avant le bloque, et
+    le bloque est détecté avant les instructions, il faut donc stocker les
+    instructions.
 \end{itemize}
 
 
@@ -1117,7 +1122,7 @@ Pour la génération du code, on a deux options :
 
 Pour construire l'arbre syntaxique dans le programme, nous utiliserons
 la classe \textbf{ProgramBuilder}. Cette classe permet de stocker des éléments
-comme le nom de la fonction courante ou les commendes récupérée par le
+comme le nom de la fonction courante ou les commandes récupérées par le
 \gls{parser}.
 De plus cette classe permet d'instancier les éléments de l'AST pour construire
 le programme. Le diagramme de cette classe est le suivant :
@@ -1131,7 +1136,7 @@ le programme. Le diagramme de cette classe est le suivant :
 
 On peut noter sur ce diagramme que l'on a des fonctions de créations qui
 permettent de créer les éléments de l'AST définis dans la première partie. De
-plus la classe est composé du programme, auquel elle ajoute les fonctions et les
+plus la classe est composée du programme, auquel elle ajoute les fonctions et les
 fichiers inclus. % note: ça va changer
 
 L'emploi de cette classe permet de limiter le code dans le \gls{parser} mais aussi de
@@ -1140,17 +1145,17 @@ nombre. Par exemple, pour les \textbf{Block}, on ne sait pas combien de
 commandes ils contiennent, c'est pourquoi le \textbf{ProgramBuilder} possède une
 pile qui permet d'ajouter les commandes au bloques ainsi que d'avoir accès au
 dernier bloque pour construire les \textbf{Statement}. Il en est de même pour
-les paramètres de fonctions, dans ce cas nous avons une liste de liste. Si une
+les paramètres de fonctions, dans ce cas nous avons une liste de listes. Si une
 fonction \textbf{A} prend le résultat d'une autre fonction \textbf{B} en
 paramètre (\textit{A(..., B(...), ...)}), la dernière liste contient les
 paramètres de \textbf{B} au moment ou \textbf{B} est traitée. À l'origine, ce
 choix avait été fait car il permet de toujours avoir accès aux éléments qui sont
-en train d'être récupérer depuis n'importe quel endroit du \gls{parser}. Cependant,
+en train d'être récupérés depuis n'importe quel endroit du \gls{parser}. Cependant,
 cette fonctionnalité n'est pas utilisée, il aurait donc été plus simple de
 construire ces listes en utilisant les valeurs retour de bison.\\
 % NOTE: je sais plus parler
 
-Le \textbf{ProgramBuilder} permet donc de stocker les éléments important ainsi
+Le \textbf{ProgramBuilder} permet donc de stocker les éléments importants ainsi
 que de construire le \textbf{Program} au fur et à mesure de l'exécution du
 \gls{parser}.
 
@@ -1163,7 +1168,7 @@ si les symboles (variables et fonctions) utilisés ont bien été déclarés.
 Cependant, ici notre table des symboles sera plus complexe du fait que les
 symboles peuvent avoir des portées différentes. De plus la table des symboles
 nous permettra aussi de faire de la vérification de types pour par exemple,
-vérifier qu'une fonctions prend les bon paramètres.
+vérifier qu'une fonctions prend les bons paramètres.
 
 Du fait que nous allons devoir faire de la détection d'erreurs, nous créerons
 une nouvelle classe qui permettra de stocker tous les messages d'erreurs (et
@@ -1176,14 +1181,14 @@ empêche la compilation.
 \subsubsection*{La table des symboles}
 
 Pour la création de notre table des symboles nous utiliserons la méthode
-présenté dans cet article \cite{power2000symbol} que nous avons simplifié pour
+présentée dans cet article \cite{power2000symbol} que nous avons simplifié pour
 la récupération et la recherche de symboles.\\
 
 Commençons par étudier la composition d'un symbole. Chaque symbole est composé
 d'un nom qui lui sert d'identifiant, d'un type et d'un genre. Le genre est une
-énumération qui suis le même principe que dans \cite{power2000symbol}. Le type
+énumération qui suit le même principe que dans \cite{power2000symbol}. Le type
 du symbole est une liste de \textbf{Type} qui est une énumération décrite dans
-l'AST, il a la même utilité que pour les éléments typées (voir
+l'AST, il a la même utilité que pour les éléments typées (voir la section
 \ref{sec:eltTypes}). Ici nous stockons une liste de \textit{Type} et non
 juste un \textit{Type}. En effet le type d'une variable est bien composé d'un
 seul \textit{Type} (une liste de un élément) mais le type des fonctions ne
@@ -1218,9 +1223,9 @@ stockés dans une \textbf{unordered\_map} qui est une table de hachage qui
 permettra l'accès aux valeurs avec l'identifiant. De plus, la table
 possède un liste de sous tables qui et un pointeur sur la table mère qui sera
 utilisé par la méthode \textbf{lookup} pour la recherche de symbole comme
-expliqué précédemment. À noter que la méthode \textbf{lookup} ne retourne pas
+expliqué précédemment. À noter que la méthode \textbf{lookup} ne renvoie pas
 directement un symbole. Elle utilise la classe \lstinline{std::optional} et
-retourne une valeur vide dans le cas ou le symbole recherché n'a pas été trouvé,
+renvoie une valeur vide dans le cas ou le symbole recherché n'a pas été trouvé,
 ce qui est pratique étant donné le fait que C++ ne possède pas de valeur nulle.
 Une autre solution aurait été de retourner un pointeur.
 
@@ -1259,7 +1264,7 @@ méthodes permettant de renter ou sortir d'un scope. La méthode
 pointe dessus avec \textbf{currentScope}. Lorsqu'on sort du scope courant, on
 retourne dans le \textit{scope père}, la méthode va donc faire pointer
 \textbf{currentScope} sur la table mère. Enfin cette classe possède des méthodes
-pour ajouter ou rechercher des symboles qui font appel au méthode de la sous
+pour ajouter ou rechercher des symboles qui font appel aux méthodes de la sous
 table courante.\\
 
 Le \textbf{ContextManager} permet donc de créer une table des symboles dans le
@@ -1272,8 +1277,8 @@ erreurs de types et de définitions.
 \subsection{Gestion des erreurs}
 
 L'objectif de cette partie est de pouvoir vérifier si les éléments du programmes
-ont bien été définis et possèdent les bon type. Dans le cas contraire, cela va
-impliquer de devoir retourner les erreurs qui conviennent. Pour ce faire, nous
+ont bien été définis et possèdent les bons types. Dans le cas contraire, cela va
+impliquer de devoir renvoyer les erreurs qui conviennent. Pour ce faire, nous
 avons une classe dédiée à la collections des erreurs et des avertissements dans
 le parseur, \lstinline{ErrorManager}.
 
@@ -1281,14 +1286,15 @@ Comme on peut le voir ci-dessous sur le diagramme, c'est une classe très simple
 qui ne possède que deux attributs. Le premier et un flux de caractères qui va
 permettre de stocker tous les messages d'erreurs. Le second est un booleen, il
 est initialisé à \textit{false} au départ et passe à \textit{true} quand une
-erreurs est enregistrée. Cet attributs sert à savoir si on doit compiler ou pas
+erreur est enregistrée. Cet attributs sert à savoir si on doit compiler ou pas
 quand le parseur a consommé tous le texte. En effet, seules les erreurs de
 syntaxes sont bloquantes, et cause un arrêt du parseur avec un retour non nul.
 Cependant, il n'est pas nécessaire de planter au niveau du parseur pour les
 erreurs de types. De ce fait il nous est possible de récupérer toutes les
 erreurs de type dans un programme qui ne comporte pas d'erreur de syntaxe et
-donc de rendre la correction d'erreurs plus rapide.
+donc de rendre la correction du programme plus rapide.
 
+\clearpage
 \begin{figure}[h!]
   \begin{center}
   \includegraphics[scale=0.5]{../ressources/diagrams/errMgr.png}
@@ -1303,7 +1309,7 @@ de nouveaux avertissements. La différence entre les deux est que les
 avertissements ne vont pas empêcher la transpilation. Par exemple, un
 avertissement peut être levé lors de l'affectation d'un caractère à une variable
 de type entier. Ici, l'avertissement va permettre de signifier à l'utilisateur
-que les type diffères, cependant, ce dernier souhaite peut-être extraire le
+que les types diffèrent, cependant, ce dernier souhaite peut-être extraire le
 numéro ASCII du caractère assigné, il ne faut donc pas planter dans ce genre de
 cas.\\~\\
 
@@ -1330,17 +1336,17 @@ ligne et de colonne ainsi qu'une référence sur une liste de \textit{Type}.
 Cette fonction renvoie vrai lorsque le symbole demandé (le nom) est défini et
 elle modifie le type par effet de bord. De ce fait, on peut accéder facilement
 au type dans les bloques de code du parseur. La fonction se charge aussi
-de générer une erreurs en utilisant les numéros de ligne et de colonnes pour
+de générer une erreur en utilisant les numéros de ligne et de colonne pour
 indiquer la position de l'erreur.
 
 Nous avons aussi une fonction qui permet de vérifier le type des paramètres lors
 d'un appel de fonction. Celle-ci n'utilise pas directement la table des
-symboles, elle prend en paramètre deux listes qu'elle compare et renvoi un
+symboles, elle prend en paramètre deux listes qu'elle compare et renvoie un
 booléen en fonction du résultat.
 
 Une seconde fonction de vérification de type à été écrite, mais celle-ci génère
-un avertissement et non une erreur. Elle est utilisée au niveau de l'affectation pour
-ne pas générer d'erreur lorsque l'on fait de la conversion de type comme
+un avertissement et non une erreur. Elle est utilisée au niveau de l'affectation
+pour ne pas générer d'erreur lorsque l'on fait de la conversion de type comme
 expliqué précédemment.
 
 Enfin une fonction \textit{getType} qui permet de récupérer le type de la valeur
@@ -1356,7 +1362,7 @@ variable a qui on affecte une valeur à bien été déclarée. Ici on utilise bi
 fonction \textit{isDefined} qui génère un message d'erreur expliquant à
 l'utilisateur qu'il tente d'affecter une valeur à une variable non définie. On
 fait aussi une vérification au niveau de la règle qui permet de récupérer tous
-les élément qui peuvent avoir une valeur. Ici, on peut avoir des fonctions
+les éléments qui peuvent avoir une valeur. Ici, on peut avoir des fonctions
 comme des variables. La vérification se fait au niveau de la sous règle composée
 uniquement d'un \textit{IDENTIFIER}, car on ne souhaite pas faire la
 vérification sur des \textit{Value} ou des opérations arithmétiques.
@@ -1367,7 +1373,7 @@ se charge aussi de récupérer le type de la fonction appelée. Nous détaillero
 dans la partie suivante la vérification du type. On peut voir ici que la
 fonction \textit{isDefined} est appelée deux fois. La vérification est faite une
 première fois au niveau de la règle qui décrit les symboles avec une valeur, et
-une seconde ici. Ici, \textit{isDefined} permet uniquement de savoir si on
+une seconde ici. Là, \textit{isDefined} permet uniquement de savoir si on
 doit tester le type de la fonction appelée.
 
 À noter que comme les symboles sont récupérés et testés en même temps que le
@@ -1384,7 +1390,7 @@ tourner le \textit{ContextManager} est retourné au \textit{scope} global. Il
 suffit donc de vérifier que la méthode \textit{lookup} retourne bien une valeur
 lorsque l'on fait une recherche du symbole \textit{"main"}. À noter que du fait
 que la grammaire n'autorise pas de variable globale, il ne peut y avoir qu'un
-seul symbole nommé \textit{main} dans le \textit{scope} global, et celui ci
+seul symbole nommé \textit{main} dans le \textit{scope} global, et celui-ci
 correspond forcément à une fonction. Il n'est donc pas nécessaire d'utiliser
 l'attribut \textit{Kind}, cependant, si l'on souhaitait ajouter des variables
 globales, il faudrait faire plus de vérifications. De plus, nous n'avons pas
@@ -1415,7 +1421,7 @@ ne regarde que le type de retour. Par exemple, si on regarde le code ci-dessous.
   fonction1(a, 1, fonction2(3, 3));
 \end{grammar}\leavevmode\newline
 
-Dans cette exemple, on souhaite vérifier le type de \textit{fonction1}. Ici,
+Dans cet exemple, on souhaite vérifier le type de \textit{fonction1}. Ici,
 c'est un appel de fonction, on va donc vérifier les paramètres. Lors de cette
 vérification, \textit{fonction2} sera traitée comme une valeur, on va donc
 comparer le type de la valeur de retour de \textit{fonction2} avec celui du
@@ -1433,7 +1439,7 @@ de cette fonctionnalité n'est donc pas un problème.\\
 Une dernière vérification de type est fait au niveau de la règle du
 \textit{return}. Ici, on récupère le type de la fonction courante et on le
 compare avec le type de la valeur renvoyée. Si les types ne correspondent pas,
-une erreur est renvoyée.\\
+une erreur est générée.\\
 
 Nous avons décrit la construction du l'arbre syntaxique du langage et expliqué
 la vérification des définitions et des types. De ce fait, nous somme capable de
@@ -1447,15 +1453,15 @@ l'objet de la partie suivante.
 Dans cette partie, nous allons utiliser l'arbre syntaxique construit dans les
 parties précédentes pour générer du code python. Pour la réalisation de cette
 partie, nous n'avons pas eu le temps d'implémenter la solution que nous
-souhaitions au départ. Cependant nous avons utiliser une solution temporaire
+souhaitions au départ. Cependant nous avons utilise une solution temporaire
 plus simple pour vérifier que nous étions bien capable de générer du code
 correcte en python. De plus, les éléments de notre transpileur actuel peuvent
-être réutilisés pour créer le transpileur de façon plus propre.
+être réutilisés pour réécrire le transpileur de façon plus propre.
 
 \subsection{La solution idéale}
 
 Comme on peut le voir dans cet article \cite{tutotranspiler}, une bonne solution
-aurait nécessiter la génération d'un second arbre syntaxique correspondant à la
+aurait nécessité la génération d'un second arbre syntaxique correspondant à la
 syntaxe de python. En effet, le principe du transpileur et de faire une
 traduction d'un langage vers un autre, cependant, la syntaxe et les
 fonctionnalités du langage de départ peuvent être très différentes de celui
@@ -1465,7 +1471,7 @@ est un langage fonctionnel, ou toutes les boucles doivent être remplacées par 
 fonctions récursives. Si nous souhaitons transpiler ce type de langage en python
 il faudra obligatoirement supprimer la récursivité car python limite le
 nombre de fois qu'une fonction peu s'appeler elle même (en plus du fait que cela
-soit très lent). Dans ce cas extrême il y aurait beaucoup de modification à
+soit très lent). Dans ce cas extrême il y aurait beaucoup de modifications à
 faire et il faudrait dérécursifier toutes les fonctions de l'AST d'origine pour
 créer l'AST de python.
 
@@ -1481,7 +1487,7 @@ encore si nous souhaitons changer le langage cible pour du C par exemple.\\
 
 Pour faire notre traduction, nous avons ajouté une méthode abstraite
 \textit{compile} à la classe \textit{ASTNode}. Cette méthode est implémentée par
-tous les éléments du langage. La méthode prend deux paramètre, le premier est un
+tous les éléments du langage. La méthode prend deux paramètres, le premier est un
 flux \lstinline{std::ofstream} qui permet d'écrire dans le fichier de sortie. Le
 second paramètre est un entier qui permet de connaitre le nombre de tabulations
 à écrire pour indenter le code car python fonctionne avec l'indentation. Ce
@@ -1511,7 +1517,7 @@ en place une méthode tel que gitFlow. Nous n'avons pas non plus eu le temps de
 mettre en place des tests automatisés bien que cela aurait pu être nécessaire
 sur la fin du projet pour tester le code python généré avec le transpileur. Une
 suite au projet nécessitera certainement la mise en place d'une tel structure de
-tests automatisés.\\
+tests.\\
 
 \subsubsection{Compilation}
 
@@ -1523,7 +1529,7 @@ configuration de \textit{cmake} est moins verbeux que \textit{Makefile} car il
 automatise la gestion des bibliothèques, des dépendances ainsi que des fichiers
 objets. De plus le langage de \textit{cmake} permet beaucoup de choses comme par
 exemple la possibilité de faire des conditions et des boucles. Cependant nous
-n'avons pas utilisé ses fonctionnalité. Nous avons tout de même utilisé l'ajout
+n'avons pas utilisé ces fonctionnalités. Nous avons tout de même utilisé l'ajout
 de cibles personnalisées pour la génération du \gls{lexer} et du parseur avec les
 commandes \textbf{flex} et \textbf{bison}.
 
@@ -1548,6 +1554,7 @@ en place de flex et bison en C++ \cite{cppparsing}.
 Trouver de bons documents n'a pas été simple, par exemple, nous avons essayé
 d'utiliser la base \textit{ENI} mais les articles proposés ne nous on pas aidé.
 
+\clearpage
 \subsection{Planification des tâches}
 
 Dans cette partie, nous allons voir comment les différentes tâches on été
@@ -1622,7 +1629,7 @@ du projet.
 
 Au départ, les objectifs étaient de pouvoir créer des fonctions, des variables
 typées et pouvoir faire des opérations arithmétiques et booléennes. Nous
-souhaitions aussi avoir les structures de contrôles présentes dans la plupart des
+souhaitions aussi avoir les structures de contrôle présentes dans la plupart des
 langages. Au final, la grammaire du langage permet bien de faire tous ce que
 souhaitions au départ. Cependant, comme nous l'avons évoqué dans la partie
 \ref{sec:verifDef} notre grammaire ne permet à deux fonctions de s'appeler entre
@@ -1669,13 +1676,13 @@ une règle \textit{error} et une option \textit{yyerrok} pour éviter que le
 parseur s'arrête sur certaines erreurs. Ce système n'est pas facile à utiliser
 mais il pourrait servir à ne pas stopper le parseur en cas d'oublis de
 \textbf{';'} à la fin d'une instruction par exemple. Il serait donc intéressant
-d'améliorer la précision des erreurs de syntaxe, en donnant plus d'indication à
+d'améliorer la précision des erreurs de syntaxe, en donnant plus d'indications à
 l'utilisateur et d'ajouter le fait que toutes ces erreurs ne font pas planter le
 parseur.\\
 
 Le dernier point d'amélioration concerne la localisation des erreurs. Pour
 l'instant, nos messages d'erreurs donnent bien le bon numéro de ligne en
-revanche nous n'avons pas réussi à faire fonctionner les numéros de colonnes. Il
+revanche nous n'avons pas réussi à faire fonctionner les numéros de colonne. Il
 aurait aussi était intéressant d'afficher la ligne du programme qui comporte une
 erreur comme le fait \textbf{gcc} par exemple.\\
 
@@ -1711,9 +1718,13 @@ tester notre langage pour différents programmes.
 
 \section{Discussion et perspectives}
 
+TODO
+
 \clearpage
 \section*{conclusion}
 \addcontentsline{toc}{section}{Conclusion}
+
+TODO
 
 %------------------------------------------------------------------------------%
 %                                 bibliography                                 %
