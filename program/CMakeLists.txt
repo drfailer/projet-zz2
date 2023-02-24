@@ -8,7 +8,7 @@ project(transpiler)
 add_custom_target(parser ALL bison main_cpp.y
                   DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/main_cpp.y
                   WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-                COMMENT "building parser")
+                  COMMENT "building parser")
 add_custom_target(lexer ALL flex main_cpp.l
                   DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/main_cpp.l
                   WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
