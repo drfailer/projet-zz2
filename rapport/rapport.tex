@@ -1746,13 +1746,52 @@ avions choisit python pour la traduction. La création d'un compilateur pourrait
 donc s'avérer très complexe (mais possible). La meilleur façon de créer un
 premier compilateur est certainement d'avoir un langage le plus proche possible
 de l'assembleur. En revanche, la génération de bytecode pour la JVM est une
-possibilité envisageable.
+possibilité envisageable.\\~\\
+
+Il y a donc plein de perspectives possibles pour améliorer ou modifier le
+projet. Il y a la possibilité de compéter le langage en lui ajoutant de
+nouvelles fonctionnalités ou encore de complètement changer de sujet en
+remplaçant le transpileur par un des autres outils que nous avons cité.
 
 \clearpage
 \section*{conclusion}
 \addcontentsline{toc}{section}{Conclusion}
+\large
 
-TODO
+L'objectif du projet été de créer un langage transpilé simple pouvant être
+présenté lors de portes ouvertes. Le langage devait permettre l'écriture de
+fonctions, l'utilisation de variables, posséder des structures de contrôles if,
+for et while et avoir un système de types. Pour cette partie, l'objectif a été
+atteint. De plus, nous devions réaliser un transpileur pour traduire notre code
+en python. Nous avons pu fournir une solution fonctionnelle permettant de faire
+des tests qui ne satisfait cependant pas nos attentes, le projet n'est donc pas
+complètement terminé. Pour finir le transpileur, il faudrait générer un nouvel
+arbre syntaxique spécifique à python et faire la traduction à partir de cet
+AST.\\
+
+Faire des choix concernant la modélisation et la conception des éléments de
+l'AST fut complexe et a pris plus de temps que prévu. Cela ne nous a pas laissé
+assez de temps pour finir le projet convenablement. Le programme est tout de
+même capable de parser notre code et de détecter les erreurs de définitions et
+de types pour générer du code python fonctionnel.\\
+
+La réalisation de ce projet nous a permis d'en apprendre plus sur le
+fonctionnement des langages de programmation. Nous avons réussi à utiliser les
+outils Flex et Bison pour la mise en place d'un lexeur et d'un parseur efficace
+pour générer un arbre syntaxique. Nous avons aussi pu créer une représentation
+objet de notre AST en utilisant le langage C++ que nous ne connaissions pas au
+début du projet.\\
+
+L'objectif du projet n'est pas complètement atteint, la partie sur le
+transpileur nécessite donc d'être refaite de façon plus convenable. De plus, il
+y a beaucoup de choses qui pourraient être apportées au projet pour compléter le
+langage ou modifier le fonctionnement du programme. Il serait possible de créer
+de nouveaux éléments de grammaire pour ajouter de nouvelle fonctionnalités comme
+des tableaux ou des structures par exemple. Enfin, il est aussi envisageable de
+remplacer le transpileur par un interpréteur ce qui nécessiterait
+l'implémentation de plus d'éléments pour gérer la mémoire par exemple.
+
+\normalsize
 
 %------------------------------------------------------------------------------%
 %                                 bibliography                                 %
