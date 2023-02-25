@@ -187,7 +187,7 @@ nous a fourni à travers son cours pour la rédaction de ce rapport. Parmi nos
 professeurs, nous souhaitons aussi remercier Alexis PEREDA pour ses conseils sur
 l'utilisation de C++ et pour avoir partagé ses connaissances sur les
 compilateurs ainsi que Yves-Jean DANIEL pour m'avoir conseillé l'utilisation de
-Flex et Bison pour l'écriture d'un \gls{parser}.
+Flex et Bison pour l'écriture d'un parseur.
 
 \normalsize
 \onehalfspacing
@@ -219,7 +219,7 @@ capable de détecter les erreurs de types.\\
 
 Le développement a été réalisé avec le langage C++ et emploi le paradigme objet.
 De plus, nous avons utilisé les outils GNU Flex et GNU Bison pour la création du
-\gls{parser}. À noter que le programme ne nécessite pas de système d'exploitation
+parser. À noter que le programme ne nécessite pas de système d'exploitation
 particulier, cependant, il requière l'installation des outils cités précédemment
 ainsi qu'une version de python3 pour fonctionner.\\ % TODO: la fin ?
 
@@ -321,12 +321,12 @@ rapides et les plus légers.
 
 La seconde méthode pour exécuter du code est l'utilisation d'une machine
 virtuelle. Le code source du langage est traduit en un code de bas niveau, le
-\gls{bytecode}, qui est ensuite exécuté par une machine virtuelle. C'est par exemple
-le cas du langage Java.
+\gls{bytecode}, qui est ensuite exécuté par une machine virtuelle. C'est par
+exemple le cas du langage Java.
 
 La troisième famille est celle des langages interprétés. Ici c'est
 l'interpréteur qui se charge directement de l'exécution du code source, sans
-passer par une représentation intermédiaire comme le \gls{bytecode}.
+passer par une représentation intermédiaire comme le bytecode.
 
 La dernière famille est celle que nous allons étudier lors de la réalisation de
 ce projet, ce sont les langages transpilés. L'objectif d'un transpileur et de
@@ -377,15 +377,15 @@ instructions.
 
 Étant donné le fait que notre langage doit être écrit dans un fichier texte, il
 faudra un moyen d'extraire les informations contenues dans le texte. L'outil
-généralement utilisé pour ce type de tache s'appelle un \gls{parser}, qui va
+généralement utilisé pour ce type de tache s'appelle un parser, qui va
 permettre de reconnaitre des règle de grammaires dans le code source. Nous avons
-décidé de ne pas implémenter de \gls{parser} par nous même mais plutôt d'utiliser
-deux outils qui vont permettre la génération du code du \gls{parser}, Flex et Bison.
+décidé de ne pas implémenter de parseur par nous même mais plutôt d'utiliser
+deux outils qui vont permettre la génération du code du parseur Flex et Bison.
 C'est deux outils vont nous permettre de gagner du temps et d'avoir du code
 beaucoup plus efficace car les codes qu'ils génèrent sont très performant.
 
 Ensuite, il nous faudra un moyen de représenter les différentes instructions
-récupérées par le \gls{parser}. Pour ce faire, il existe plusieurs méthodes
+récupérées par le parseur Pour ce faire, il existe plusieurs méthodes
 comme par exemple, récupérer des instructions bas niveau (proche de
 l'assembleur) pour construire un programme. Une autre solution serait d'utiliser
 la programmation orientée objet pour gérer toutes les instructions du programme.
@@ -413,7 +413,7 @@ assez simple, il n'y aura donc pas d'optimisation avant la traduction. Par
 manque de temps, nous choisirons l'option d'avoir des méthode de traduction des
 les objets des éléments du langage.\\
 
-Pour mener à bien le projet, il nous faudra donc un \gls{parser} pour reconnaitre la
+Pour mener à bien le projet, il nous faudra donc un parseur pour reconnaitre la
 grammaire du langage et un moyen de représenter et de stocker les éléments du
 langage. Il nous faudra aussi un moyen de collecter les erreurs et une table des
 symboles pour vérifier les définitions et les types. Enfin il faudra faire la
@@ -625,7 +625,7 @@ programme.
 Pour donner un sens aux éléments textuels du langage, nous utiliserons une
 représentation sous forme d'arbre. On appel cela un arbre syntaxique ou
 \gls{ast}. Les arbres syntaxiques sont nés avec la théorie des langages et comme
-on peut le voir dans cet article \cite{compilerTICH}, les \gls{ast} sont très
+on peut le voir dans cet article \cite{compilerTICH}, les AST sont très
 utilisés par les compilateurs car ce sont des structures plus simples à
 manipuler que du texte. Voici l'arbre syntaxique de la fonction \textit{add3} :
 
@@ -638,7 +638,7 @@ manipuler que du texte. Voici l'arbre syntaxique de la fonction \textit{add3} :
 
 Pour cette partie, nous nous sommes inspiré d'un projet appelé \textbf{minijava}
 \cite{minijava} ainsi que d'un article \cite{gagnon1998sablecc} qui couvre aussi
-l'utilisation des \gls{ast} en java. Nous avons choisit l'approche objet, avec un AST
+l'utilisation des AST en java. Nous avons choisit l'approche objet, avec un AST
 représenté par des classes, où chaque nœud de l'arbre a sa propre classe.\\
 
 Toutes les classes de l'arbre sont stockées dans le fichier
@@ -660,7 +660,7 @@ maintenant les parties importantes.
 La classe \lstinline{Block} correspond aux bloques de code en entre accolades.
 Elle possède une liste de nœuds qui sont les opérations contenues dans le
 bloque. Nous verrons dans la partie suivante comment les opérations sont
-récupérées dans le \gls{parser} pour pouvoir construire les bloques.
+récupérées dans le parseur pour pouvoir construire les bloques.
 
 \clearpage{}
 \subsubsection*{Les conteneurs d'opérations}
@@ -728,7 +728,7 @@ Les fonctions, les valeurs et les variables possèdent un champ type. Le type
 
 Le champ INT correspond au type des entiers, le champ FLT au type des flottants
 et le champ CHR au type des caractères. Le type VOID est utilisé pour le type de
-retour des procédures et il est aussi utilisé par le \gls{parser} pour créer des
+retour des procédures et il est aussi utilisé par le parseur pour créer des
 variables qui n'ont pas été déclarées.
 
 \subsubsection*{Les valeurs}
@@ -760,18 +760,18 @@ venons de décrire.
 
 \section{Construction de l'AST}
 
-Dans cette partie nous expliquerons la création d'un \gls{parser} en utilisant les
+Dans cette partie nous expliquerons la création d'un parseur en utilisant les
 outils \textbf{GNU Flex} et \textbf{GNU Bison}. De plus, nous détaillerons la
 génération de l'AST en utilisant les classes décrites précédemment. Pour cette
 partie, nous nous sommes aidé d'un article \cite{compilerFlexBison} qui présente
 la construction d'un compilateur avec Flex et Bison en C. Pour porter le code en
 C++, nous avons utilisé la documentation officielle des deux outils ainsi qu'un
 article qui nous a permis d'avoir un squelette de base pour le \gls{lexer} et le
-\gls{parser} \cite{cppparsing}.
+parseur \cite{cppparsing}.
 
 \subsection{Le lexeur}
 
-Pour faciliter le travail du \gls{parser}, nous allons utiliser un \gls{lexer}. Dans
+Pour faciliter le travail du parseur nous allons utiliser un lexeur Dans
 cette partie, nous détaillerons la conposition du fichier de configuration qui
 nous permettra de générer le code du lexeur avec l'outil Flex. Nous verrons dans
 la partie suivante comment utiliser les tokens dans les règles de grammaire.
@@ -798,16 +798,16 @@ Les tokens apparaissant sont : \\
   \end{tabular}
 \end{center}
 
-Le \gls{lexer} a également pour rôle de supprimer les informations inutiles,
+Le lexeur a également pour rôle de supprimer les informations inutiles,
 généralement du caractère blancs (espaces et tabulations) et des
 commentaires.\\~\\
 
 %\phantomsection
 \subsubsection*{Implémentation}
 
-Comme évoqué précédemment, l'outil utilisé pour générer le \gls{lexer} est
+Comme évoqué précédemment, l'outil utilisé pour générer le lexeur est
 \textbf{GNU Flex} (Fast LEXical analyser generator). Il permet de générer le
-code C++ du \gls{lexer} à partir d'un fichier. Dans notre cas, le fichier utilisé
+code C++ du lexeur à partir d'un fichier. Dans notre cas, le fichier utilisé
 sera \textbf{main\_cpp.l} et possède la structure suivante
 \cite{compilerFlexBison} :
 
@@ -886,8 +886,8 @@ que l'on peut utiliser les raccourcis définis précédemment en mettant leurs n
 entre accolades comme fait ci-dessous pour \textbf{identifier}. La définition
 d'une règle suit le principe suivant, on commence par donner une suite de
 caractères qui sera consommée. Ensuite ajoute du code entre accolades, qui
-sera exécuté quand le \gls{lexer} consommera la chaine. Par exemple, si on prend la
-première ligne ci-dessous, quand le \gls{lexer} trouvera le mot \textbf{for}, il
+sera exécuté quand le lexeur consommera la chaine. Par exemple, si on prend la
+première ligne ci-dessous, quand le lexeur trouvera le mot \textbf{for}, il
 affichera \textit{L\_for} dans le terminal puis retournera le token \textbf{FOR}.
 
 À noter que les tokens disponibles dans l'espace de nom \textbf{Parser::token}
@@ -928,7 +928,7 @@ la partie \textit{9 The Generated Scanner} du manuel pour Flex
 Cette macro permet de définir le type de la fonction \textbf{lex}, ici,
 on a pour paramètre \textcolor{purple}{yylval} (qui comme dit précédemment permet
 de transmettre des valeurs à bison) et \textcolor{purple}{yylloc} qui doit être
-fourni quand on utilise les positions dans le \gls{parser} (pour avoir le numéro de
+fourni quand on utilise les positions dans le parseur (pour avoir le numéro de
 ligne en cas d'erreur par exemple), mais cela nécessite une option particulière
 pour bison.
 
@@ -937,7 +937,7 @@ pour bison.
 \subsection{Le parseur}
 
 Dans cette partie nous allons utiliser le travail précédemment effectué sur le
-\gls{lexer} pour écrire des règles de grammaires. Nous détaillerons la
+lexeur pour écrire des règles de grammaires. Nous détaillerons la
 composition de ces règles et en quoi elles permettent la construction de notre
 arbre syntaxique.
 
@@ -945,7 +945,7 @@ arbre syntaxique.
 
 Pour l'expression simple \textbf{a = 2 * b} \\
 On peut voir dans le tableau suivant l'analyse d'une affectation par le
-\gls{parser} :\\
+parseur :\\
 \begin{center}
 \begin{tabular}{ | c | c | c | }
 \hline
@@ -961,18 +961,18 @@ On peut voir dans le tableau suivant l'analyse d'une affectation par le
 %\phantomsection
 \subsubsection*{Implémentation}
 
-À l'instar de Flex pour le \gls{lexer}, Bison est un générateur de grammaire qui
+À l'instar de Flex pour le lexeur, Bison est un générateur de grammaire qui
 convertit une description de grammaire en un programme C++ qui analyse cette
 même grammaire.\\
 
 Le fichier \textbf{main\_cpp.y} contient le code qui permet de générer le
-\gls{parser} avec Bison. Toutes les règles syntaxiques qui définissent la grammaire
+parseur avec Bison. Toutes les règles syntaxiques qui définissent la grammaire
 du langage y sont comprises. Chaque règle va contenir des bloques de code qui
-seront exécutés au moment où le \gls{parser} la reconnait, ce code permet de
+seront exécutés au moment où le parseur la reconnait, ce code permet de
 construire l'ABS du programme ainsi que de faire de la vérification sur les
 symboles, comme nous le verrons plus tard.\\
 
-La structure du fichier \textbf{main\_cpp.y} est similaire à celle du \gls{lexer} :
+La structure du fichier \textbf{main\_cpp.y} est similaire à celle du lexeur :
 
 \begin{code}
 // C++, options, et declaration des tokens
@@ -997,12 +997,12 @@ Les tokens sont définis en début de fichier avec la syntaxe suivante:
 % TODO: expliquer mieux
 
 On peut aussi voir dans le code ci-dessus que certains token possèdent un type.
-Cela permet de pouvoir récupérer les valeurs retournées par le \gls{lexer}. Il est
+Cela permet de pouvoir récupérer les valeurs retournées par le lexeur. Il est
 aussi possible de déclarer le type d'une règle de grammaire pour que celle-ci
 puisse retourner une valeur comme nous le verrons plus loin.\\~\\
 
 
-L'objectif de bison est de pouvoir générer le code d'un \gls{parser} à partir des
+L'objectif de bison est de pouvoir générer le code d'un parseur à partir des
 règles définis dans le fichier. Voici un exemple de règle :
 
 \begin{code}[language=c++]
@@ -1026,12 +1026,11 @@ d'une règle se fait de la façon suivant :
     plusieurs sous règles. Dans le code ci-dessus, il y a deux sous règles pour
     les fonction, une ou on spécifie le type de retour et l'autre ou on ne le
     spécifie pas. À noter que l'on ne peut pas ajouter d'éléments optionnels
-    comme on pouvait le faire avec la \gls{bnf} entre \textbf{'[]'}. Dans ce cas
-    il faut définir plusieurs sous règles.
+    comme on pouvait le faire avec la forme de Backus-Naur entre \textbf{'[]'}.
+    Dans ce cas il faut définir plusieurs sous règles.
 \end{itemize}~\\
 
-On peut ajouter des bloques de codes qui seront exécutés au moment où le
-\gls{parser}
+On peut ajouter des bloques de codes qui seront exécutés au moment où le parseur
 atteint l'élément qui précède le bloque. Si on reprend l'exemple des fonction on
 obtient le code suivant :
 
@@ -1100,7 +1099,7 @@ value:
 
 Pour la génération du code, on a deux options :
 \begin{itemize}
-  \item utiliser des instructions très simples (comme du \gls{bytecode})
+  \item utiliser des instructions très simples (comme du bytecode)
 \item créer un code objet où tous les éléments sont des objets.
 \end{itemize}\leavevmode\\~\\
 
@@ -1108,7 +1107,7 @@ Pour la génération du code, on a deux options :
 \begin{itemize}
 \item plus simple à comprendre et à visualiser
 \item plus compliqué à générer: on peut générer du bytecode au fil de
-  l'exécution du \gls{parser}, en utilisant des \textcolor{orange}{goto} pour
+  l'exécution du parseur, en utilisant des \textcolor{orange}{goto} pour
     sauter de bloques d'instructions en bloques d'instructions. Pour le code objet,
     les éléments à l'intérieur des bloques doivent être créés avant le bloque, et
     le bloque est détecté avant les instructions, il faut donc stocker les
@@ -1123,7 +1122,7 @@ Pour la génération du code, on a deux options :
 Pour construire l'arbre syntaxique dans le programme, nous utiliserons
 la classe \textbf{ProgramBuilder}. Cette classe permet de stocker des éléments
 comme le nom de la fonction courante ou les commandes récupérées par le
-\gls{parser}.
+parseur.
 De plus cette classe permet d'instancier les éléments de l'AST pour construire
 le programme. Le diagramme de cette classe est le suivant :
 
@@ -1139,7 +1138,7 @@ permettent de créer les éléments de l'AST définis dans la première partie. 
 plus la classe est composée du programme, auquel elle ajoute les fonctions et les
 fichiers inclus. % note: ça va changer
 
-L'emploi de cette classe permet de limiter le code dans le \gls{parser} mais aussi de
+L'emploi de cette classe permet de limiter le code dans le parseur mais aussi de
 pouvoir récupérer des éléments dans des piles quand on ne connait pas leurs
 nombre. Par exemple, pour les \textbf{Block}, on ne sait pas combien de
 commandes ils contiennent, c'est pourquoi le \textbf{ProgramBuilder} possède une
@@ -1150,14 +1149,14 @@ fonction \textbf{A} prend le résultat d'une autre fonction \textbf{B} en
 paramètre (\textit{A(..., B(...), ...)}), la dernière liste contient les
 paramètres de \textbf{B} au moment ou \textbf{B} est traitée. À l'origine, ce
 choix avait été fait car il permet de toujours avoir accès aux éléments qui sont
-en train d'être récupérés depuis n'importe quel endroit du \gls{parser}. Cependant,
+en train d'être récupérés depuis n'importe quel endroit du parseur. Cependant,
 cette fonctionnalité n'est pas utilisée, il aurait donc été plus simple de
 construire ces listes en utilisant les valeurs retour de bison.\\
 % NOTE: je sais plus parler
 
 Le \textbf{ProgramBuilder} permet donc de stocker les éléments importants ainsi
 que de construire le \textbf{Program} au fur et à mesure de l'exécution du
-\gls{parser}.
+parseur.
 
 
 \section{Analyse des symboles}
@@ -1172,7 +1171,7 @@ vérifier qu'une fonctions prend les bons paramètres.
 
 Du fait que nous allons devoir faire de la détection d'erreurs, nous créerons
 une nouvelle classe qui permettra de stocker tous les messages d'erreurs (et
-avertissements) au fil de l'exécution du \gls{parser}. Ces messages seront affichés à
+avertissements) au fil de l'exécution du parseur. Ces messages seront affichés à
 la fin une fois tout le code source traité. À noter que la présence d'erreurs
 empêche la compilation.
 
@@ -1239,7 +1238,7 @@ Une autre solution aurait été de retourner un pointeur.
 Nous avons donc une table des symboles qui nous permet de connaître tous les
 éléments nommés du programme, leur porté ainsi que leur type. Dans la partie
 suivante, nous détaillerons le fonctionnement de l'objet responsable de la
-création de la table dans le \gls{parser}.
+création de la table dans le parseur.
 
 \clearpage
 \subsubsection*{Gestion du contexte}
@@ -1530,7 +1529,7 @@ automatise la gestion des bibliothèques, des dépendances ainsi que des fichier
 objets. De plus le langage de \textit{cmake} permet beaucoup de choses comme par
 exemple la possibilité de faire des conditions et des boucles. Cependant nous
 n'avons pas utilisé ces fonctionnalités. Nous avons tout de même utilisé l'ajout
-de cibles personnalisées pour la génération du \gls{lexer} et du parseur avec les
+de cibles personnalisées pour la génération du lexeur et du parseur avec les
 commandes \textbf{flex} et \textbf{bison}.
 
 \subsection{Les recherches}
@@ -1718,7 +1717,36 @@ tester notre langage pour différents programmes.
 
 \section{Discussion et perspectives}
 
-TODO
+Toute la réalisation du projet ne s'est pas faite comme prévu, cependant, si on
+met de côté notre transpileur, nous avons tout de même réussi à créer une base
+solide qui permettra l'ajout de plus de fonctionnalités. Le code actuel
+nécessitera tout de même un peu de réorganisation et de nettoyage pour
+simplifier le développement de nouveaux éléments. Parmi les fonctionnalités qui
+seront apportées en premier, on pourra compter l'ajout de tableaux statiques
+ainsi que la possibilité d'inclure des bibliothèques. La possibilité de créer
+des structures de données à la manière du C sera peut-être aussi implémenté pour
+rendre le langage plus puissant. Il faudra aussi apporter une preuve de la
+Turing complétude du langage en écrivant la règle 110 par exemple.\\
+
+Si des nouvelles fonctionnalités seront apportées pour rendre le langage plus
+puissant (et surtout pleinement utilisable), nous souhaitons tout de même
+conserver une certaine simplicité. Le projet doit resté présentable à des gens
+qui n'ont jamais codé et qui souhaitent simplement découvrir. Il n'y aura donc
+pas d'ajout d'éléments complexe comme des pointeurs par exemple.\\
+
+À terme, il serait aussi intéressant de séparer le transpileur du reste, en
+gardant un dépôt pour le parseur et un autre pour le transpileur. De ce fait, il
+serra plus facile de fournir différentes implémentations du langage en gardant
+le même parseur. En effet, lorsque le projet possèdera une base suffisamment
+complète, il pourra être intéressant de revenir sur notre idée de base et de
+créer un interpréteur.
+
+Le langage reste assez haut niveau, c'est d'ailleurs pour cette raison que nous
+avions choisit python pour la traduction. La création d'un compilateur pourrait
+donc s'avérer très complexe (mais possible). La meilleur façon de créer un
+premier compilateur est certainement d'avoir un langage le plus proche possible
+de l'assembleur. En revanche, la génération de bytecode pour la JVM est une
+possibilité envisageable.
 
 \clearpage
 \section*{conclusion}
@@ -1745,11 +1773,10 @@ TODO
 \clearpage{}
 \section{Diagramme de classes de l'AST}\label{appendix:classAST}
 
-\begin{figure}[h]
-  \begin{center}
-  \rotatebox[origin=c]{90}{\includegraphics[scale=0.22]{../ressources/diagrams/ast.png}}
-  \end{center}
-\end{figure}
+\begin{center}
+% \rotatebox[origin=c]{90}{\includegraphics[scale=0.22]{../ressources/diagrams/ast.png}}
+\includegraphics[scale=0.65]{../ressources/diagrams/ast.png}
+\end{center}
 
 \clearpage{}
 \section{Diagramme de Gantt prévisionnel}\label{appendix:expectedgantt}
