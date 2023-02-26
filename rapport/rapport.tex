@@ -1693,7 +1693,7 @@ programme test.
 \clearpage
 On peut voir sur la figure que le programme affiche bien toutes les erreurs et
 avertissements prévus. On peut aussi voir que la récupération des numéros de
-colonne n'est pas fonctionnel.
+colonne n'est pas fonctionnel et qu'il est toujours à 1.
 
 \begin{figure}[h]
   \begin{center}
@@ -1728,6 +1728,7 @@ pour stocker les résultats des évaluations de \textbf{a} et \textbf{b}.\\
 Bien que ça ne soit pas idéal, notre solution nous a tout de même permis de
 tester notre langage pour différents programmes.\\
 
+\clearpage
 \subsubsection*{Exemple}
 
 Voici un exemple simple de la fonction de fibonacci codée avec notre langage.
@@ -1735,7 +1736,6 @@ Comme le on peut le voir sur la figure ci-dessous, le programme demmande un
 nombre à l'utilisateur, puis calcul et affiche le résultat de la fonction de
 fibonacci sur ce nombre.
 
-\clearpage
 \begin{figure}[h]
   \begin{center}
   \includegraphics[scale=0.7]{./img/fib-prog.png}
@@ -1764,10 +1764,13 @@ Voici le code python généré par le transpileur:
 \end{figure}
 
 Dans le code ci-dessus, on peut remarquer plusieurs choses. Tout d'abord, comme
-c'est à l'utilisateur de mettre les retours à la ligne lors des affichage, on
-peut voir que l'on supprime le retour à la ligne automatique dans les affichages
-de python. De plus, on peut aussi remarquer la la valeur entrée avec
-\textit{input} est modifiée pour correspondre au type de la variable n.
+c'est à l'utilisateur de mettre les retours à la ligne lors des affichages, on
+peut voir que l'on supprime le retour à la ligne automatique dans les
+\textit{print} de python. De plus, on peut aussi remarquer la la valeur entrée
+avec \textit{input} est modifiée pour correspondre au type de la variable n.
+Enfin, comme le développement du transpileur n'est pas terminé, nous affichons
+les déclarations de variables en commentaire (pour vérifier que tout est bien
+fait).
 
 \clearpage
 \section{Discussion et perspectives}
