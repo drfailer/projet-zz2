@@ -1,17 +1,21 @@
 @startuml
 skinparam classAttributeIconSize 0
 skinparam groupInheritance 3
+hide empty methods
+hide empty attributes
+scale 1000 height
+left to right direction
 
 AST *- ASTNode
 
 abstract class ASTNode {
-  + {abstract} display(): void
-  + {abstract} compile(): void
+  +{abstract} display(): void
+  +{abstract} compile(): void
 }
 
 class Block {
   -operations: list<ASTNode>
-  +addOp(std::shared_ptr<ASTNode>): void
+  +addOp(ASTNode): void
 }
 
 class Include {
@@ -93,10 +97,14 @@ BinaryOperation <|-- AddOP
 BinaryOperation <|-- MnsOP
 BinaryOperation <|-- TmsOP
 BinaryOperation <|-- DivOP
-BinaryOperation <|-- EqlOP
 BinaryOperation <|-- AndOP
 BinaryOperation <|-- OrOP
 BinaryOperation <|-- XorOP
+BinaryOperation <|-- EqlOP
+BinaryOperation <|-- SupOP
+BinaryOperation <|-- InfOP
+BinaryOperation <|-- SeqOP
+BinaryOperation <|-- IeqOP
 
 ASTNode <|-- NotOP
 NotOP *-- ASTNode

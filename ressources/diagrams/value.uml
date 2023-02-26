@@ -1,0 +1,10 @@
+@startuml
+skinparam classAttributeIconSize 0
+skinparam groupInheritance 3
+
+
+class Value {
+  -value: type_t
+  -typ: Type
+}
+@enduml

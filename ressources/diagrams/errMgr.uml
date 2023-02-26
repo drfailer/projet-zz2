@@ -1,0 +1,15 @@
+@startuml
+skinparam classAttributeIconSize 0
+skinparam groupInheritance 3
+
+
+class ErrorManager {
+  -errStream: ostringstream
+  -errors: bool
+  +getErrors(): bool
+  +newError(string): void
+  +newWarning(string): void
+  +report(): void
+}
+@enduml
+

@@ -22,11 +22,12 @@
 
 <parameters> ::= <parameter> [ "," <parameters> ]
 
-<if> ::= if <condition> "{"<instructions>"}" [ else "{" <instructions>"}" ]
+<if> ::= if "("<condition>")" "{"<instructions>"}" [ else "{" <instructions>"}" ]
 
-<for> ::= for <declaration> in (<identifier> | <range>) "{"<instructions>"}"
+<range> ::= range "("<valueSymbol>, <valueSymbol>, <valueSymbol>")"
+<for> ::= for <identifier> in <range> "{"<instructions>"}"
 
-<while> ::= while <condition> "{" <instructions> "}"
+<while> ::= while "("<condition>")" "{" <instructions> "}"
 
 <instruction> ::=
   <declaration>
