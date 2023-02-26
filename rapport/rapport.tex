@@ -160,6 +160,7 @@
 %------------------------------------------------------------------------------%
 %                                  Title page                                  %
 %------------------------------------------------------------------------------%
+\pagestyle{empty}
 \begin{document}
 \input{titlepage.tex}
 \clearpage{}
@@ -269,6 +270,8 @@ Keywords : \textbf{C++}, \textbf{transpiler}, \textbf{lexer}, \textbf{parser},
 %------------------------------------------------------------------------------%
 %                                 Introduction
 %------------------------------------------------------------------------------%
+\pagestyle{plain}
+\setcounter{page}{1}
 \clearpage
 \section*{Introduction}
 \addcontentsline{toc}{section}{Introduction}
@@ -1796,8 +1799,8 @@ exemple.
 %------------------------------------------------------------------------------%
 %                                 bibliography                                 %
 %------------------------------------------------------------------------------%
-\pagestyle{empty}
 \clearpage{}
+\pagestyle{empty}
 \printbibliography[keyword={paper},title={Biliographie}]
 \printbibliography[keyword={web},title={Webographie}]
 
