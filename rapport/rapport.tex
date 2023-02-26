@@ -181,7 +181,7 @@
 \addcontentsline{toc}{section}{Remerciements}
 
 \doublespacing
-\large % TODO: reformuler
+\large
 
 Nous tenons à remercier Loïc YON pour nous avoir guidé et conseillé lors de la
 réalisation du projet. Nous remercions aussi Murielle MOUZAT pour l'aide qu'elle
@@ -223,7 +223,7 @@ Le développement a été réalisé avec le langage C++ et emploie le paradigme 
 De plus, nous avons utilisé les outils GNU Flex et GNU Bison pour la création du
 parseur. À noter que le programme ne nécessite pas de système d'exploitation
 particulier, cependant, il requiert l'installation des outils cités précédemment
-ainsi qu'une version de python3 pour fonctionner.\\ % TODO: la fin ?
+ainsi qu'une version de python3 pour fonctionner.\\
 
 Au final nous avons réussi à implémenter un parseur fonctionnel ainsi que tous
 les éléments du langage excepté l'inclusion de bibliothèques. Pour le
@@ -853,7 +853,6 @@ Détail des fonctions utilisées :
   \item \textbf{outfile:"file.cpp"} : permet de définir le fichier de sortie
 \end{itemize}\leavevmode\\
 
-% TODO: dvlp sur les règles
 Après les options on peut définir des raccourcis en utilisant des expressions
 régulières. Par exemple, dans le code ci-dessous, nous avons défini les règles
 suivantes :
@@ -915,12 +914,6 @@ for          { AFFICHE("L_for"); return Parser::token::FOR; }
 Ici on a accès à la variable \textcolor{purple}{yylval} de type
 \textcolor{purple}{Parser::semantic\_type*} qui possède une méthode
 \textcolor{purple}{build} permettant de transmettre des valeurs à bison.\\
-
-% TODO: ça doit pas être là je pense
-% Ces valeurs sont accessibles via les variables de bison: \textcolor{purple}{\$2}. La variable
-% \textcolor{purple}{yytext} contient le text traité par Flex. De plus, dans le code, on retourne
-% les \textit{tokens}. Ces \textbf{tokens} sont définis dans le fichier de bison.
-% \newline
 
 La fonction appelée par défaut est \textcolor{purple}{yylex}, cependant, pour
 pouvoir travailler avec bison, nous devons fournir nos propres fonctions, pour
@@ -1000,8 +993,6 @@ Les tokens sont définis en début de fichier avec la syntaxe suivante:
 %token <char>       CHAR
 %token <std::string> IDENTIFIER
 \end{code}\leavevmode\newline
-
-% TODO: expliquer mieux
 
 On peut aussi voir dans le code ci-dessus que certains tokens possèdent un type.
 Cela permet de pouvoir récupérer les valeurs retournées par le lexeur. Il est
@@ -1396,9 +1387,9 @@ correspond forcément à une fonction. Il n'est donc pas nécessaire d'utiliser
 l'attribut \textit{Kind}, cependant, si l'on souhaitait ajouter des variables
 globales, il faudrait faire plus de vérifications. De plus, nous n'avons pas
 implémenté la possibilité de donner des arguments au programme, ce n'est donc
-pas géré dans cette partie. % TODO: vérifier que main n'a pas d'arguments
+pas géré dans cette partie.
 
-\subsubsection*{Vérification des types} % TODO
+\subsubsection*{Vérification des types}
 
 La seconde vérification à faire concerne les types des éléments. Pour la
 récupération des types nous utiliserons certaines des fonctions décrites dans la
@@ -1687,7 +1678,29 @@ revanche nous n'avons pas réussi à faire fonctionner les numéros de colonne. 
 aurait aussi été intéressant d'afficher la ligne du programme qui comporte une
 erreur comme le fait \textbf{gcc} par exemple.\\
 
-% TODO: exemple
+\subsubsection*{Exemple}
+
+On peut voir sur les deux figures ci-dessous l'affichage des erreurs sur un
+programme test.
+
+\begin{figure}[h]
+  \begin{center}
+  \includegraphics[scale=0.7]{./img/err-prog.png}
+  \caption{Programme comportant des erreurs.}
+  \end{center}
+\end{figure}
+
+\clearpage
+On peut voir sur la figure que le programme affiche bien toutes les erreurs et
+avertissements prévus. On peut aussi voir que la récupération des numéros de
+colonne n'est pas fonctionnel.
+
+\begin{figure}[h]
+  \begin{center}
+  \includegraphics[scale=0.7]{./img/err-prog-out.png}
+  \caption{Affichage des erreurs et avertissements.}
+  \end{center}
+\end{figure}
 
 \subsection{Le transpileur}
 
@@ -1713,10 +1726,50 @@ modification de l'arbre aurait permis de créer deux variables avant la conditio
 pour stocker les résultats des évaluations de \textbf{a} et \textbf{b}.\\
 
 Bien que ça ne soit pas idéal, notre solution nous a tout de même permis de
-tester notre langage pour différents programmes.
+tester notre langage pour différents programmes.\\
 
-% TODO: Exemple
+\subsubsection*{Exemple}
 
+Voici un exemple simple de la fonction de fibonacci codée avec notre langage.
+Comme le on peut le voir sur la figure ci-dessous, le programme demmande un
+nombre à l'utilisateur, puis calcul et affiche le résultat de la fonction de
+fibonacci sur ce nombre.
+
+\clearpage
+\begin{figure}[h]
+  \begin{center}
+  \includegraphics[scale=0.7]{./img/fib-prog.png}
+  \caption{Test : fonction de fibonacci}
+  \end{center}
+\end{figure}
+
+Sur la figure ci-dessous, on peut voir le résultat lorsqu'on entre la valeur 8.
+On peut aussi constater que le programme compile sans erreurs.
+
+\begin{figure}[h]
+  \begin{center}
+  \includegraphics[scale=0.7]{./img/fib-prog-out.png}
+  \caption{Affichage : fonction de fibonacci}
+  \end{center}
+\end{figure}
+
+\clearpage
+Voici le code python généré par le transpileur:
+
+\begin{figure}[h]
+  \begin{center}
+  \includegraphics[scale=0.7]{./img/fib-prog-code.png}
+  \caption{Code de fibonacci en python}
+  \end{center}
+\end{figure}
+
+Dans le code ci-dessus, on peut remarquer plusieurs choses. Tout d'abord, comme
+c'est à l'utilisateur de mettre les retours à la ligne lors des affichage, on
+peut voir que l'on supprime le retour à la ligne automatique dans les affichages
+de python. De plus, on peut aussi remarquer la la valeur entrée avec
+\textit{input} est modifiée pour correspondre au type de la variable n.
+
+\clearpage
 \section{Discussion et perspectives}
 
 Toute la réalisation du projet ne s'est pas faite comme prévu, cependant, si on
