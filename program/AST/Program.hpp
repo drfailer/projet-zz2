@@ -1,6 +1,7 @@
 #ifndef __PROGRAM__
 #define __PROGRAM__
 #include "AST.hpp"
+#include <fstream>
 
 /******************************************************************************/
 /*                                  program                                   */
@@ -18,6 +19,7 @@ class Program
     Program();
     void addInclude(std::shared_ptr<Include>);
     void addFunction(std::shared_ptr<Function>);
+    void compile(std::ofstream&);
     void display();
 };
 

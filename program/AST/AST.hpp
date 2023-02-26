@@ -1,6 +1,7 @@
 #ifndef __AST__
 #define __AST__
 #include <cstdio>
+#include <fstream>
 #include <list>
 #include <string>
 #include <memory>
@@ -13,7 +14,7 @@
 class ASTNode
 {
   public:
-    /* virtual void compile() = 0; */
+    virtual void compile(std::ofstream&, int) = 0;
     virtual void display() = 0;
     virtual ~ASTNode() = 0;
 };
@@ -33,6 +34,7 @@ class Block : public ASTNode
     std::list<std::shared_ptr<ASTNode>> operations;
 
   public:
+    void compile(std::ofstream&, int = 0) override;
     void addOp(std::shared_ptr<ASTNode>);
     std::shared_ptr<ASTNode> getLastNode();
     void display() override;
@@ -54,6 +56,7 @@ class Include : public ASTNode
 
   public:
     void display() override;
+    void compile(std::ofstream&, int) override;
     Include(std::string);
 };
 
@@ -71,6 +74,7 @@ class Value : public ASTNode
     Type type;
 
   public:
+    void compile(std::ofstream&, int) override;
     void display() override;
     type_t getValue();
     Type getType() const;
@@ -93,6 +97,7 @@ class Variable : public ASTNode
 
   public:
     void display() override;
+    void compile(std::ofstream&, int) override;
     std::string getId();
     Type getType() const;
     Variable(std::string, Type);
@@ -114,6 +119,7 @@ class Assignement : public ASTNode
 
   public:
     void display() override;
+    void compile(std::ofstream&, int) override;
     Assignement(Variable, std::shared_ptr<ASTNode>);
 };
 
@@ -129,6 +135,7 @@ class Declaration : public ASTNode
 
   public:
     void display() override;
+    void compile(std::ofstream&, int) override;
     Declaration(Variable);
 };
 
@@ -149,6 +156,7 @@ class Funcall : public ASTNode
 
   public:
     std::string getFunctionName() const;
+    void compile(std::ofstream&, int) override;
     std::list<std::shared_ptr<ASTNode>> getParams() const;
     Funcall(std::string, std::list<std::shared_ptr<ASTNode>>);
     void display() override;
@@ -165,7 +173,7 @@ class Funcall : public ASTNode
  */
 class Statement : public ASTNode
 {
-  private:
+  protected:
     std::shared_ptr<Block> block;
 
   public:
@@ -188,6 +196,7 @@ class Function : public Statement
 
   public:
     void display() override;
+    void compile(std::ofstream&, int) override;
     Function(std::string, std::list<Variable>, std::shared_ptr<Block>,
         std::list<Type>);
 };
@@ -206,6 +215,7 @@ class If : public Statement
     If(std::shared_ptr<ASTNode>, std::shared_ptr<Block>);
     void createElse(std::shared_ptr<Block>);
     void display() override;
+    void compile(std::ofstream&, int) override;
 };
 
 /**
@@ -224,6 +234,7 @@ class For : public Statement
     For(Variable, std::shared_ptr<ASTNode>, std::shared_ptr<ASTNode>,
         std::shared_ptr<ASTNode>, std::shared_ptr<Block>);
     void display() override;
+    void compile(std::ofstream&, int) override;
 };
 
 /**
@@ -237,6 +248,7 @@ class While : public Statement
   public:
     While(std::shared_ptr<ASTNode>, std::shared_ptr<Block>);
     void display() override;
+    void compile(std::ofstream&, int) override;
 };
 
 /******************************************************************************/
@@ -259,6 +271,7 @@ class AddOP: public BinaryOperation
   public:
     AddOP(std::shared_ptr<ASTNode>, std::shared_ptr<ASTNode>);
     void display() override; // +
+    void compile(std::ofstream&, int) override;
 };
 
 class MnsOP: public BinaryOperation
@@ -266,6 +279,7 @@ class MnsOP: public BinaryOperation
   public:
     MnsOP(std::shared_ptr<ASTNode>, std::shared_ptr<ASTNode>);
     void display() override; // -
+    void compile(std::ofstream&, int) override;
 };
 
 class TmsOP: public BinaryOperation
@@ -273,6 +287,7 @@ class TmsOP: public BinaryOperation
   public:
     TmsOP(std::shared_ptr<ASTNode>, std::shared_ptr<ASTNode>);
     void display() override; // *
+    void compile(std::ofstream&, int) override;
 };
 
 class DivOP: public BinaryOperation
@@ -280,6 +295,7 @@ class DivOP: public BinaryOperation
   public:
     DivOP(std::shared_ptr<ASTNode>, std::shared_ptr<ASTNode>);
     void display() override; // /
+    void compile(std::ofstream&, int) override;
 };
 
 /******************************************************************************/
@@ -291,6 +307,7 @@ class EqlOP: public BinaryOperation
   public:
     EqlOP(std::shared_ptr<ASTNode>, std::shared_ptr<ASTNode>);
     void display() override; // left == right
+    void compile(std::ofstream&, int) override;
 };
 
 class SupOP: public BinaryOperation
@@ -298,6 +315,7 @@ class SupOP: public BinaryOperation
   public:
     SupOP(std::shared_ptr<ASTNode>, std::shared_ptr<ASTNode>);
     void display() override; // left == right
+    void compile(std::ofstream&, int) override;
 };
 
 class InfOP: public BinaryOperation
@@ -305,6 +323,7 @@ class InfOP: public BinaryOperation
   public:
     InfOP(std::shared_ptr<ASTNode>, std::shared_ptr<ASTNode>);
     void display() override; // left == right
+    void compile(std::ofstream&, int) override;
 };
 
 class SeqOP: public BinaryOperation
@@ -312,6 +331,7 @@ class SeqOP: public BinaryOperation
   public:
     SeqOP(std::shared_ptr<ASTNode>, std::shared_ptr<ASTNode>);
     void display() override; // left == right
+    void compile(std::ofstream&, int) override;
 };
 
 class IeqOP: public BinaryOperation
@@ -319,6 +339,7 @@ class IeqOP: public BinaryOperation
   public:
     IeqOP(std::shared_ptr<ASTNode>, std::shared_ptr<ASTNode>);
     void display() override; // left == right
+    void compile(std::ofstream&, int) override;
 };
 
 class OrOP: public BinaryOperation
@@ -326,6 +347,7 @@ class OrOP: public BinaryOperation
   public:
     OrOP(std::shared_ptr<ASTNode>, std::shared_ptr<ASTNode>);
     void display() override; // left || right
+    void compile(std::ofstream&, int) override;
 };
 
 class AndOP: public BinaryOperation
@@ -333,6 +355,7 @@ class AndOP: public BinaryOperation
   public:
     AndOP(std::shared_ptr<ASTNode>, std::shared_ptr<ASTNode>);
     void display() override; // left && right
+    void compile(std::ofstream&, int) override;
 };
 
 class XorOP: public BinaryOperation
@@ -340,6 +363,7 @@ class XorOP: public BinaryOperation
   public:
     XorOP(std::shared_ptr<ASTNode>, std::shared_ptr<ASTNode>);
     void display() override; // left ^ right
+    void compile(std::ofstream&, int) override;
 };
 
 class NotOP: public ASTNode
@@ -350,6 +374,7 @@ class NotOP: public ASTNode
   public:
     NotOP(std::shared_ptr<ASTNode>);
     void display() override; // !param
+    void compile(std::ofstream&, int) override;
 };
 
 /******************************************************************************/
@@ -370,6 +395,7 @@ class Print: public ASTNode
     void display() override;
     Print(std::string);
     Print(std::shared_ptr<ASTNode>);
+    void compile(std::ofstream&, int) override;
 };
 
 /**
@@ -383,6 +409,7 @@ class Read: public ASTNode
   public:
     void display() override;
     Read(Variable);
+    void compile(std::ofstream&, int) override;
 };
 
 /******************************************************************************/
@@ -396,6 +423,7 @@ class Return: public ASTNode
 
   public:
     void display() override;
+    void compile(std::ofstream&, int) override;
     Return(std::shared_ptr<ASTNode>);
 };
 

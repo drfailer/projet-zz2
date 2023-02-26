@@ -3,6 +3,7 @@
 #include <string>
 #include <FlexLexer.h>
 #include <fstream>
+#include <filesystem>
 #include "AST/AST.hpp"
 #include "AST/ProgramBuilder.hpp"
 #include "symtable/Symtable.hpp"
@@ -88,6 +89,19 @@ bool checkTypeError(std::list<Type> expectedType, std::list<Type> funcallType) {
     }
   }
   return typeError;
+}
+
+void checkType(std::string name, int line, int column, Type expected, Type founed)
+{
+  if (expected != founed) {
+   std::ostringstream oss;
+   oss << "assignment at " << line << ":" << column
+       << " " << name << " is of type "
+       << typeToString(expected)
+       << " but the value assigned is of type "
+       << typeToString(founed) << std::endl;
+   errMgr.newWarning(oss.str());
+  }
 }
 
 // d'avoir le type d'un symbol inline
@@ -504,6 +518,8 @@ assignement:
              if (isDefined($v, @v.begin.line, @v.begin.column, type)) {
                // TODO: check the type of the symbol and raise a warning if cast
                // needed
+               Type icType = getType($ic);
+               checkType($v, @v.begin.line, @v.begin.column, type.back(), icType);
                pb.pushBlock(std::make_shared<Assignement>(Variable($v,
                  type.back()), $ic));
              }
@@ -606,6 +622,9 @@ for:
      std::list<Type> type;
      if (isDefined($v, @v.begin.line, @v.begin.column, type)) {
        v = Variable($v, type.back());
+       checkType("RANGE_BEGIN", @b.begin.line, @b.begin.column, type.back(), getType($b));
+       checkType("RANGE_END", @e.begin.line, @e.begin.column, type.back(), getType($e));
+       checkType("RANGE_STEP", @s.begin.line, @s.begin.column, type.back(), getType($s));
      }
      $$ = pb.createFor(v, $b, $e, $s, $ops);
      contextManager.leaveScope();
@@ -640,21 +659,30 @@ int main(int argc, char **argv) {
     interpreter::Scanner scanner{ is , std::cerr };
     interpreter::Parser parser{ &scanner };
     parser.parse();
-    if (errMgr.getErrors()) {
-      errMgr.report();
+    // loock for main
+    std::optional<Symbol> sym = contextManager.lookup("main");
+    if (!sym.has_value()) {
+      errMgr.newError("no entry point.");
     }
-    else {
-      pb.display();
+    errMgr.report();
+    if (!errMgr.getErrors()) {
+      std::ofstream fs("a.out");
+      pb.getProgram()->compile(fs);
+      std::filesystem::permissions(
+        "a.out",
+        std::filesystem::perms::owner_exec | std::filesystem::perms::group_exec
+        | std::filesystem::perms::others_exec,
+        std::filesystem::perm_options::add
+      );
+      // pb.display();
     }
   }
   else {
     interpreter::Scanner scanner{ std::cin, std::cerr };
     interpreter::Parser parser{ &scanner };
     parser.parse();
-    if (errMgr.getErrors()) {
-      errMgr.report();
-    }
-    else {
+    errMgr.report();
+    if (!errMgr.getErrors()) {
       pb.display();
     }
   }

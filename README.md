@@ -4,9 +4,8 @@ Projet de seconde année à l'ISIMA.
 
 ## Objectif
 
-Le but est de créer un interpréteur et un IDE pour un langage très basique. Le
-but est de pouvoir faire découvrir la programmation à des élèves de lycée et de
-collèges.
+Le but de ce projet est de créer un langage transpilé très simple. Ce langage
+doit être statiquement typé et doit pouvoir être traduit en python.
 
 ## Syntaxe
 
@@ -23,15 +22,6 @@ fn main() {
 
 Il n'y a pas d'opérateurs, il faudra utiliser des fonctions à la place. Le but
 de ce choix est de limiter les notations pour simplifier la compréhension du
-concept de fonction au débutant.
+concept de fonction aux débutants.
 
 **NOTE:** Les notations peuvent être amenées à changer.
-
-## Features
-
-- [ ] fonctions
-- [ ] tableaux
-- [ ] types:
-  - int
-  - flt
-  - chr

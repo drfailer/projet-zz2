@@ -150,7 +150,7 @@ std::list<Type> ProgramBuilder::getParamsTypes() const
   std::list<Type> paramsTypes;
   for (Variable v : funParams) {
     paramsTypes.push_back(v.getType());
-    std::cout << "id => " << v.getId() << std::endl;
+    /* std::cout << "id => " << v.getId() << std::endl; */
   }
   return paramsTypes;
 }
