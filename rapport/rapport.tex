@@ -183,7 +183,7 @@
 
 Nous tenons à remercier Loïc YON pour nous avoir guidé et conseillé lors de la
 réalisation du projet. Nous remercions aussi Murielle MOUZAT pour l'aide qu'elle
-nous a fourni à travers son cours pour la rédaction de ce rapport. Parmi nos
+nous a fournie à travers son cours pour la rédaction de ce rapport. Parmi nos
 professeurs, nous souhaitons aussi remercier Alexis PEREDA pour ses conseils sur
 l'utilisation de C++ et pour avoir partagé ses connaissances sur les
 compilateurs ainsi que Yves-Jean DANIEL pour m'avoir conseillé l'utilisation de
@@ -350,7 +350,7 @@ des types car cela permet de mieux comprendre comment l'ordinateur gère les
 données.
 
 On doit aussi avoir la possibilité d'écrire des fonctions et des procédures
-paramétrées qui pourront être utilisées dans différents endroits du programmes.
+paramétrées qui pourront être utilisées dans différents endroits du programme.
 Ces procédures et fonctions pourront contenir une suite d'instructions dans un
 bloque de code.
 
@@ -395,7 +395,7 @@ code python au moment de la transpilation. Le code bas niveau aurait peut-être
 compilateur.
 
 Le code python généré par le transpileur ne doit pas contenir d'erreurs de
-syntaxes ou de problème de définitions de variables ou de fonctions. Il faudra
+syntaxes ou de problèmes de définitions de variables ou de fonctions. Il faudra
 donc faire toutes les vérifications nécessaires au préalable. Pour ce faire,
 nous devrons trouver les erreurs de syntaxes dans le programme de base ainsi que
 de faire des vérifications sur la définitions et le type des différents
@@ -464,7 +464,7 @@ notre guide de style.
 \subsubsection*{Les fonctions}
 
 La syntaxe pour les fonctions est la même qu'en Rust. Pour définir des
-fonctions, nous utilisons le mot clé \textbf{fn}, suivit du nom de la fonction
+fonctions, nous utilisons le mot clé \textbf{fn}, suivi du nom de la fonction
 avec ses paramètres entre parenthèses et enfin le bloque de code qui contient
 les instructions entre accolades. De plus, il faut spécifier le type de la valeur
 de retour de la fonction en utilisant \textbf{-> type} quand c'est nécessaire.
@@ -480,7 +480,7 @@ dans la fonction.
 
 Nous avons aussi ajouté les structures de contrôle présentes dans la plupart des
 langages de programmation. Il y a une structure \textit{if} qui permet de tester
-une condition. Un \textit{if} peut-être suivit d'un bloque \textit{else} si
+une condition. Un \textit{if} peut-être suivi d'un bloque \textit{else} si
 besoin. À noter cependant que cette grammaire n'autorise pas les \textit{else
 if}, dans ce cas il faudra mettre la nouvelle condition à l'intérieur du bloque
 de code du \textit{else}. La grammaire autorise aussi les boucles
@@ -500,7 +500,7 @@ Il est obligatoire de toujours spécifier ces trois valeurs au \textit{range}.
 <for> ::= for <identifier> in <range> "{"<instructions>"}"
 \end{grammar}\leavevmode\newline
 
-On rappel que même si la grammaire ne le précise pas, toute variable doit être
+On rappelle que même si la grammaire ne le précise pas, toute variable doit être
 déclarée avant d'être utilisée, il faudra donc déclarer la variable de boucle
 utilisée dans un \textit{for}.
 
@@ -650,7 +650,7 @@ elle ne doit pas être instanciée, il faut que chaque nœud ait un type concret
 utilisable dans le transpileur. À noter que l'utilisation du polymorphisme
 avec une classe abstraite force l'utilisation de pointeurs et donc d'allocation
 dynamique. Étant donné qu'il y a beaucoup d'objets à gérer et que nous n'avons
-pas de contrainte particulière en terme de performance mémoire, nous utiliserons
+pas de contraintes particulières en terme de performance mémoire, nous utiliserons
 \lstinline{std::shared_ptr} pour gérer tous nos pointeurs. Le diagramme de
 classes complet est disponible en annexe \ref{appendix:classAST}. Détaillons
 maintenant les parties importantes.
@@ -713,7 +713,7 @@ partie \ref{sec:operator} ont une classe qui hérite de
   \end{center}
 \end{figure}
 
-\subsubsection*{Les éléments typé}
+\subsubsection*{Les éléments typés}
 \label{sec:eltTypes}
 
 Les fonctions, les valeurs et les variables possèdent un champ type. Le type
@@ -837,10 +837,10 @@ bibliothèques C/C++ ainsi que des options pour flex.
 
 Détail des fonctions utilisées :
 \begin{itemize}
-  \item \textbf{c++} : indique qu'on travail avec du cpp et non du c
+  \item \textbf{c++} : indique que l'on travaille avec du cpp et non du c
   \item \textbf{interactive} : utile quand on utlise \textbf{std::in}. Le
     scanner interactif regarde plus de caractères avant de générer un token
-    (plus lent mais permet de lutter contre les ambiguitées)
+    (plus lent mais permet de lutter contre les ambiguités)
   \item \textbf{noyywrap} : ne pas appeler \textbf{yywrap()} qui permet de parser plusieurs fichiers
   \item \textbf{nodefault} : pas de scanner par défaut (=> on doit tout implémenter)
   \item \textbf{outfile:"file.cpp"} : permet de definir le fichier de sortie
@@ -858,7 +858,7 @@ suivantes :
   \item \textbf{int :} les entiers correspondent à une suite de chiffres et
     peuvent être positifs ou négatifs.
   \item \textbf{float :} similaire aux entiers sauf qu'ici on a obligatoirement
-    un point suivit d'une suite de chiffre à la fin.
+    un point suivit d'une suite de chiffres à la fin.
   \item \textbf{char :} les caractère sont toujours écrit entre \textbf{'} (par
     exemple \textbf{'a'}).
   \item \textbf{identifier :} correspond aux noms de fonctions et de variables
@@ -925,7 +925,7 @@ la partie \textit{9 The Generated Scanner} du manuel pour Flex
 #define YY_DECL int interpreter::Scanner::lex(Parser::semantic_type *yylval, Parser::location_type *yylloc)
 \end{code}\leavevmode\\~\\
 
-Cette macro permet de définir le type de la fonction \textbf{lex}, ici,
+Cette macro permet de définir le type de la fonction \textbf{lex}. Ici,
 on a pour paramètre \textcolor{purple}{yylval} (qui comme dit précédemment permet
 de transmettre des valeurs à bison) et \textcolor{purple}{yylloc} qui doit être
 fourni quand on utilise les positions dans le parseur (pour avoir le numéro de
@@ -1023,11 +1023,11 @@ d'une règle se fait de la façon suivant :
     utiliser les autre règles définis dans le fichier, par exemple, ici on
     utilise les paramètres, les bloque ainsi que les types.
   \item Le caratère \textbf{'|'} est utilisé lorsque la règle est composée de
-    plusieurs sous règles. Dans le code ci-dessus, il y a deux sous règles pour
-    les fonction, une ou on spécifie le type de retour et l'autre ou on ne le
+    plusieurs sous-règles. Dans le code ci-dessus, il y a deux sous-règles pour
+    les fonction, une où l'on spécifie le type de retour et l'autre ou on ne le
     spécifie pas. À noter que l'on ne peut pas ajouter d'éléments optionnels
     comme on pouvait le faire avec la forme de Backus-Naur entre \textbf{'[]'}.
-    Dans ce cas il faut définir plusieurs sous règles.
+    Dans ce cas, il faut définir plusieurs sous-règles.
 \end{itemize}~\\
 
 On peut ajouter des bloques de codes qui seront exécutés au moment où le parseur
@@ -1133,10 +1133,10 @@ le programme. Le diagramme de cette classe est le suivant :
   \end{center}
 \end{figure}
 
-On peut noter sur ce diagramme que l'on a des fonctions de créations qui
-permettent de créer les éléments de l'AST définis dans la première partie. De
-plus la classe est composée du programme, auquel elle ajoute les fonctions et les
-fichiers inclus. % note: ça va changer
+On peut voif sur ce diagramme que la classe possède des méthodes de créations
+qui permettent de créer les éléments de l'AST définis dans la première partie.
+De plus la classe est composée du programme, auquel elle ajoute les fonctions et
+les fichiers inclus. % note: ça va changer
 
 L'emploi de cette classe permet de limiter le code dans le parseur mais aussi de
 pouvoir récupérer des éléments dans des piles quand on ne connait pas leurs
@@ -1161,7 +1161,7 @@ parseur.
 
 \section{Analyse des symboles}
 
-Dans cette partie, nous allons créer une table des symboles qui, de façon
+Dans cette partie, nous allons créer une table des symboles, qui, de façon
 similaire à ce que l'on voit dans \cite{compilerFlexBison}, permet de vérifier
 si les symboles (variables et fonctions) utilisés ont bien été déclarés.
 Cependant, ici notre table des symboles sera plus complexe du fait que les
@@ -1201,13 +1201,13 @@ comprend aussi le type de chacun des paramètres.
   \end{center}
 \end{figure}
 
-Pour implémenter la table des symbole nous nous sommes inspiré du schéma suivant
-\cite{symtableGenius}. Ici la table des symboles est une table de tables.
-Chaque sous table correspond à une zone de code dans laquelle peuvent être
-définis des symboles (\textbf{scope}). Cette représentation est intéressante car
-elle permet de pouvoir aisément vérifier si un symbole existe en remontant
-l'arborescence de la table jusqu'aux \textbf{scope} global. Les éléments stockés
-dans la table mère sont toujours accessibles.
+Pour implémenter la table des symbole, nous nous sommes inspiré du schéma
+suivant \cite{symtableGenius}. Ici la table des symboles est une table de
+tables. Chaque sous table correspond à une zone de code dans laquelle peuvent
+être définis des symboles (\textbf{scope}). Cette représentation est
+intéressante car elle permet de pouvoir aisément vérifier si un symbole existe
+en remontant l'arborescence de la table jusqu'aux \textbf{scope} global. Les
+éléments stockés dans la table mère sont toujours accessibles.
 \clearpage
 
 \begin{figure}[h!]
@@ -1287,10 +1287,10 @@ permettre de stocker tous les messages d'erreurs. Le second est un booleen, il
 est initialisé à \textit{false} au départ et passe à \textit{true} quand une
 erreur est enregistrée. Cet attributs sert à savoir si on doit compiler ou pas
 quand le parseur a consommé tous le texte. En effet, seules les erreurs de
-syntaxes sont bloquantes, et cause un arrêt du parseur avec un retour non nul.
+syntaxe sont bloquantes, et cause un arrêt du parseur avec un retour non nul.
 Cependant, il n'est pas nécessaire de planter au niveau du parseur pour les
 erreurs de types. De ce fait il nous est possible de récupérer toutes les
-erreurs de type dans un programme qui ne comporte pas d'erreur de syntaxe et
+erreurs de type dans un programme qui ne comporte pas d'erreurs de syntaxe et
 donc de rendre la correction du programme plus rapide.
 
 \clearpage
@@ -1362,7 +1362,7 @@ fonction \textit{isDefined} qui génère un message d'erreur expliquant à
 l'utilisateur qu'il tente d'affecter une valeur à une variable non définie. On
 fait aussi une vérification au niveau de la règle qui permet de récupérer tous
 les éléments qui peuvent avoir une valeur. Ici, on peut avoir des fonctions
-comme des variables. La vérification se fait au niveau de la sous règle composée
+comme des variables. La vérification se fait au niveau de la sous-règle composée
 uniquement d'un \textit{IDENTIFIER}, car on ne souhaite pas faire la
 vérification sur des \textit{Value} ou des opérations arithmétiques.
 
