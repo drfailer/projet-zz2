@@ -91,15 +91,15 @@ bool checkTypeError(std::list<Type> expectedType, std::list<Type> funcallType) {
   return typeError;
 }
 
-void checkType(std::string name, int line, int column, Type expected, Type founed)
+void checkType(std::string name, int line, int column, Type expected, Type founded)
 {
-  if (expected != founed) {
+  if (expected != founded && founded != VOID) {
    std::ostringstream oss;
    oss << "assignment at " << line << ":" << column
        << " " << name << " is of type "
        << typeToString(expected)
        << " but the value assigned is of type "
-       << typeToString(founed) << std::endl;
+       << typeToString(founded) << std::endl;
    errMgr.newWarning(oss.str());
   }
 }
@@ -384,7 +384,7 @@ inlineSymbol:
                else {
                  v = std::make_shared<Variable>($1, VOID);
                }
-               $$ = std::make_shared<Variable>($1, VOID);
+               $$ = v;
             }
             ;
 
@@ -478,22 +478,23 @@ funcall:
        params')'
        {
          std::list<Type> expectedType;
-         isDefined($1, @1.begin.line, @1.begin.column, expectedType);
+         bool defined = isDefined($1, @1.begin.line, @1.begin.column, expectedType);
          std::shared_ptr<Funcall> funcall = pb.createFuncall();
 
-         // get the founded return type (types of the parameters)
-         std::list<Type> funcallType = getTypes(funcall->getParams());
+         if (defined) {
+           // get the founded return type (types of the parameters)
+           std::list<Type> funcallType = getTypes(funcall->getParams());
+           expectedType.pop_back(); // remove the return type
+           bool typeError = checkTypeError(expectedType, funcallType);
 
-         expectedType.pop_back(); // remove the return type
-         bool typeError = checkTypeError(expectedType, funcallType);
-
-         if (typeError) {
-           std::ostringstream oss;
-           oss << "Type error: at " << @1 << " in " << $1 << ": the expected type was:" << std::endl;
-           printType(oss, expectedType);
-           oss << "founded:" << std::endl;
-           printType(oss, funcallType);
-           errMgr.newError(oss.str());
+           if (typeError) {
+             std::ostringstream oss;
+             oss << "Type error: at " << @1 << " in " << $1 << ": the expected type was:" << std::endl;
+             printType(oss, expectedType);
+             oss << "founded:" << std::endl;
+             printType(oss, funcallType);
+             errMgr.newError(oss.str());
+           }
          }
          DEBUG("new funcall: " << $1);
          // check the type
@@ -505,8 +506,10 @@ declaration:
            type[t] IDENTIFIER
            {
              DEBUG("new declaration: " << $2);
-             contextManager.newSymbol($2, std::list<Type>($t), LOCAL_VAR);
-             pb.pushBlock(std::make_shared<Declaration>(Variable($2, VOID)));
+             std::list<Type> t;
+             t.push_back($t);
+             contextManager.newSymbol($2, t, LOCAL_VAR);
+             pb.pushBlock(std::make_shared<Declaration>(Variable($2, $t)));
            }
            ;
 
