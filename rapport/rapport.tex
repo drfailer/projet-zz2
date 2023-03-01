@@ -1369,7 +1369,7 @@ charge aussi de récupérer le type de la fonction appelée. Nous détaillerons 
 la partie suivante la vérification du type.
 
 À noter que comme les symboles sont récupérés et testés en même temps que le
-parseur construit l'arbre, la collection des symboles suis le sens du texte. De
+parseur construit l'arbre, la collection des symboles suit le sens du texte. De
 ce fait, toute fonction utilisée doit être définie au dessus de la fonction dans
 laquelle elle est appelée. Cela peut être un problème car notre grammaire ne
 permet pas la déclaration de fonctions, de ce fait il est pour l'instant
@@ -1377,14 +1377,14 @@ impossible d'avoir deux fonctions qui s'appellent entre elles sans avoir
 d'erreur.\\
 
 La vérification de la définition de la fonction \textit{main} se fait en
-dernier, juste avant de transpiler. Nous savons que quand le parseur a fini de
+dernier, juste avant de transpiler. Nous savons que, quand le parseur a fini de
 tourner le \textit{ContextManager} est retourné au \textit{scope} global. Il
 suffit donc de vérifier que la méthode \textit{lookup} retourne bien une valeur
 lorsque l'on fait une recherche du symbole \textit{"main"}. À noter que du fait
 que la grammaire n'autorise pas de variable globale, il ne peut y avoir qu'un
 seul symbole nommé \textit{main} dans le \textit{scope} global, et celui-ci
 correspond forcément à une fonction. Il n'est donc pas nécessaire d'utiliser
-l'attribut \textit{Kind}, cependant, si l'on souhaitait ajouter des variables
+l'attribut \textit{Kind}. Cependant, si l'on souhaitait ajouter des variables
 globales, il faudrait faire plus de vérifications. De plus, nous n'avons pas
 implémenté la possibilité de donner des arguments au programme, ce n'est donc
 pas géré dans cette partie.
@@ -1392,14 +1392,14 @@ pas géré dans cette partie.
 \subsubsection*{Vérification des types}
 
 La seconde vérification à faire concerne les types des éléments. Pour la
-récupération des types nous utiliserons certaines des fonctions décrites dans la
+récupération des types, nous utiliserons certaines des fonctions décrites dans la
 partie précédente.\\
 
-Tout d'abord on fait une vérification de type au niveau de l'affectation.
+Tout d'abord, on fait une vérification de type au niveau de l'affectation.
 Ici, on compare le type de la variable avec le type de la valeur affectée. On
 utilise bien la fonction qui génère un avertissement et non une erreur pour la
 conversion de type. La récupération du type se fait avec \textit{isDefined}
-pour la variable et pour la valeur on utilise la fonction \textit{getType}
+pour la variable et pour la valeur, on utilise la fonction \textit{getType}
 décrite plus haut.\\
 
 C'est pour les fonctions que la vérification du type est complexe. Comme dit
@@ -1434,8 +1434,8 @@ compare avec le type de la valeur renvoyée. Si les types ne correspondent pas,
 une erreur est générée.\\
 
 Nous avons décrit la construction de l'arbre syntaxique du langage et expliqué
-la vérification des définitions et des types. De ce fait, nous somme capable de
-donner un sens au code source ainsi que de vérifier qu'il est correcte. La
+la vérification des définitions et des types. De ce fait, nous sommes capables
+de donner un sens au code source ainsi que de vérifier qu'il est correcte. La
 dernière étape concerne donc la traduction de l'arbre en python, ce qui fait
 l'objet de la partie suivante.
 
@@ -1454,7 +1454,7 @@ correct en python. De plus, les éléments de notre transpileur actuel peuvent
 
 Comme on peut le voir dans cet article \cite{tutotranspiler}, une bonne solution
 aurait nécessité la génération d'un second arbre syntaxique correspondant à la
-syntaxe de python. En effet, le principe du transpileur et de faire une
+syntaxe de python. En effet, le principe du transpileur est de faire une
 traduction d'un langage vers un autre, cependant, la syntaxe et les
 fonctionnalités du langage de départ peuvent être très différentes de celui
 d'arrivée. Cela implique que certains éléments du langage source deviennent
@@ -1463,7 +1463,7 @@ est un langage fonctionnel, toutes les boucles doivent être remplacées par des
 fonctions récursives. Si nous souhaitons transpiler ce type de langage en python
 il faudra obligatoirement supprimer la récursivité car python limite le
 nombre de fois qu'une fonction peut s'appeler elle-même (en plus du fait que
-cela soit très lent). Dans ce cas extrême il y aurait beaucoup de modifications
+cela soit très lent). Dans ce cas extrême, il y aurait beaucoup de modifications
 à faire et il faudrait dérécursifier toutes les fonctions de l'AST d'origine
 pour créer l'AST de python.
 
@@ -1528,13 +1528,13 @@ commandes \textbf{flex} et \textbf{bison}.
 \subsection{Les recherches}
 
 Pour les recherches, nous avons commencé par faire des recherches globales sur
-le sujet pour avoir une idée du plan à suivre. Ces recherches nous on permis de
+le sujet pour avoir une idée du plan à suivre. Ces recherches nous ont permis de
 déterminer les éléments dont nous avions besoin pour créer le langage. La suite
 des recherches s'est fait pendant l'implémentation des différents composants. Le
 but était d'effectuer des recherches plus précises sur le composant à
 implémenter pour prendre connaissance des différentes solutions et choisir
 celle que nous jugions la plus intéressante. Pour faire nos recherches, nous
-avons surtout utiliser \textit{google scholar} qui nous avait été recommandé
+avons surtout utilisé \textit{google scholar} qui nous avait été recommandé
 pour avoir des documents scientifiques certifiés. Nous avons aussi utilisé la
 base de données \textit{technique de l'ingénieur} qui nous avait été présentée
 lors de la séance sur la recherche documentaire. C'est sur cette base que nous
@@ -1544,7 +1544,8 @@ utilisé \textit{google}, qui nous a notamment permis de trouver le tutoriel sur
 la mise en place de Flex et Bison en C++ \cite{cppparsing}.
 
 Trouver de bons documents n'a pas été simple, par exemple, nous avons essayé
-d'utiliser la base \textit{ENI} mais les articles proposés ne nous ont pas aidé.
+d'utiliser la base \textit{ENI} mais les articles proposés ne nous ont pas
+aidés.
 
 \clearpage
 \subsection{Planification des tâches}
@@ -1552,22 +1553,22 @@ d'utiliser la base \textit{ENI} mais les articles proposés ne nous ont pas aid�
 Dans cette partie, nous allons voir comment les différentes tâches on été
 réalisées. Nous détaillerons deux diagrammes de Gantt, le premier correspondant
 à la planification que nous pensions avoir en début de projet et le second à la
-planification réelle. Ces deux diagrammes sont extrêmement différents, en effet,
-nous étions au départ parti pour implémenter les différents composants les uns
+planification réelle. Ces deux diagrammes sont extrêmement différents. En effet,
+nous étions au départ partis pour implémenter les différents composants les uns
 après les autres. Cependant, nos premières recherches nous ont apporté presque
 autant de questions que de réponses, nous sommes donc partis sur une méthode plus
 itérative. Nous avons commencé par implémenter les composants dont nous étions
 sûrs de l'utilité et du fonctionnement, pour avoir quelque chose de fonctionnel
-qui nous permette de faire des tests. La correction d'erreurs à donc été
-relativement simple étant donné que nous n'ajoutions que très peu de
+qui nous permette de faire des tests. La correction d'erreurs a donc été
+relativement simple, étant donné que nous n'ajoutions que très peu de
 fonctionnalités à chaque fois. Cependant, nous avons eu beaucoup d'hésitations
 quand à nos choix d'implémentation et certaines parties du code ont été
 réécrites plusieurs fois.\\
 
-On peut donc voir sur ce premier diagramme que nous contions développer les
-éléments les uns après les autres. Nous contions commencer par l'AST puis
+On peut donc voir sur ce premier diagramme, que nous comptions développer les
+éléments les uns après les autres. Nous comptions commencer par l'AST puis
 implémenter le parseur, la table des symboles et le transpileur. À noter que
-nous n'avions pas encore prévue de créer un objet pour la gestion des erreurs.
+nous n'avions pas encore prévu de créer un objet pour la gestion des erreurs.
 Ce diagramme est disponible en index \ref{appendix:expectedgantt} pour plus de
 lisibilité.
 
@@ -1586,7 +1587,7 @@ qu'elles correspondent à l'implémentation de l'AST et du parseur. De plus, si 
 compare la durée, on peut constater que la conception de ces deux premiers
 éléments a pris beaucoup plus de temps que nous l'avions prévu à cause de nos
 hésitations. Pour la table des symboles, la durée globale a été assez bien
-respectée. Si on regarde dans le détail on voit que l'implémentation a été plus
+respectée. Si on regarde dans le détail, on voit que l'implémentation a été plus
 rapide que prévu mais nous avons dû implémenter la gestion d'erreurs en plus.
 On peut enfin constater qu'étant donné le fait que les deux premières parties
 ont été plus longues, le temps consacré à l'implémentation du transpileur a été
@@ -1623,13 +1624,13 @@ Au départ, les objectifs étaient de pouvoir créer des fonctions, des variable
 typées et pouvoir faire des opérations arithmétiques et booléennes. Nous
 souhaitions aussi avoir les structures de contrôle présentes dans la plupart des
 langages. Au final, la grammaire du langage permet bien de faire tous ce que
-nous souhaitions au départ. Cependant, comme nous l'avons évoquée dans la partie
-\ref{sec:verifDef} notre grammaire ne pas permet à deux fonctions de s'appeler
-entre elles. Cela vient du fait que nous n'avons pas créé de règle pour la
-déclaration de fonctions comme ce que l'on peut avoir en C par exemple. Pour
-palier à ce problème, nous pourrions ajouter une nouvelle règle de grammaire
-pour déclarer les fonctions et ainsi créer les symboles correspondant avant de
-traiter la définition.\\
+nous souhaitions au départ. Cependant, comme nous l'avons évoqué dans la partie
+\ref{sec:verifDef} notre grammaire ne pas permet pas à deux fonctions de
+s'appeler entre elles. Cela vient du fait que nous n'avons pas créé de règle
+pour la déclaration de fonctions comme ce que l'on peut avoir en C par exemple.
+Pour palier à ce problème, nous pourrions ajouter une nouvelle règle de
+grammaire pour déclarer les fonctions et ainsi créer les symboles correspondants
+avant de traiter la définition.\\
 
 Pour ce qui est du langage en lui-même, il aurait été intéressant de pouvoir
 permettre la création de tableaux en plus de ce que nous avons fait. En effet,
@@ -1655,13 +1656,13 @@ syntaxique qui convient.
 
 \subsection{Gestion des erreurs}
 
-Pour la gestion des erreurs nous avons pu faire des vérifications au niveau des
+Pour la gestion des erreurs, nous avons pu faire des vérifications au niveau des
 définitions et des types. Cependant, comme vu précédemment, les fonctions
 employées pour l'accès à la table des symboles ne sont pas idéales. Il faudrait
 donc refaire ces fonctions utilitaires et peut-être les intégrer au
 \textit{ContextManager}.\\
 
-Un autre point qui devrait être amélioré serait la gestion des erreurs de
+Un autre point qui devrait être amélioré, serait la gestion des erreurs de
 syntaxe. En effet, pour l'instant, ce type d'erreur est uniquement géré par
 Bison, qui s'arrête à la moindre erreur de syntaxe. Il est possible d'utiliser
 une règle \textit{error} et une option \textit{yyerrok} pour éviter que le
@@ -1673,8 +1674,8 @@ l'utilisateur et d'ajouter le fait que toutes ces erreurs ne font pas planter le
 parseur.\\
 
 Le dernier point d'amélioration concerne la localisation des erreurs. Pour
-l'instant, nos messages d'erreurs donnent bien le bon numéro de ligne en
-revanche nous n'avons pas réussi à faire fonctionner les numéros de colonne. Il
+l'instant, nos messages d'erreurs donnent bien le bon numéro de ligne, en
+revanche, nous n'avons pas réussi à faire fonctionner les numéros de colonne. Il
 aurait aussi été intéressant d'afficher la ligne du programme qui comporte une
 erreur comme le fait \textbf{gcc} par exemple.\\
 
@@ -1693,7 +1694,7 @@ programme test.
 \clearpage
 On peut voir sur la figure que le programme affiche bien toutes les erreurs et
 avertissements prévus. On peut aussi voir que la récupération des numéros de
-colonne n'est pas fonctionnel et qu'il est toujours à 1.
+colonne n'est pas fonctionnelle et qu'il est toujours à 1.
 
 \begin{figure}[h]
   \begin{center}
@@ -1713,11 +1714,11 @@ préférable que les classes de l'arbre n'aient aucun lien avec le transpileur. 
 effet, si nous souhaitions changer le langage cible pour la traduction, ou
 encore remplacer le transpileur par un compilateur, il faudrait modifier l'AST
 ce qui ne devrait pas être le cas. De plus, comme nous l'avons dit, si nous
-souhaitions ajouter de nouvelles fonctionnalités au langage cela pourrait
+souhaitions ajouter de nouvelles fonctionnalités au langage, cela pourrait
 entrainer beaucoup de problèmes.
 
 Enfin, bien qu'il soit très simple, le langage possède tout de même une
-fonctionnalité qui n'est pas directement traduisible en python. En effet notre
+fonctionnalité qui n'est pas directement traduisible en python. En effet, notre
 langage possède un opérateur \textit{XOR}, ce qui n'est pas le cas de python.
 Cela nous force à remplacer \textit{XOR(a, b)} directement par \textit{(a and
 (not b)) or ((not a) and b)}. C'est un problème pour l'optimisation car les
@@ -1732,8 +1733,8 @@ tester notre langage pour différents programmes.\\
 \subsubsection*{Exemple}
 
 Voici un exemple simple de la fonction de fibonacci codée avec notre langage.
-Comme le on peut le voir sur la figure ci-dessous, le programme demmande un
-nombre à l'utilisateur, puis calcul et affiche le résultat de la fonction de
+Comme on peut le voir sur la figure ci-dessous, le programme demande un
+nombre à l'utilisateur, puis calcule et affiche le résultat de la fonction de
 fibonacci sur ce nombre.
 
 \begin{figure}[h]
@@ -1766,7 +1767,7 @@ Voici le code python généré par le transpileur:
 Dans le code ci-dessus, on peut remarquer plusieurs choses. Tout d'abord, comme
 c'est à l'utilisateur de mettre les retours à la ligne lors des affichages, on
 peut voir que l'on supprime le retour à la ligne automatique dans les
-\textit{print} de python. De plus, on peut aussi remarquer la la valeur entrée
+\textit{print} de python. De plus, on peut aussi remarquer la valeur entrée
 avec \textit{input} est modifiée pour correspondre au type de la variable n.
 Enfin, comme le développement du transpileur n'est pas terminé, nous affichons
 les déclarations de variables en commentaire (pour vérifier que tout est bien
@@ -1808,7 +1809,7 @@ possibilité envisageable.\\~\\
 
 Il y a donc plein de perspectives possibles pour améliorer ou modifier le
 projet. Il y a la possibilité de compléter le langage en lui ajoutant de
-nouvelles fonctionnalités ou encore de complètement changer de sujet en
+nouvelles fonctionnalités ou encore de complètement changer de sujet, en
 remplaçant le transpileur par un des autres outils que nous avons cités.
 
 \clearpage
@@ -1822,7 +1823,7 @@ fonctions, l'utilisation de variables, l'écriture des structures de contrôles
 if, for et while et d'avoir un système de types. Pour cette partie, l'objectif a
 été atteint. De plus, nous devions réaliser un transpileur pour traduire notre
 code en python. Nous avons pu fournir une solution fonctionnelle permettant de
-faire des tests qui ne satisfait cependant pas nos attentes, le projet n'est
+faire des tests qui ne satisfont cependant pas nos attentes. Le projet n'est
 donc pas complètement terminé. Pour finir le transpileur, il faudrait générer un
 nouvel arbre syntaxique spécifique à python et faire la traduction à partir de
 cet AST.\\
@@ -1844,9 +1845,9 @@ L'objectif du projet n'est pas complètement atteint, la partie sur le
 transpileur nécessite donc d'être refaite de façon plus convenable. De plus, il
 y a beaucoup de choses qui pourraient être apportées au projet pour compléter le
 langage ou modifier le fonctionnement du programme. Il serait possible de créer
-de nouveaux éléments de grammaire pour ajouter de nouvelles fonctionnalités
+de nouveaux éléments de grammaire pour ajouter de nouvelles fonctionnalités,
 comme des tableaux ou des structures par exemple. Enfin, il est aussi
-envisageable de remplacer le transpileur par un interpréteur ce qui
+envisageable de remplacer le transpileur par un interpréteur, ce qui
 nécessiterait l'implémentation de plus d'éléments pour gérer la mémoire par
 exemple.
 
