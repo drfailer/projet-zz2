@@ -228,6 +228,10 @@ paramDeclaration: %empty
        contextManager.newSymbol($2, std::list<Type>($t), FUN_PARAM);
        pb.pushFunctionParam(Variable($2, $t));
      }
+     | type[t] IDENTIFIER'['INT']'
+     {
+
+     }
      ;
 
 params: param

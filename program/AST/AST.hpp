@@ -7,6 +7,21 @@
 #include <memory>
 #include "Types.hpp"
 
+/*=============================================================================
+# TODO - AST
+- [ ] rewrite getters (const + refs)
+- [ ] write a container class to group variable and arrays
+- [ ] create a TypedElements abstract class to group elements with types
+
+# TODO - Symtable
+- [ ] add array kind
+- [ ] add the utilities functions in bison file
+
+# TODO - Parser
+- [ ] add arrays to set (assignement)
+- [ ] add arrays to the other rules
+=============================================================================*/
+
 /******************************************************************************/
 /*                                    node                                    */
 /******************************************************************************/
@@ -101,6 +116,43 @@ class Variable : public ASTNode
     std::string getId();
     Type getType() const;
     Variable(std::string, Type);
+};
+
+class Array : public ASTNode
+{
+  protected:
+    std::string name;
+    int size;
+    Type type;
+
+  public:
+    std::string getName() const;
+    Type getType() const;
+    int getSize() const;
+    Array(std::string, int, Type);
+    ~Array() = default;
+};
+
+class ArrayDeclaration: public Array
+{
+  public:
+    void display() override;
+    void compile(std::ofstream&, int) override;
+    ArrayDeclaration(std::string, int, Type);
+    ~ArrayDeclaration() = default;
+};
+
+class ArrayAccess: public Array
+{
+  private:
+    int index;
+
+  public:
+    void display() override;
+    void compile(std::ofstream&, int) override;
+    int getIndex() const;
+    ArrayAccess(std::string, int, Type, int);
+    ~ArrayAccess() = default;
 };
 
 /******************************************************************************/

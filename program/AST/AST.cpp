@@ -95,6 +95,51 @@ void Variable::compile(std::ofstream& fs, int lvl)
 
 /* -------------------------------------------------------------------------- */
 
+Array::Array(std::string name, int size, Type type):
+  name(name), size(size), type(type)
+{}
+
+std::string Array::getName() const {
+  return name;
+}
+
+Type Array::getType() const {
+  return type;
+}
+
+int Array::getSize() const {
+  return size;
+}
+
+ArrayDeclaration::ArrayDeclaration(std::string name, int size, Type type):
+  Array(name, size, type) {}
+
+void ArrayDeclaration::display() {
+  std::cout << Array::name << "[" << size << "]";
+}
+
+void ArrayDeclaration::compile(std::ofstream& fs, int lvl) {
+  indent(fs, lvl);
+  fs << name << "=[]";
+}
+
+ArrayAccess::ArrayAccess(std::string name, int size, Type type, int index):
+  Array(name, size, type), index(index) {}
+
+int ArrayAccess::getIndex() const {
+  return index;
+}
+
+void ArrayAccess::display() {
+  std::cout << Array::name << "[" << index << "]";
+}
+
+void ArrayAccess::compile(std::ofstream &fs, int lvl) {
+  fs << Array::name << "[" << index << "]";
+}
+
+/* -------------------------------------------------------------------------- */
+
 void Function::display() {
   std::cout << "Function(" << id << ", [";
   for (Variable p: params) {
