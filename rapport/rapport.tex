@@ -189,7 +189,7 @@ nous a fournie à travers son cours pour la rédaction de ce rapport. Parmi nos
 professeurs, nous souhaitons aussi remercier Alexis PEREDA pour ses conseils sur
 l'utilisation de C++ et pour avoir partagé ses connaissances sur les
 compilateurs ainsi que Yves-Jean DANIEL pour nous avoir conseillé l'utilisation
-de Flex et Bison pour l'écriture d'un \gls{parser}.
+de Flex et Bison pour l'écriture d'un \gls{parser}*.
 
 \normalsize
 \onehalfspacing
@@ -325,7 +325,7 @@ rapides et les plus légers.
 
 La seconde méthode pour exécuter du code est l'utilisation d'une machine
 virtuelle. Le code source du langage est traduit en un code de bas niveau, le
-\gls{bytecode}, qui est ensuite exécuté par une machine virtuelle. C'est par
+\gls{bytecode}*, qui est ensuite exécuté par une machine virtuelle. C'est par
 exemple le cas du langage Java.
 
 La troisième famille est celle des langages interprétés. Ici c'est
@@ -336,7 +336,7 @@ La dernière famille est celle que nous allons étudier lors de la réalisation 
 ce projet, ce sont les langages transpilés. L'objectif d'un transpileur est de
 traduire le code source dans un autre langage. Le principal avantage du
 transpileur est qu'il permet de déléguer les tâches complexes au compilateur du
-langage cible. Par exemple, cela évite d'avoir à écrire un \gls{gc} pour gérer
+langage cible. Par exemple, cela évite d'avoir à écrire un \gls{gc}* pour gérer
 la mémoire.
 
 \section{Les fonctionnalités du langage}
@@ -436,7 +436,7 @@ supprimer tous les opérateurs, ainsi, toutes les opérations arithmétiques et
 booléennes auront la même syntaxe que les fonctions. Par exemple, $a+b$ s'écrira
 \textit{add}(a, b). De plus, pour différer au maximum de python, notre syntaxe
 s'inspirera de celle des langages C et Rust. Pour définir la grammaire de
-manière formelle, nous utiliserons la \gls{bnf}.
+manière formelle, nous utiliserons la \gls{bnf}*.
 
 \subsubsection*{Les variables}
 
@@ -556,7 +556,7 @@ utiliser la fonction \textit{print} qui peut être utilisée de deux manières :
 
 Nous n'avons pas implémenté de fonction d'affichage similaire à \textbf{printf}
 en C. La première raison est le fait que notre langage ne supporte pas les
-\gls{varFonc}. De plus, l'ajout de ce type de fonctions d'affichage nécessite la
+\gls{varFonc}*. De plus, l'ajout de ce type de fonctions d'affichage nécessite la
 gestion d'une chaine de formatage, ce qui aurait grandement augmenté la
 complexité de notre grammaire si nous avions voulu l'intégrer directement au
 langage. Voici la syntaxe pour ces fonctions :
@@ -628,7 +628,7 @@ programme.
 
 Pour donner un sens aux éléments textuels du langage, nous utiliserons une
 représentation sous forme d'arbre. On appelle cela un arbre syntaxique ou
-\gls{ast}. Les arbres syntaxiques sont nés avec la théorie des langages et comme
+\gls{ast}*. Les arbres syntaxiques sont nés avec la théorie des langages et comme
 on peut le voir dans cet article \cite{compilerTICH}, les AST sont très
 utilisés par les compilateurs car ce sont des structures plus simples à
 manipuler que du texte. Voici l'arbre syntaxique de la fonction \textit{add3} :
@@ -772,7 +772,7 @@ partie, nous nous sommes aidés d'un article \cite{compilerFlexBison} qui
 présente la construction d'un compilateur avec Flex et Bison en C. Pour porter
 le code en C++, nous avons utilisé la documentation officielle des deux outils
 ainsi qu'un article qui nous a permis d'avoir un squelette de base pour le
-\gls{lexer} et le parseur \cite{cppparsing}.
+\gls{lexer}* et le parseur \cite{cppparsing}.
 
 \subsection{Le lexeur}
 
@@ -1486,7 +1486,7 @@ second paramètre est un entier qui permet de connaitre le nombre de tabulations
 nombre est incrémenté à chaque fois que l'on entre dans un bloc de code. La
 traduction est lancée par le \textit{ProgramBuilder} qui appelle la méthode
 \textit{compile} de toutes les fonctions du programme. À noter que le
-\textit{ProgramBuilder} insère aussi un \gls{shebang} en haut du fichier pour
+\textit{ProgramBuilder} insère aussi un \gls{shebang}* en haut du fichier pour
 pouvoir exécuter le programme comme un exécutable classique sur les systèmes
 UNIX. Cela nécessite aussi d'ajouter les droits d'exécutions au fichier ce qui
 est fait dans la fonction \textit{main} après la traduction à l'aide de
