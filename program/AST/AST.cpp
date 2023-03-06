@@ -236,7 +236,22 @@ void Assignement::compile(std::ofstream& fs, int lvl)
   indent(fs, lvl);
   variable.compile(fs, lvl); // TODO: gérer le cast
   fs << "=";
+  switch (variable.getType()) {
+    case INT:
+      fs << "int(";
+      break;
+    case CHR:
+      fs << "chr(";
+      break;
+    case FLT:
+      fs << "float(";
+      break;
+    default:
+      fs << "(";
+      break;
+  }
   value->compile(fs, lvl);
+  fs << ")";
 }
 
 /* -------------------------------------------------------------------------- */
@@ -292,6 +307,8 @@ void Funcall::compile(std::ofstream& fs, int lvl) {
   fs << functionName << "(";
   for (std::shared_ptr<ASTNode> p : params) {
     p->compile(fs, 0);
+    if (p != params.back())
+      fs << ',';
   }
   fs << ")";
 }
@@ -452,9 +469,11 @@ void AddOP::display()
 
 void AddOP::compile(std::ofstream& fs, int lvl)
 {
+  fs << "(";
   left->compile(fs, 0);
   fs << "+";
   right->compile(fs, 0);
+  fs << ")";
 }
 
 MnsOP::MnsOP(std::shared_ptr<TypedElement> left, std::shared_ptr<TypedElement> right)
@@ -471,9 +490,11 @@ void MnsOP::display()
 
 void MnsOP::compile(std::ofstream& fs, int lvl)
 {
+  fs << "(";
   left->compile(fs, 0);
   fs << "-";
   right->compile(fs, 0);
+  fs << ")";
 }
 
 TmsOP::TmsOP(std::shared_ptr<TypedElement> left, std::shared_ptr<TypedElement> right)
@@ -490,9 +511,11 @@ void TmsOP::display()
 
 void TmsOP::compile(std::ofstream& fs, int lvl)
 {
+  fs << "(";
   left->compile(fs, 0);
   fs << "*";
   right->compile(fs, 0);
+  fs << ")";
 }
 
 DivOP::DivOP(std::shared_ptr<TypedElement> left, std::shared_ptr<TypedElement> right)
@@ -509,9 +532,11 @@ void DivOP::display()
 
 void DivOP::compile(std::ofstream& fs, int lvl)
 {
+  fs << "(";
   left->compile(fs, 0);
   fs << "/";
   right->compile(fs, 0);
+  fs << ")";
 }
 
 /******************************************************************************/

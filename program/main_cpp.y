@@ -393,25 +393,25 @@ inlineSymbol:
             ;
 
 arithmeticOperations:
-                    ADD'(' operand[left] COMMA operand[right] ')'
+                    ADD'(' inlineSymbol[left] COMMA inlineSymbol[right] ')'
                     {
                       DEBUG("addOP");
                       $$ = std::make_shared<AddOP>($left, $right);
                     }
                     |
-                    MNS'(' operand[left] COMMA operand[right] ')'
+                    MNS'(' inlineSymbol[left] COMMA inlineSymbol[right] ')'
                     {
                       DEBUG("mnsOP");
                       $$ = std::make_shared<MnsOP>($left, $right);
                     }
                     |
-                    TMS'(' operand[left] COMMA operand[right] ')'
+                    TMS'(' inlineSymbol[left] COMMA inlineSymbol[right] ')'
                     {
                       DEBUG("tmsOP");
                       $$ = std::make_shared<TmsOP>($left, $right);
                     }
                     |
-                    DIV'(' operand[left] COMMA operand[right] ')'
+                    DIV'(' inlineSymbol[left] COMMA inlineSymbol[right] ')'
                     {
                       DEBUG("divOP");
                       $$ = std::make_shared<DivOP>($left, $right);
@@ -619,7 +619,7 @@ simpleIf:
   ;
 
 for:
-   FOR IDENTIFIER[v] IN RANGE'('operand[b] COMMA operand[e] COMMA operand[s]')'
+   FOR IDENTIFIER[v] IN RANGE'('inlineSymbol[b] COMMA inlineSymbol[e] COMMA inlineSymbol[s]')'
    {
      contextManager.enterScope();
    }
