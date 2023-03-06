@@ -79,20 +79,33 @@ class Include : public ASTNode
 /*                                  factors                                   */
 /******************************************************************************/
 
+class TypedElement: public ASTNode
+{
+  protected:
+    Type type;
+
+  public:
+    virtual Type getType() const {
+      return type;
+    }
+    void setType(Type type) {
+      this->type = type;
+    }
+    ~TypedElement() = 0;
+};
+
 /**
  * @brief  Basic values of an available type.
  */
-class Value : public ASTNode
+class Value : public TypedElement
 {
   private:
     type_t value;
-    Type type;
 
   public:
     void compile(std::ofstream&, int) override;
     void display() override;
-    type_t getValue();
-    Type getType() const;
+    type_t getValue() const;
     Value(type_t, Type);
     Value() = default;
 };
@@ -104,30 +117,26 @@ class Value : public ASTNode
  * TODO: justify or not the choice of having a type using the definition of the
  *       variable.
  */
-class Variable : public ASTNode
+class Variable : public TypedElement
 {
   private:
     std::string id;
-    Type type;
 
   public:
     void display() override;
     void compile(std::ofstream&, int) override;
-    std::string getId();
-    Type getType() const;
+    std::string getId() const;
     Variable(std::string, Type);
 };
 
-class Array : public ASTNode
+class Array : public TypedElement
 {
   protected:
     std::string name;
     int size;
-    Type type;
 
   public:
     std::string getName() const;
-    Type getType() const;
     int getSize() const;
     Array(std::string, int, Type);
     ~Array() = default;
@@ -200,17 +209,17 @@ class Declaration : public ASTNode
  *         parameters are node as the can have multiple types (binary operation,
  *         variable, values, other funcall, ...)
  */
-class Funcall : public ASTNode
+class Funcall : public TypedElement
 {
   private:
     std::string functionName;
-    std::list<std::shared_ptr<ASTNode>> params; // TODO: get all params
+    std::list<std::shared_ptr<TypedElement>> params;
 
   public:
     std::string getFunctionName() const;
     void compile(std::ofstream&, int) override;
-    std::list<std::shared_ptr<ASTNode>> getParams() const;
-    Funcall(std::string, std::list<std::shared_ptr<ASTNode>>);
+    std::list<std::shared_ptr<TypedElement>> getParams() const;
+    Funcall(std::string, std::list<std::shared_ptr<TypedElement>>, Type);
     void display() override;
 };
 
@@ -239,7 +248,7 @@ class Statement : public ASTNode
  *
  * TODO: create a return statment and manage return type.
  */
-class Function : public Statement
+class Function : public Statement, public TypedElement
 {
   private:
     std::string id;
@@ -249,6 +258,7 @@ class Function : public Statement
   public:
     void display() override;
     void compile(std::ofstream&, int) override;
+    Type getType() const override;
     Function(std::string, std::list<Variable>, std::shared_ptr<Block>,
         std::list<Type>);
 };
@@ -318,34 +328,34 @@ class BinaryOperation: public ASTNode
     void display() override;
 };
 
-class AddOP: public BinaryOperation
+class AddOP: public BinaryOperation, public TypedElement
 {
   public:
-    AddOP(std::shared_ptr<ASTNode>, std::shared_ptr<ASTNode>);
+    AddOP(std::shared_ptr<TypedElement>, std::shared_ptr<TypedElement>);
     void display() override; // +
     void compile(std::ofstream&, int) override;
 };
 
-class MnsOP: public BinaryOperation
+class MnsOP: public BinaryOperation, public TypedElement
 {
   public:
-    MnsOP(std::shared_ptr<ASTNode>, std::shared_ptr<ASTNode>);
+    MnsOP(std::shared_ptr<TypedElement>, std::shared_ptr<TypedElement>);
     void display() override; // -
     void compile(std::ofstream&, int) override;
 };
 
-class TmsOP: public BinaryOperation
+class TmsOP: public BinaryOperation, public TypedElement
 {
   public:
-    TmsOP(std::shared_ptr<ASTNode>, std::shared_ptr<ASTNode>);
+    TmsOP(std::shared_ptr<TypedElement>, std::shared_ptr<TypedElement>);
     void display() override; // *
     void compile(std::ofstream&, int) override;
 };
 
-class DivOP: public BinaryOperation
+class DivOP: public BinaryOperation, public TypedElement
 {
   public:
-    DivOP(std::shared_ptr<ASTNode>, std::shared_ptr<ASTNode>);
+    DivOP(std::shared_ptr<TypedElement>, std::shared_ptr<TypedElement>);
     void display() override; // /
     void compile(std::ofstream&, int) override;
 };

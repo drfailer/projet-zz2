@@ -125,10 +125,10 @@ Type getType(std::shared_ptr<ASTNode> node) {
 }
 
 // permet de récupérer les types des paramètres lors des appels de fonctions
-std::list<Type> getTypes(std::list<std::shared_ptr<ASTNode>> nodes) {
+std::list<Type> getTypes(std::list<std::shared_ptr<TypedElement>> nodes) {
   std::list<Type> types;
-  for (std::shared_ptr<ASTNode> node : nodes) {
-    types.push_back(getType(node));
+  for (std::shared_ptr<TypedElement> node : nodes) {
+    types.push_back(node->getType());
   }
   return types;
 }
@@ -152,11 +152,11 @@ std::list<Type> getTypes(std::list<std::shared_ptr<ASTNode>> nodes) {
 
 %nterm <Type> type
 %nterm <Value> value
-%nterm <std::shared_ptr<ASTNode>> inlineSymbol
-%nterm <std::shared_ptr<ASTNode>> arithmeticOperations
+%nterm <std::shared_ptr<TypedElement>> inlineSymbol
+%nterm <std::shared_ptr<TypedElement>> arithmeticOperations
 %nterm <std::shared_ptr<ASTNode>> booleanOperation
-%nterm <std::shared_ptr<ASTNode>> funcall
-%nterm <std::shared_ptr<ASTNode>> operand
+%nterm <std::shared_ptr<TypedElement>> funcall
+%nterm <std::shared_ptr<TypedElement>> operand
 %nterm <std::shared_ptr<Block>> block
 %nterm <std::shared_ptr<If>> if
 %nterm <std::shared_ptr<If>> simpleIf
@@ -250,7 +250,7 @@ operand:
      IDENTIFIER
      {
         DEBUG("new param variable" );
-        std::shared_ptr<ASTNode> v;
+        std::shared_ptr<Variable> v;
         std::list<Type> type;
         if (isDefined($1, @1.begin.line, @1.begin.column, type)) {
           v = std::make_shared<Variable>($1, type.back());
@@ -303,7 +303,7 @@ code: %empty
     {
       std::optional<Symbol> sym =
         contextManager.lookup(currentFunction);
-      Type rtType = getType($rs);
+      Type rtType = $rs->getType();
       Type functionType = sym.value().getType().back();
       std::ostringstream oss;
 
@@ -488,6 +488,7 @@ funcall:
          if (defined) {
            // get the founded return type (types of the parameters)
            std::list<Type> funcallType = getTypes(funcall->getParams());
+           funcall->setType(expectedType.back());
            expectedType.pop_back(); // remove the return type
            bool typeError = checkTypeError(expectedType, funcallType);
 
@@ -525,7 +526,7 @@ assignement:
              if (isDefined($v, @v.begin.line, @v.begin.column, type)) {
                // TODO: check the type of the symbol and raise a warning if cast
                // needed
-               Type icType = getType($ic);
+               Type icType = $ic->getType();
                checkType($v, @v.begin.line, @v.begin.column, type.back(), icType);
                pb.pushBlock(std::make_shared<Assignement>(Variable($v,
                  type.back()), $ic));

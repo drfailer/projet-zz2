@@ -5,7 +5,7 @@ ProgramBuilder::ProgramBuilder()
   program = std::make_shared<Program>();
   blocks = std::list<std::shared_ptr<Block>>();
   funParams = std::list<Variable>();
-  funcallParams = std::list<std::list<std::shared_ptr<ASTNode>>>();
+  funcallParams = std::list<std::list<std::shared_ptr<TypedElement>>>();
 }
 
 void ProgramBuilder::display()
@@ -91,7 +91,7 @@ std::shared_ptr<While> ProgramBuilder::createWhile(std::shared_ptr<ASTNode> cond
 std::shared_ptr<Funcall> ProgramBuilder::createFuncall()
 {
   std::shared_ptr<Funcall> newFuncall =
-    std::make_shared<Funcall>(funcallIds.back(), funcallParams.back());
+    std::make_shared<Funcall>(funcallIds.back(), funcallParams.back(), VOID);
   funcallIds.pop_back();
   funcallParams.pop_back();
   return newFuncall;
@@ -100,7 +100,7 @@ std::shared_ptr<Funcall> ProgramBuilder::createFuncall()
 void ProgramBuilder::newFuncall(std::string name)
 {
   funcallIds.push_back(name);
-  funcallParams.push_back(std::list<std::shared_ptr<ASTNode>>());
+  funcallParams.push_back(std::list<std::shared_ptr<TypedElement>>());
 }
 
 void ProgramBuilder::createFunction(std::string name, std::shared_ptr<Block>
@@ -117,7 +117,7 @@ void ProgramBuilder::createFunction(std::string name, std::shared_ptr<Block>
   funParams.clear();
 }
 
-void ProgramBuilder::pushFuncallParam(std::shared_ptr<ASTNode> newParam)
+void ProgramBuilder::pushFuncallParam(std::shared_ptr<TypedElement> newParam)
 {
   funcallParams.back().push_back(newParam);
 }

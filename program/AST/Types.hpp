@@ -14,6 +14,7 @@ enum Type
   INT,
   FLT,
   CHR,
+  BOOL,
   VOID
 };
 

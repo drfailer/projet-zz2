@@ -17,20 +17,18 @@ void indent(std::ofstream& fs, int lvl) {
 
 ASTNode::~ASTNode() {}
 
+TypedElement::~TypedElement() {}
+
 /* -------------------------------------------------------------------------- */
 
-Value::Value(type_t value, Type type): value(value), type(type)
+Value::Value(type_t value, Type type): value(value)
 {
+  TypedElement::type = type;
 }
 
-type_t Value::getValue()
+type_t Value::getValue() const
 {
   return value;
-}
-
-Type Value::getType() const
-{
-  return type;
 }
 
 void Value::display()
@@ -69,11 +67,12 @@ void Value::compile(std::ofstream& fs, int lvl)
 
 /* -------------------------------------------------------------------------- */
 
-Variable::Variable(std::string id, Type type): id(id), type(type)
+Variable::Variable(std::string id, Type type): id(id)
 {
+  TypedElement::type = type;
 }
 
-std::string Variable::getId()
+std::string Variable::getId() const
 {
   return id;
 }
@@ -81,11 +80,6 @@ std::string Variable::getId()
 void Variable::display()
 {
   std::cout << id;
-}
-
-Type Variable::getType() const
-{
-  return type;
 }
 
 void Variable::compile(std::ofstream& fs, int lvl)
@@ -96,15 +90,13 @@ void Variable::compile(std::ofstream& fs, int lvl)
 /* -------------------------------------------------------------------------- */
 
 Array::Array(std::string name, int size, Type type):
-  name(name), size(size), type(type)
-{}
+  name(name), size(size)
+{
+  TypedElement::type = type;
+}
 
 std::string Array::getName() const {
   return name;
-}
-
-Type Array::getType() const {
-  return type;
 }
 
 int Array::getSize() const {
@@ -139,6 +131,10 @@ void ArrayAccess::compile(std::ofstream &fs, int lvl) {
 }
 
 /* -------------------------------------------------------------------------- */
+
+Type Function::getType() const {
+  return type.back();
+}
 
 void Function::display() {
   std::cout << "Function(" << id << ", [";
@@ -265,9 +261,10 @@ void Declaration::compile(std::ofstream& fs, int lvl)
 /* -------------------------------------------------------------------------- */
 
 Funcall::Funcall(std::string functionName,
-    std::list<std::shared_ptr<ASTNode>> params):
+    std::list<std::shared_ptr<TypedElement>> params, Type type):
   functionName(functionName), params(params)
 {
+  TypedElement::type = type;
 }
 
 void Funcall::display()
@@ -280,7 +277,7 @@ void Funcall::display()
   std::cout << "])" << std::endl;
 }
 
-std::list<std::shared_ptr<ASTNode>> Funcall::getParams() const
+std::list<std::shared_ptr<TypedElement>> Funcall::getParams() const
 {
   return params;
 }
@@ -424,6 +421,15 @@ BinaryOperation::BinaryOperation(std::shared_ptr<ASTNode> left,
 /*                           arithemtic operations                            */
 /******************************************************************************/
 
+Type selectType(Type left, Type right) {
+  Type type;
+  if (left == INT && right == INT)
+    type = INT;
+  else
+    type = FLT;
+  return type;
+}
+
 void BinaryOperation::display()
 {
   left->display();
@@ -432,9 +438,11 @@ void BinaryOperation::display()
   std::cout << ")";
 }
 
-AddOP::AddOP(std::shared_ptr<ASTNode> left, std::shared_ptr<ASTNode> right)
+AddOP::AddOP(std::shared_ptr<TypedElement> left, std::shared_ptr<TypedElement> right)
   : BinaryOperation(left, right)
-{}
+{
+  type = selectType(left->getType(), right->getType());
+}
 
 void AddOP::display()
 {
@@ -449,9 +457,11 @@ void AddOP::compile(std::ofstream& fs, int lvl)
   right->compile(fs, 0);
 }
 
-MnsOP::MnsOP(std::shared_ptr<ASTNode> left, std::shared_ptr<ASTNode> right)
+MnsOP::MnsOP(std::shared_ptr<TypedElement> left, std::shared_ptr<TypedElement> right)
   : BinaryOperation(left, right)
-{}
+{
+  type = selectType(left->getType(), right->getType());
+}
 
 void MnsOP::display()
 {
@@ -466,9 +476,10 @@ void MnsOP::compile(std::ofstream& fs, int lvl)
   right->compile(fs, 0);
 }
 
-TmsOP::TmsOP(std::shared_ptr<ASTNode> left, std::shared_ptr<ASTNode> right)
+TmsOP::TmsOP(std::shared_ptr<TypedElement> left, std::shared_ptr<TypedElement> right)
   : BinaryOperation(left, right)
 {
+  type = selectType(left->getType(), right->getType());
 }
 
 void TmsOP::display()
@@ -484,9 +495,11 @@ void TmsOP::compile(std::ofstream& fs, int lvl)
   right->compile(fs, 0);
 }
 
-DivOP::DivOP(std::shared_ptr<ASTNode> left, std::shared_ptr<ASTNode> right)
+DivOP::DivOP(std::shared_ptr<TypedElement> left, std::shared_ptr<TypedElement> right)
   : BinaryOperation(left, right)
-{}
+{
+  type = selectType(left->getType(), right->getType());
+}
 
 void DivOP::display()
 {

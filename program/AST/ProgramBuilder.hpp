@@ -17,7 +17,7 @@ class ProgramBuilder
     std::list<std::shared_ptr<Block>> blocks; // stack of blocks (the last
                                               // element is the current block)
     std::list<Variable> funParams;        // parameters of the last function
-    std::list<std::list<std::shared_ptr<ASTNode>>> funcallParams;    // parameters of the last funcall
+    std::list<std::list<std::shared_ptr<TypedElement>>> funcallParams;    // parameters of the last funcall
     // NOTE: maybe move this to the .y file as global variable:
     std::list<std::string> funcallIds;
     // std::shared_ptr<Function> currentFunction; // TODO: user this
@@ -41,7 +41,7 @@ class ProgramBuilder
     std::shared_ptr<While> createWhile(std::shared_ptr<ASTNode>, std::shared_ptr<Block>);
 
 
-    void pushFuncallParam(std::shared_ptr<ASTNode>);
+    void pushFuncallParam(std::shared_ptr<TypedElement>);
     void pushFunctionParam(Variable);
     void newFuncall(std::string);
 
