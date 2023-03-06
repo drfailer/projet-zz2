@@ -104,26 +104,6 @@ void checkType(std::string name, int line, int column, Type expected, Type found
   }
 }
 
-// d'avoir le type d'un symbol inline
-Type getType(std::shared_ptr<ASTNode> node) {
-  Type type = VOID;
-
-  if(std::shared_ptr<Funcall> fun = std::dynamic_pointer_cast<Funcall>(node)) {
-    // treat as a funcall
-    std::optional<Symbol> funSym = contextManager.lookup(fun->getFunctionName());
-    type = funSym.value().getType().back();
-  }
-  else if (std::shared_ptr<Variable> var = std::dynamic_pointer_cast<Variable>(node)) { // this is a variable
-    std::optional<Symbol> varSym = contextManager.lookup(var->getId());
-    type = varSym.value().getType().back();
-  }
-  else if (std::shared_ptr<Value> val = std::dynamic_pointer_cast<Value>(node)) { // this is a value
-    type = val->getType();
-  }
-  // otherwise this is a buildin function
-  return type;
-}
-
 // permet de récupérer les types des paramètres lors des appels de fonctions
 std::list<Type> getTypes(std::list<std::shared_ptr<TypedElement>> nodes) {
   std::list<Type> types;
@@ -156,7 +136,6 @@ std::list<Type> getTypes(std::list<std::shared_ptr<TypedElement>> nodes) {
 %nterm <std::shared_ptr<TypedElement>> arithmeticOperations
 %nterm <std::shared_ptr<ASTNode>> booleanOperation
 %nterm <std::shared_ptr<TypedElement>> funcall
-%nterm <std::shared_ptr<TypedElement>> operand
 %nterm <std::shared_ptr<Block>> block
 %nterm <std::shared_ptr<If>> if
 %nterm <std::shared_ptr<If>> simpleIf
@@ -243,27 +222,6 @@ param: %empty
      inlineSymbol
      {
         pb.pushFuncallParam($1);
-     }
-     ;
-
-operand:
-     IDENTIFIER
-     {
-        DEBUG("new param variable" );
-        std::shared_ptr<Variable> v;
-        std::list<Type> type;
-        if (isDefined($1, @1.begin.line, @1.begin.column, type)) {
-          v = std::make_shared<Variable>($1, type.back());
-        }
-        else {
-          v = std::make_shared<Variable>($1, VOID);
-        }
-        $$ = v;
-     }
-     |
-     inlineSymbol
-     {
-        $$ = $1;
      }
      ;
 
@@ -419,31 +377,31 @@ arithmeticOperations:
                     ;
 
 booleanOperation:
-                 EQL'(' operand[left] COMMA operand[right] ')'
+                 EQL'(' inlineSymbol[left] COMMA inlineSymbol[right] ')'
                  {
                     DEBUG("EqlOP");
                     $$ = std::make_shared<EqlOP>($left, $right);
                  }
                  |
-                 SUP'(' operand[left] COMMA operand[right] ')'
+                 SUP'(' inlineSymbol[left] COMMA inlineSymbol[right] ')'
                  {
                     DEBUG("SupOP");
                     $$ = std::make_shared<SupOP>($left, $right);
                  }
                  |
-                 INF'(' operand[left] COMMA operand[right] ')'
+                 INF'(' inlineSymbol[left] COMMA inlineSymbol[right] ')'
                  {
                     DEBUG("InfOP");
                     $$ = std::make_shared<InfOP>($left, $right);
                  }
                  |
-                 SEQ'(' operand[left] COMMA operand[right] ')'
+                 SEQ'(' inlineSymbol[left] COMMA inlineSymbol[right] ')'
                  {
                     DEBUG("SeqOP");
                     $$ = std::make_shared<SeqOP>($left, $right);
                  }
                  |
-                 IEQ'(' operand[left] COMMA operand[right] ')'
+                 IEQ'(' inlineSymbol[left] COMMA inlineSymbol[right] ')'
                  {
                     DEBUG("IeqOP");
                     $$ = std::make_shared<IeqOP>($left, $right);
@@ -630,9 +588,9 @@ for:
      std::list<Type> type;
      if (isDefined($v, @v.begin.line, @v.begin.column, type)) {
        v = Variable($v, type.back());
-       checkType("RANGE_BEGIN", @b.begin.line, @b.begin.column, type.back(), getType($b));
-       checkType("RANGE_END", @e.begin.line, @e.begin.column, type.back(), getType($e));
-       checkType("RANGE_STEP", @s.begin.line, @s.begin.column, type.back(), getType($s));
+       checkType("RANGE_BEGIN", @b.begin.line, @b.begin.column, type.back(), $b->getType());
+       checkType("RANGE_END", @e.begin.line, @e.begin.column, type.back(), $e->getType());
+       checkType("RANGE_STEP", @s.begin.line, @s.begin.column, type.back(), $s->getType());
      }
      $$ = pb.createFor(v, $b, $e, $s, $ops);
      contextManager.leaveScope();
