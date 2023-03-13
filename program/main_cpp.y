@@ -121,7 +121,7 @@ std::list<Type> getTypes(std::list<std::shared_ptr<TypedElement>> nodes) {
 /* %nonassoc           ASSIGN */
 %token INTT FLTT CHRT
 %token IF ELSE FOR WHILE FN INCLUDE IN
-%token SEMI COMMA ARROW
+%token SEMI COMMA ARROW OSQUAREB CSQUAREB
 %token PRINT READ ADD MNS TMS DIV RANGE SET
 %token EQL SUP INF SEQ IEQ AND OR XOR NOT
 %token <std::string> IDENTIFIER
@@ -141,10 +141,17 @@ std::list<Type> getTypes(std::list<std::shared_ptr<TypedElement>> nodes) {
 %nterm <std::shared_ptr<If>> simpleIf
 %nterm <std::shared_ptr<For>> for
 %nterm <std::shared_ptr<While>> while
+%nterm <int> program
 
 %%
 program: %empty
-       | programElt program;
+       {
+          $$ = 1;
+       }
+       | programElt program {
+          $$ = 0; // TODO: return the program
+       }
+       ;
 
 programElt:
        includes
@@ -168,6 +175,7 @@ includes: INCLUDE IDENTIFIER SEMI
 function:
         FN IDENTIFIER[name]'('paramDeclarations')'
         {
+          // TODO: check if the function is already defined
           currentFunction = $name;
           std::list<Type> funType = pb.getParamsTypes();
           funType.push_back(VOID);
@@ -348,6 +356,30 @@ inlineSymbol:
                }
                $$ = v;
             }
+            |
+            IDENTIFIER OSQUAREB inlineSymbol[index] CSQUAREB
+            {
+               DEBUG("using an array");
+               std::list<Type> type;
+               std::shared_ptr<ArrayAccess> v;
+               // TODO: refactor isDefined
+               if (isDefined($1, @1.begin.line, @1.begin.column, type)) {
+                 std::optional<Symbol> sym = contextManager.lookup($1);
+                 // error if the symbol is not an array
+                 if (sym.value().getKind() != LOCAL_ARRAY) {
+                    std::ostringstream oss;
+                    oss << $1 << " can't be used as an array at "
+                        << @1.begin.line << ":" << @2.begin.column
+                        << "." << std::endl;
+                    errMgr.newError(oss.str());
+                 }
+                 v = std::make_shared<ArrayAccess>($1, -1, type.back(), $index);
+               }
+               else {
+                 v = std::make_shared<ArrayAccess>($1, -1, VOID, $index);
+               }
+               $$ = v;
+            }
             ;
 
 arithmeticOperations:
@@ -474,6 +506,15 @@ declaration:
              contextManager.newSymbol($2, t, LOCAL_VAR);
              pb.pushBlock(std::make_shared<Declaration>(Variable($2, $t)));
            }
+           |
+           type[t] IDENTIFIER OSQUAREB INT[size] CSQUAREB
+           {
+              DEBUG("new array declaration: " << $2);
+              std::list<Type> t;
+              t.push_back($t);
+              contextManager.newSymbol($2, t, LOCAL_ARRAY);
+              pb.pushBlock(std::make_shared<Declaration>(Array($2, $size, $t)));
+           }
            ;
 
 assignement:
@@ -482,8 +523,6 @@ assignement:
              DEBUG("new assignement: " << $v);
              std::list<Type> type;
              if (isDefined($v, @v.begin.line, @v.begin.column, type)) {
-               // TODO: check the type of the symbol and raise a warning if cast
-               // needed
                Type icType = $ic->getType();
                checkType($v, @v.begin.line, @v.begin.column, type.back(), icType);
                pb.pushBlock(std::make_shared<Assignement>(Variable($v,
@@ -624,7 +663,8 @@ int main(int argc, char **argv) {
     std::ifstream is(argv[1], std::ios::in);
     interpreter::Scanner scanner{ is , std::cerr };
     interpreter::Parser parser{ &scanner };
-    parser.parse();
+    int a = parser.parse();
+    std::cout << "A VALUE: " << a << std::endl;
     // loock for main
     std::optional<Symbol> sym = contextManager.lookup("main");
     if (!sym.has_value()) {
@@ -646,7 +686,8 @@ int main(int argc, char **argv) {
   else {
     interpreter::Scanner scanner{ std::cin, std::cerr };
     interpreter::Parser parser{ &scanner };
-    parser.parse();
+    int a = parser.parse();
+    std::cout << "A VALUE: " << a << std::endl;
     errMgr.report();
     if (!errMgr.getErrors()) {
       pb.display();

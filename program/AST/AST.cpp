@@ -90,44 +90,32 @@ void Variable::compile(std::ofstream& fs, int lvl)
 /* -------------------------------------------------------------------------- */
 
 Array::Array(std::string name, int size, Type type):
-  name(name), size(size)
+  Variable(name, type), size(size)
 {
-  TypedElement::type = type;
 }
 
-std::string Array::getName() const {
-  return name;
+std::string Array::getId() const {
+  return Variable::getId();
 }
 
 int Array::getSize() const {
   return size;
 }
 
-ArrayDeclaration::ArrayDeclaration(std::string name, int size, Type type):
-  Array(name, size, type) {}
-
-void ArrayDeclaration::display() {
-  std::cout << Array::name << "[" << size << "]";
-}
-
-void ArrayDeclaration::compile(std::ofstream& fs, int lvl) {
-  indent(fs, lvl);
-  fs << name << "=[]";
-}
-
-ArrayAccess::ArrayAccess(std::string name, int size, Type type, int index):
+ArrayAccess::ArrayAccess(std::string name, int size, Type type,
+    std::shared_ptr<ASTNode> index):
   Array(name, size, type), index(index) {}
 
-int ArrayAccess::getIndex() const {
+std::shared_ptr<ASTNode> ArrayAccess::getIndex() const {
   return index;
 }
 
 void ArrayAccess::display() {
-  std::cout << Array::name << "[" << index << "]";
+  std::cout << Variable::getId() << "[" << index << "]";
 }
 
 void ArrayAccess::compile(std::ofstream &fs, int lvl) {
-  fs << Array::name << "[" << index << "]";
+  fs << Variable::getId() << "[" << index << "]";
 }
 
 /* -------------------------------------------------------------------------- */

@@ -129,38 +129,28 @@ class Variable : public TypedElement
     Variable(std::string, Type);
 };
 
-class Array : public TypedElement
+class Array : public Variable
 {
   protected:
-    std::string name;
     int size;
 
   public:
-    std::string getName() const;
+    std::string getId() const;
     int getSize() const;
     Array(std::string, int, Type);
     ~Array() = default;
 };
 
-class ArrayDeclaration: public Array
-{
-  public:
-    void display() override;
-    void compile(std::ofstream&, int) override;
-    ArrayDeclaration(std::string, int, Type);
-    ~ArrayDeclaration() = default;
-};
-
 class ArrayAccess: public Array
 {
   private:
-    int index;
+    std::shared_ptr<ASTNode> index;
 
   public:
     void display() override;
     void compile(std::ofstream&, int) override;
-    int getIndex() const;
-    ArrayAccess(std::string, int, Type, int);
+    std::shared_ptr<ASTNode> getIndex() const;
+    ArrayAccess(std::string, int, Type, std::shared_ptr<ASTNode>);
     ~ArrayAccess() = default;
 };
 

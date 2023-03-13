@@ -8,6 +8,7 @@ enum Kind
 {
   FUN_PARAM,
   LOCAL_VAR,
+  LOCAL_ARRAY,
   FUNCTION
 };
 

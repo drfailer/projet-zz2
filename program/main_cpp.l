@@ -55,6 +55,8 @@ include      { DEBUG("L_include"); return Parser::token::INCLUDE; }
 range        { DEBUG("L_range"); return Parser::token::RANGE; }
 ->           { DEBUG("L_arrow"); return Parser::token::ARROW; }
 return       { DEBUG("L_return"); return Parser::token::RETURN; }
+"["          { DEBUG("L_osquareb"); return Parser::token::OSQUAREB; }
+"]"          { DEBUG("L_osquareb"); return Parser::token::CSQUAREB; }
 
 {identifier} {
   DEBUG("L_id");
