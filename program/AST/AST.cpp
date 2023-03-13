@@ -102,6 +102,18 @@ int Array::getSize() const {
   return size;
 }
 
+ArrayDeclaration::ArrayDeclaration(std::string name, int size, Type type):
+  Array(name, size, type) {}
+
+void ArrayDeclaration::display() {
+  std::cout << Array::getId() << "[" << size << "]";
+}
+
+void ArrayDeclaration::compile(std::ofstream& fs, int lvl) {
+  indent(fs, lvl);
+  fs << getId() << "=[0 for _ in range(" << size << ")]";
+}
+
 ArrayAccess::ArrayAccess(std::string name, int size, Type type,
     std::shared_ptr<ASTNode> index):
   Array(name, size, type), index(index) {}
@@ -111,11 +123,15 @@ std::shared_ptr<ASTNode> ArrayAccess::getIndex() const {
 }
 
 void ArrayAccess::display() {
-  std::cout << Variable::getId() << "[" << index << "]";
+  std::cout << Variable::getId() << "[";
+  index->display();
+  std::cout << "]";
 }
 
 void ArrayAccess::compile(std::ofstream &fs, int lvl) {
-  fs << Variable::getId() << "[" << index << "]";
+  fs << Variable::getId() << "[";
+  index->compile(fs, 0);
+  fs << "]";
 }
 
 /* -------------------------------------------------------------------------- */
@@ -206,14 +222,14 @@ void Block::compile(std::ofstream& fs, int lvl)
 
 /* -------------------------------------------------------------------------- */
 
-Assignement::Assignement(Variable variable, std::shared_ptr<ASTNode> value):
+Assignement::Assignement(std::shared_ptr<TypedElement> variable, std::shared_ptr<ASTNode> value):
   variable(variable), value(value)
 {}
 
 void Assignement::display()
 {
   std::cout << "Assignement(";
-  variable.display();
+  variable->display();
   std::cout << ",";
   value->display();
   std::cout << ")" << std::endl;
@@ -222,9 +238,9 @@ void Assignement::display()
 void Assignement::compile(std::ofstream& fs, int lvl)
 {
   indent(fs, lvl);
-  variable.compile(fs, lvl); // TODO: gérer le cast
+  variable->compile(fs, lvl); // TODO: gérer le cast
   fs << "=";
-  switch (variable.getType()) {
+  switch (variable->getType()) {
     case INT:
       fs << "int(";
       break;
@@ -723,22 +739,22 @@ void Print::compile(std::ofstream& fs, int lvl)
   fs << ",end=\"\")";
 }
 
-Read::Read(Variable variable): variable(variable)
+Read::Read(std::shared_ptr<TypedElement> variable): variable(variable)
 {
 }
 
 void Read::display()
 {
   std::cout << "Read(";
-  variable.display();
+  variable->display();
   std::cout << ")" << std::endl;
 }
 
 void Read::compile(std::ofstream& fs, int lvl)
 {
   indent(fs, lvl);
-  variable.compile(fs, 0);
-  switch (variable.getType()) {
+  variable->compile(fs, 0);
+  switch (variable->getType()) {
     case INT:
       fs << " = int(input())";
       break;

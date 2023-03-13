@@ -14,7 +14,7 @@
 - [ ] create a TypedElements abstract class to group elements with types
 
 # TODO - Symtable
-- [ ] add array kind
+- [x] add array kind
 - [ ] add the utilities functions in bison file
 
 # TODO - Parser
@@ -141,6 +141,15 @@ class Array : public Variable
     ~Array() = default;
 };
 
+class ArrayDeclaration: public Array
+{
+  public:
+    void display() override;
+    void compile(std::ofstream&, int) override;
+    ArrayDeclaration(std::string, int, Type);
+    ~ArrayDeclaration() = default;
+};
+
 class ArrayAccess: public Array
 {
   private:
@@ -165,13 +174,13 @@ class ArrayAccess: public Array
 class Assignement : public ASTNode
 {
   private:
-    Variable variable;
+    std::shared_ptr<TypedElement> variable;
     std::shared_ptr<ASTNode> value;
 
   public:
     void display() override;
     void compile(std::ofstream&, int) override;
-    Assignement(Variable, std::shared_ptr<ASTNode>);
+    Assignement(std::shared_ptr<TypedElement>, std::shared_ptr<ASTNode>);
 };
 
 /**
@@ -456,11 +465,11 @@ class Print: public ASTNode
 class Read: public ASTNode
 {
   private:
-    Variable variable;
+    std::shared_ptr<TypedElement> variable;
 
   public:
     void display() override;
-    Read(Variable);
+    Read(std::shared_ptr<TypedElement>);
     void compile(std::ofstream&, int) override;
 };
 

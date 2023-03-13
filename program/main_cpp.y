@@ -133,6 +133,7 @@ std::list<Type> getTypes(std::list<std::shared_ptr<TypedElement>> nodes) {
 %nterm <Type> type
 %nterm <Value> value
 %nterm <std::shared_ptr<TypedElement>> inlineSymbol
+%nterm <std::shared_ptr<TypedElement>> container
 %nterm <std::shared_ptr<TypedElement>> arithmeticOperations
 %nterm <std::shared_ptr<ASTNode>> booleanOperation
 %nterm <std::shared_ptr<TypedElement>> funcall
@@ -215,9 +216,11 @@ paramDeclaration: %empty
        contextManager.newSymbol($2, std::list<Type>($t), FUN_PARAM);
        pb.pushFunctionParam(Variable($2, $t));
      }
-     | type[t] IDENTIFIER'['INT']'
+     | type[t] IDENTIFIER OSQUAREB INT[size] CSQUAREB
      {
-
+        DEBUG("new param: " << $2);
+        contextManager.newSymbol($2, std::list<Type>($t), LOCAL_ARRAY);
+        pb.pushFunctionParam(Array($2, $size, $t));
      }
      ;
 
@@ -304,16 +307,10 @@ command: print
         | funcall { pb.pushBlock($1); }
         ;
 
-read: READ'('IDENTIFIER[v]')'
+read: READ'('container[c]')'
     {
       DEBUG("read");
-      std::list<Type> type;
-      if (isDefined($v, @v.begin.line, @v.begin.column, type)) {
-        pb.pushBlock(std::make_shared<Read>(Variable($v, type.back())));
-      }
-      else {
-        pb.pushBlock(std::make_shared<Read>(Variable($v, VOID)));
-      }
+      pb.pushBlock(std::make_shared<Read>($c));
     }
     ;
 
@@ -324,17 +321,10 @@ print:
         pb.pushBlock(std::make_shared<Print>($s));
      }
      |
-     PRINT'('IDENTIFIER[v]')'
+     PRINT'('inlineSymbol[ic]')'
      {
         DEBUG("print var");
-        std::list<Type> type;
-        if (isDefined($v, @v.begin.line, @v.begin.column, type)) {
-          pb.pushBlock(std::make_shared<Print>(std::make_shared<Variable>($v,
-            type.back())));
-        }
-        else {
-          pb.pushBlock(std::make_shared<Print>(std::make_shared<Variable>($v, VOID)));
-        }
+        pb.pushBlock(std::make_shared<Print>($ic));
      }
      ;
 
@@ -342,45 +332,47 @@ inlineSymbol:
              arithmeticOperations { $$ = $1; }
             | funcall { $$ = $1; }
             | value { $$ = std::make_shared<Value>($1); }
-            |
-            IDENTIFIER
-            {
-               DEBUG("new param variable");
-               std::list<Type> type;
-               std::shared_ptr<Variable> v;
-               if (isDefined($1, @1.begin.line, @1.begin.column, type)) {
-                 v = std::make_shared<Variable>($1, type.back());
-               }
-               else {
-                 v = std::make_shared<Variable>($1, VOID);
-               }
-               $$ = v;
-            }
-            |
-            IDENTIFIER OSQUAREB inlineSymbol[index] CSQUAREB
-            {
-               DEBUG("using an array");
-               std::list<Type> type;
-               std::shared_ptr<ArrayAccess> v;
-               // TODO: refactor isDefined
-               if (isDefined($1, @1.begin.line, @1.begin.column, type)) {
-                 std::optional<Symbol> sym = contextManager.lookup($1);
-                 // error if the symbol is not an array
-                 if (sym.value().getKind() != LOCAL_ARRAY) {
-                    std::ostringstream oss;
-                    oss << $1 << " can't be used as an array at "
-                        << @1.begin.line << ":" << @2.begin.column
-                        << "." << std::endl;
-                    errMgr.newError(oss.str());
-                 }
-                 v = std::make_shared<ArrayAccess>($1, -1, type.back(), $index);
-               }
-               else {
-                 v = std::make_shared<ArrayAccess>($1, -1, VOID, $index);
-               }
-               $$ = v;
-            }
+            | container { $$ = $1; }
             ;
+
+container:
+         IDENTIFIER
+         {
+            DEBUG("new param variable");
+            std::list<Type> type;
+            std::shared_ptr<Variable> v;
+            if (isDefined($1, @1.begin.line, @1.begin.column, type)) {
+              v = std::make_shared<Variable>($1, type.back());
+            }
+            else {
+              v = std::make_shared<Variable>($1, VOID);
+            }
+            $$ = v;
+         }
+         | IDENTIFIER OSQUAREB inlineSymbol[index] CSQUAREB
+         {
+            DEBUG("using an array");
+            std::list<Type> type;
+            std::shared_ptr<ArrayAccess> v;
+            // TODO: refactor isDefined
+            if (isDefined($1, @1.begin.line, @1.begin.column, type)) {
+              std::optional<Symbol> sym = contextManager.lookup($1);
+              // error if the symbol is not an array
+              if (sym.value().getKind() != LOCAL_ARRAY) {
+                 std::ostringstream oss;
+                 oss << $1 << " can't be used as an array at "
+                     << @1.begin.line << ":" << @2.begin.column
+                     << "." << std::endl;
+                 errMgr.newError(oss.str());
+              }
+              v = std::make_shared<ArrayAccess>($1, -1, type.back(), $index);
+            }
+            else {
+              v = std::make_shared<ArrayAccess>($1, -1, VOID, $index);
+            }
+            $$ = v;
+         }
+         ;
 
 arithmeticOperations:
                     ADD'(' inlineSymbol[left] COMMA inlineSymbol[right] ')'
@@ -506,31 +498,24 @@ declaration:
              contextManager.newSymbol($2, t, LOCAL_VAR);
              pb.pushBlock(std::make_shared<Declaration>(Variable($2, $t)));
            }
-           |
-           type[t] IDENTIFIER OSQUAREB INT[size] CSQUAREB
+           | type[t] IDENTIFIER OSQUAREB INT[size] CSQUAREB
            {
               DEBUG("new array declaration: " << $2);
               std::list<Type> t;
               t.push_back($t);
               contextManager.newSymbol($2, t, LOCAL_ARRAY);
-              pb.pushBlock(std::make_shared<Declaration>(Array($2, $size, $t)));
+              pb.pushBlock(std::make_shared<ArrayDeclaration>($2, $size, $t));
            }
            ;
 
 assignement:
-           SET'('IDENTIFIER[v] COMMA inlineSymbol[ic]')'
+           SET'('container[c] COMMA inlineSymbol[ic]')'
            {
-             DEBUG("new assignement: " << $v);
-             std::list<Type> type;
-             if (isDefined($v, @v.begin.line, @v.begin.column, type)) {
-               Type icType = $ic->getType();
-               checkType($v, @v.begin.line, @v.begin.column, type.back(), icType);
-               pb.pushBlock(std::make_shared<Assignement>(Variable($v,
-                 type.back()), $ic));
-             }
-             else {
-               pb.pushBlock(std::make_shared<Assignement>(Variable($v, VOID), $ic));
-             }
+             DEBUG("new assignement");
+             Type icType = $ic->getType();
+             std::shared_ptr<Variable> v = std::static_pointer_cast<Variable>($c);
+             checkType(v->getId(), @c.begin.line, @c.begin.column, $c->getType(), icType);
+             pb.pushBlock(std::make_shared<Assignement>($c, $ic));
            }
            ;
 
