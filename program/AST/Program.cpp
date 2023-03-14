@@ -3,11 +3,11 @@
 
 Program::Program()
 {
-  includes = std::list<std::shared_ptr<Include>>();
+  includes = std::list<std::string>();
   functions = std::list<std::shared_ptr<Function>>();
 }
 
-void Program::addInclude(std::shared_ptr<Include> i) {
+void Program::addInclude(std::string i) {
   includes.push_back(i);
 }
 
@@ -17,13 +17,13 @@ void Program::addFunction(std::shared_ptr<Function> f) {
 
 void Program::display()
 {
-  for (std::shared_ptr<Include> i : includes)
-    i->display();
+  for (std::string i : includes)
+    std::cout << "include " << i << std::endl;
   for (std::shared_ptr<Function> f : functions)
     f->display();
 }
 
-std::list<std::shared_ptr<Include>> Program::getIncludes() const
+std::list<std::string> Program::getIncludes() const
 {
   return includes;
 }

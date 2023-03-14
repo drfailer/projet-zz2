@@ -12,7 +12,7 @@
 #include "errorManager/ErrorManager.hpp"
 #define YYLOCATION_PRINT   location_print
 #define YYDEBUG 1
-#define DBG_PARS 0
+#define DBG_PARS 1
 #if DBG_PARS == 1
 #define DEBUG(A) std::cout << A << std::endl
 #else
@@ -27,11 +27,12 @@
 %define api.namespace {interpreter}
 %define api.value.type variant
 %locations
-%parse-param {Scanner* scanner}
+%parse-param {Scanner* scanner} {ProgramBuilder& pb}
 
 %code requires
 {
     #include "AST/AST.hpp"
+    #include "AST/ProgramBuilder.hpp"
     namespace interpreter {
       class Scanner;
     }
@@ -43,7 +44,6 @@
 #include <memory>
 // #define yylex(x) scanner->lex(x)
 #define yylex(x, y) scanner->lex(x, y) // now we use yylval and yylloc
-ProgramBuilder pb;
 Symtable symtable;
 ContextManager contextManager;
 ErrorManager errMgr;
@@ -142,16 +142,14 @@ std::list<Type> getTypes(std::list<std::shared_ptr<TypedElement>> nodes) {
 %nterm <std::shared_ptr<If>> simpleIf
 %nterm <std::shared_ptr<For>> for
 %nterm <std::shared_ptr<While>> while
-%nterm <int> program
+
+%start start
 
 %%
+start: program;
+
 program: %empty
-       {
-          $$ = 1;
-       }
-       | programElt program {
-          $$ = 0; // TODO: return the program
-       }
+       | programElt program
        ;
 
 programElt:
@@ -166,10 +164,20 @@ programElt:
        }
        ;
 
-includes: INCLUDE IDENTIFIER SEMI
+includes: INCLUDE STRING[path] SEMI
         {
-          DEBUG("new include id: " << $2);
-          pb.addInclude(std::make_shared<Include>($2));
+          DEBUG("new include id: " << $path);
+          // TODO: test if the file is not already included
+          if (!pb.getProgram()->isIncluded($path)) {
+            DEBUG("===========================================");
+            pb.addInclude($path);
+            std::ifstream is($path, std::ios::in);
+            interpreter::Scanner scanner{ is, std::cerr };
+            interpreter::Parser parser{ &scanner, pb };
+            parser.parse();
+            pb.display();
+            DEBUG("-------------------------------------------");
+          }
         }
         ;
 
@@ -642,20 +650,21 @@ void interpreter::Parser::error(const location_type& loc, const std::string& msg
 }
 
 int main(int argc, char **argv) {
+  ProgramBuilder pb;
   contextManager.enterScope(); // TODO: put the current module/file name here
   // TODO: learn how to properly create steam.
   if (argc == 2) {
     std::ifstream is(argv[1], std::ios::in);
     interpreter::Scanner scanner{ is , std::cerr };
-    interpreter::Parser parser{ &scanner };
-    int a = parser.parse();
-    std::cout << "A VALUE: " << a << std::endl;
+    interpreter::Parser parser{ &scanner, pb };
+    parser.parse();
     // loock for main
     std::optional<Symbol> sym = contextManager.lookup("main");
     if (!sym.has_value()) {
       errMgr.newError("no entry point.");
     }
     errMgr.report();
+    pb.display();
     if (!errMgr.getErrors()) {
       std::ofstream fs("a.out");
       pb.getProgram()->compile(fs);
@@ -670,9 +679,8 @@ int main(int argc, char **argv) {
   }
   else {
     interpreter::Scanner scanner{ std::cin, std::cerr };
-    interpreter::Parser parser{ &scanner };
-    int a = parser.parse();
-    std::cout << "A VALUE: " << a << std::endl;
+    interpreter::Parser parser{ &scanner, pb };
+    parser.parse();
     errMgr.report();
     if (!errMgr.getErrors()) {
       pb.display();

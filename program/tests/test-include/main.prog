@@ -1,0 +1,8 @@
+include "./test-same.prog";
+include "./intest/test-sub.prog";
+
+fn main() {
+  print("main");
+  test_same();
+  test_sub();
+}

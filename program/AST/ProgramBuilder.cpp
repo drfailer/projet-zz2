@@ -13,7 +13,7 @@ void ProgramBuilder::display()
   program->display();
 }
 
-void ProgramBuilder::addInclude(std::shared_ptr<Include> i)
+void ProgramBuilder::addInclude(std::string i)
 {
   program->addInclude(i);
 }

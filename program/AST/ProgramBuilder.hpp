@@ -46,7 +46,7 @@ class ProgramBuilder
     void newFuncall(std::string);
 
     void createFunction(std::string, std::shared_ptr<Block>, Type);
-    void addInclude(std::shared_ptr<Include>);
+    void addInclude(std::string);
     ProgramBuilder();
 };
 

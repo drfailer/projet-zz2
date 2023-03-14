@@ -63,6 +63,8 @@ class Block : public ASTNode
 /**
  * @brief  Include a file. Note: the language doesn't have a module system, so
  *         it acts a bit like a pre-processor instruction.
+ *
+ * TODO: remove, this is useless here.
  */
 class Include : public ASTNode
 {
@@ -70,6 +72,9 @@ class Include : public ASTNode
     std::string libName;
 
   public:
+    std::string getLibName() const {
+      return libName;
+    }
     void display() override;
     void compile(std::ofstream&, int) override;
     Include(std::string);
