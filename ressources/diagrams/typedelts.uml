@@ -1,0 +1,48 @@
+@startuml
+skinparam classAttributeIconSize 0
+skinparam groupInheritance 3
+hide empty methods
+hide empty attributes
+
+AST *- ASTNode
+
+abstract class ASTNode {
+  +{abstract} display(): void
+  +{abstract} compile(): void
+}
+
+ASTNode <|-- TypedElement
+class TypedElement {
+  -type: Type
+}
+
+TypedElement <|-- Value
+class Value {
+  -value: type_t
+  -type: Type
+}
+
+TypedElement <|-- Variable
+class Variable {
+  -id: string
+  -type: type
+  +getType(): Type
+}
+
+
+Funcall o-- ASTNode
+TypedElement <|-- Funcall
+class Funcall {
+  -functionName: string
+  -params: list<ASTNode>
+}
+
+Statement <|-- Function
+Function o-- Variable
+TypedElement <|-- Function
+class Function {
+  -name: string
+  -params: list<Variable>
+  -returnType: Type
+}
+@enduml

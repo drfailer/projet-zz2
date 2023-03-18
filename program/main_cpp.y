@@ -75,6 +75,24 @@ void printType(std::ostringstream& oss, std::list<Type> types) {
   oss << "." << std::endl;
 }
 
+void reportDefinitionError(std::string name, int line, int column) {
+    std::ostringstream oss;
+    oss << "undefined Symbol '" << name << "'";
+    oss << " at: " << line << ":" << column << std::endl;
+    errMgr.newError(oss.str());
+}
+
+void reportTypeError(std::string name, int line, int column, std::list<Type>
+                     expected, std::list<Type> founded) {
+  std::ostringstream oss;
+  oss << "Type error: at " << line << ":" << column
+      << " in " << name << ": the expected type was:" << std::endl;
+  printType(oss, expected);
+  oss << "founded:" << std::endl;
+  printType(oss, founded);
+  errMgr.newError(oss.str());
+}
+
 bool checkTypeError(std::list<Type> expectedType, std::list<Type> funcallType) {
   bool typeError = false;
   if (expectedType.size() != funcallType.size()) {
@@ -472,24 +490,21 @@ funcall:
        params')'
        {
          std::list<Type> expectedType;
-         bool defined = isDefined($1, @1.begin.line, @1.begin.column, expectedType);
+         std::optional<Symbol> sym = contextManager.lookup($1);
          std::shared_ptr<Funcall> funcall = pb.createFuncall();
 
-         if (defined) {
+         if (sym.has_value()) {
            // get the founded return type (types of the parameters)
            std::list<Type> funcallType = getTypes(funcall->getParams());
            funcall->setType(expectedType.back());
+           expectedType = sym.value().getType();
            expectedType.pop_back(); // remove the return type
-           bool typeError = checkTypeError(expectedType, funcallType);
 
-           if (typeError) {
-             std::ostringstream oss;
-             oss << "Type error: at " << @1 << " in " << $1 << ": the expected type was:" << std::endl;
-             printType(oss, expectedType);
-             oss << "founded:" << std::endl;
-             printType(oss, funcallType);
-             errMgr.newError(oss.str());
+           if (checkTypeError(expectedType, funcallType)) {
+             reportTypeError($1, @1.begin.line, @1.begin.column, expectedType, funcallType);
            }
+         } else {
+            reportDefinitionError($1, @1.begin.line, @1.begin.column);
          }
          DEBUG("new funcall: " << $1);
          // check the type
