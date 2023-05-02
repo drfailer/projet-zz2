@@ -638,42 +638,61 @@ void interpreter::Parser::error(const location_type& loc, const std::string& msg
   errMgr.newError(oss.str());
 }
 
-int main(int argc, char **argv) {
-  Preprocessor pp("__main_pp.prog__");
+void cli() {
   ProgramBuilder pb;
-  contextManager.enterScope(); // TODO: put the current module/file name here
-  if (argc == 2) {
-    pp.process(argv[1]);
-    std::ifstream is("__main_pp.prog__", std::ios::in); // parse the preprocessed file
-    interpreter::Scanner scanner{ is , std::cerr };
-    interpreter::Parser parser{ &scanner, pb };
-    parser.parse();
-    // loock for main
-    std::optional<Symbol> sym = contextManager.lookup("main");
-    if (!sym.has_value()) {
-      errMgr.newError("no entry point.");
-    }
-    errMgr.report();
+  interpreter::Scanner scanner{ std::cin, std::cerr };
+  interpreter::Parser parser{ &scanner, pb };
+  contextManager.enterScope();
+  parser.parse();
+  errMgr.report();
+  if (!errMgr.getErrors()) {
     pb.display();
-    if (!errMgr.getErrors()) {
-      std::ofstream fs("a.out");
-      pb.getProgram()->compile(fs);
-      std::filesystem::permissions(
-        "a.out",
-        std::filesystem::perms::owner_exec | std::filesystem::perms::group_exec
-        | std::filesystem::perms::others_exec,
-        std::filesystem::perm_options::add
-      );
-      // pb.display();
-    }
+  }
+}
+
+// add execution rights to the result file
+void makeExecutable(std::string file) {
+  std::filesystem::permissions(file,
+    std::filesystem::perms::owner_exec | std::filesystem::perms::group_exec
+    | std::filesystem::perms::others_exec,
+    std::filesystem::perm_options::add
+  );
+}
+
+void compile(std::string fileName, std::string outputName) {
+  ProgramBuilder pb;
+  Preprocessor pp("__main_pp.prog__");
+
+  contextManager.enterScope(); // update the scope
+  pp.process(fileName); // launch the preprocessor
+
+  // open and parse the file
+  std::ifstream is("__main_pp.prog__", std::ios::in); // parse the preprocessed file
+  interpreter::Scanner scanner{ is , std::cerr };
+  interpreter::Parser parser{ &scanner, pb };
+  parser.parse();
+
+  // loock for main
+  std::optional<Symbol> sym = contextManager.lookup("main");
+  if (!sym.has_value()) {
+    errMgr.newError("no entry point.");
+  }
+  // report errors and warnings
+  errMgr.report();
+
+  // if no errors, transpile the file
+  if (!errMgr.getErrors()) {
+    std::ofstream fs(outputName);
+    pb.getProgram()->compile(fs);
+    makeExecutable(outputName);
+  }
+}
+
+int main(int argc, char **argv) {
+  if (argc == 2) {
+    compile(argv[1], "a.out"); // TODO: add an option to choose the name of the created script
   }
   else { // launch the interpreter for debugging
-    interpreter::Scanner scanner{ std::cin, std::cerr };
-    interpreter::Parser parser{ &scanner, pb };
-    parser.parse();
-    errMgr.report();
-    if (!errMgr.getErrors()) {
-      pb.display();
-    }
+    cli();
   }
 }
