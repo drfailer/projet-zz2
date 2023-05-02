@@ -179,8 +179,17 @@ programElt:
 function:
   FN IDENTIFIER[name]'('paramDeclarations')'
   {
-    // TODO: check if the function is already defined
     currentFunction = $name;
+    std::optional<Symbol> sym = contextManager.lookup($name);
+    // error on function redefinition
+    if (sym.has_value()) {
+      std::ostringstream oss;
+      oss << "redefinition of '" << $name << "()' at "
+         << @name.begin.line << ":" << @name.begin.column
+         << "." << std::endl;
+      errMgr.newError(oss.str());
+      return 1;
+    }
     std::list<Type> funType = pb.getParamsTypes();
     funType.push_back(VOID);
     contextManager.newSymbol($name, funType, FUNCTION);
