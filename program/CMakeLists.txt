@@ -20,4 +20,5 @@ add_executable(prog parser.cpp lexer.cpp
   AST/Types.cpp symtable/Symtable.cpp symtable/Symbol.cpp
   symtable/ContextManager.cpp
   errorManager/ErrorManager.cpp
-  preprocessor/preprocessor.cpp)
+  preprocessor/preprocessor.cpp
+  checks.cpp)
