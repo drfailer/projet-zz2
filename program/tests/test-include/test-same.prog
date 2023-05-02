@@ -1,4 +1,4 @@
-include "./intest/test-sub.prog";
+include intest/test-sub;
 
 fn test_same() {
   print("test_same");

@@ -1,5 +1,5 @@
-include "./test-same.prog";
-include "./intest/test-sub.prog";
+include test-same;
+include intest/test-sub;
 
 fn main() {
   print("main");

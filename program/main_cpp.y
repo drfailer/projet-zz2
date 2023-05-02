@@ -10,6 +10,7 @@
 #include "symtable/Symbol.hpp"
 #include "symtable/ContextManager.hpp"
 #include "errorManager/ErrorManager.hpp"
+#include "preprocessor/preprocessor.hpp"
 #define YYLOCATION_PRINT   location_print
 #define YYDEBUG 1
 #define DBG_PARS 1
@@ -184,8 +185,8 @@ programElt:
 
 includes: INCLUDE STRING[path] SEMI
         {
+          // TODO: remore include rule
           DEBUG("new include id: " << $path);
-          // TODO: test if the file is not already included
           if (!pb.getProgram()->isIncluded($path)) {
             DEBUG("===========================================");
             pb.addInclude($path);
@@ -665,11 +666,12 @@ void interpreter::Parser::error(const location_type& loc, const std::string& msg
 }
 
 int main(int argc, char **argv) {
+    Preprocessor pp("__main_pp.prog__");
   ProgramBuilder pb;
   contextManager.enterScope(); // TODO: put the current module/file name here
-  // TODO: learn how to properly create steam.
   if (argc == 2) {
-    std::ifstream is(argv[1], std::ios::in);
+    pp.process(argv[1]);
+    std::ifstream is("__main_pp.prog__", std::ios::in); // parse the preprocessed file
     interpreter::Scanner scanner{ is , std::cerr };
     interpreter::Parser parser{ &scanner, pb };
     parser.parse();
@@ -692,7 +694,7 @@ int main(int argc, char **argv) {
       // pb.display();
     }
   }
-  else {
+  else { // launch the interpreter for debugging
     interpreter::Scanner scanner{ std::cin, std::cerr };
     interpreter::Parser parser{ &scanner, pb };
     parser.parse();

@@ -1,4 +1,0 @@
-include ./test/pif;
-include ./test/paf;
-
-some wonderfull struff in the main file.

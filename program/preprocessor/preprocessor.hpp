@@ -8,7 +8,8 @@
 
 class Preprocessor {
 public:
-  void process(std::string fileName);
+  void process_rec(std::string fileName);
+  void process(std::string pathToMain);
   Preprocessor(std::string outputFileName)
       : outputFile(std::ofstream(outputFileName)),
         currentFile(std::ifstream()) {}
@@ -19,6 +20,7 @@ private:
   std::vector<std::string> filesStack;
   std::ofstream            outputFile;
   std::ifstream            currentFile;
+  std::string              pathToProject;
 };
 
 #endif
