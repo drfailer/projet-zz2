@@ -559,6 +559,7 @@ void interpreter::Parser::error(const location_type& loc, const std::string& msg
   errMgr.newError(oss.str());
 }
 
+/* Run interactive parser. It was used during the beginning of the project. */
 void cli() {
   ProgramBuilder pb;
   interpreter::Scanner scanner{ std::cin, std::cerr };
@@ -571,7 +572,7 @@ void cli() {
   }
 }
 
-// add execution rights to the result file
+/* add execution rights to the result file */
 void makeExecutable(std::string file) {
   std::filesystem::permissions(file,
     std::filesystem::perms::owner_exec | std::filesystem::perms::group_exec
@@ -580,6 +581,11 @@ void makeExecutable(std::string file) {
   );
 }
 
+/* Verify the types of all assignments that involve funcalls.
+ * It's done because we want to be able to use functions that are declared after
+ * the function in which we make the call. This force to parse all the functions
+ * to have a complete table of symbol before checking the types.
+ */
 void checkAssignements() {
   for (auto ap : assignementsToCheck) {
       checkType(ap.first->getVariable()->getId(),
@@ -589,6 +595,9 @@ void checkAssignements() {
   }
 }
 
+/* Verify the types of all funcalls. To check the type, we have to verify the
+ * types of all the parameters. The return type is not important here.
+ */
 void checkFuncalls() {
   for (auto fp : funcallsToCheck) {
     std::list<Type> funcallType = getTypes(fp.first->getParams());
@@ -628,8 +637,6 @@ void compile(std::string fileName, std::string outputName) {
 
   // loock for main
   std::optional<Symbol> sym = contextManager.lookup("main");
-  // TODO: check function definition and types here (once everything is parser,
-  // so we will be able to use functions that are define after the funcall).
   if (!sym.has_value()) {
     errMgr.newError("no entry point.");
   }

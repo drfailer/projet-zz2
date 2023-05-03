@@ -3,6 +3,12 @@
 #include <sstream>
 #include <iostream>
 
+/* TODO:
+ *
+ * Create a Warining and Error class and find a way to sort the messages at the
+ * end.
+ */
+
 class ErrorManager
 {
   private:
