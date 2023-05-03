@@ -66,7 +66,7 @@ bool checkTypeError(std::list<Type> expectedType, std::list<Type> funcallType) {
 
 void checkType(std::string name, int line, int column, Type expected, Type founded)
 {
-  if (expected != founded && founded != VOID) {
+  if (expected != founded && founded != VOID && expected != VOID) {
    std::ostringstream oss;
    oss << "assignment at " << line << ":" << column
        << " " << name << " is of type "

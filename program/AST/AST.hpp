@@ -179,13 +179,15 @@ class ArrayAccess: public Array
 class Assignement : public ASTNode
 {
   private:
-    std::shared_ptr<TypedElement> variable;
-    std::shared_ptr<ASTNode> value;
+    std::shared_ptr<Variable> variable;
+    std::shared_ptr<TypedElement> value;
 
   public:
+    std::shared_ptr<Variable> getVariable() const { return variable; }
+    std::shared_ptr<TypedElement> getValue() const { return value; }
     void display() override;
     void compile(std::ofstream&, int) override;
-    Assignement(std::shared_ptr<TypedElement>, std::shared_ptr<ASTNode>);
+    Assignement(std::shared_ptr<Variable>, std::shared_ptr<TypedElement>);
 };
 
 /**

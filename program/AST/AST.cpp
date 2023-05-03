@@ -222,7 +222,7 @@ void Block::compile(std::ofstream& fs, int lvl)
 
 /* -------------------------------------------------------------------------- */
 
-Assignement::Assignement(std::shared_ptr<TypedElement> variable, std::shared_ptr<ASTNode> value):
+Assignement::Assignement(std::shared_ptr<Variable> variable, std::shared_ptr<TypedElement> value):
   variable(variable), value(value)
 {}
 

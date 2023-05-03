@@ -12,9 +12,11 @@ fn fonc(int a) -> int {
 # # erreur: pas de fonction main
 fn main_() {
   int a;
+  chr c;
   set(a, 'a'); # avertissement: a de type int
   set(b, 5); # erreur: de définition
+  set(c, fonc(4)); # avertissement sur le type avec les funcall aussi
 
-  fonction(a, b); # erreur: fonction non définie
+  fonction(a, b); # erreur: fonction non définie et b non défini
 }
 

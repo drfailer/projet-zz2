@@ -50,6 +50,9 @@
   ContextManager contextManager;
   ErrorManager errMgr;
   std::string currentFunction = "";
+
+  std::list<std::pair<std::shared_ptr<Funcall>, std::pair<int, int>>> funcallsToCheck;
+  std::list<std::pair<std::shared_ptr<Assignement>, std::pair<int, int>>> assignementsToCheck;
 }
 
 %token <long long>  INT
@@ -385,23 +388,12 @@ funcall:
   }
   params')'
   {
-    std::list<Type> expectedType;
-    std::optional<Symbol> sym = contextManager.lookup($1);
     std::shared_ptr<Funcall> funcall = pb.createFuncall();
-
-    if (sym.has_value()) {
-      // get the founded return type (types of the parameters)
-      std::list<Type> funcallType = getTypes(funcall->getParams());
-      funcall->setType(expectedType.back());
-      expectedType = sym.value().getType();
-      expectedType.pop_back(); // remove the return type
-
-      if (checkTypeError(expectedType, funcallType)) {
-        reportTypeError($1, @1.begin.line, @1.begin.column, expectedType, funcallType);
-      }
-    } else {
-       reportDefinitionError($1, @1.begin.line, @1.begin.column);
-    }
+    // TODO: save the funcall and params in a vector (create a struct)
+    funcall->setType(VOID); // type to VOID by default, will change on the type check
+    std::pair<int, int> position = std::make_pair(@1.begin.line, @1.begin.column);
+    funcallsToCheck.push_back(std::make_pair(funcall, position));
+    // the type check is done at the end !
     DEBUG("new funcall: " << $1);
     // check the type
     $$ = funcall;
@@ -433,8 +425,18 @@ assignement:
     DEBUG("new assignement");
     Type icType = $ic->getType();
     std::shared_ptr<Variable> v = std::static_pointer_cast<Variable>($c);
-    checkType(v->getId(), @c.begin.line, @c.begin.column, $c->getType(), icType);
-    pb.pushBlock(std::make_shared<Assignement>($c, $ic));
+    std::shared_ptr<Assignement> newAssignement = std::make_shared<Assignement>(v, $ic);
+
+    if (std::static_pointer_cast<Funcall>($ic)) { // if funcall
+      // this is a funcall so we have to wait the end of the parsing to check
+      std::pair<int, int> position = std::make_pair(@c.begin.line, @c.begin.column);
+      assignementsToCheck.push_back(std::pair(newAssignement, position));
+    }
+    else {
+      checkType(v->getId(), @c.begin.line, @c.begin.column, $c->getType(), icType);
+    }
+    pb.pushBlock(newAssignement);
+    // TODO: check the type for strings -> array of char
   }
   ;
 
@@ -456,6 +458,7 @@ value:
     DEBUG("new char: " << $1);
     type_t v = { .c = $1 };
     $$ = Value(v, CHR);
+    // TODO: add the string value
   }
   ;
 
@@ -577,6 +580,37 @@ void makeExecutable(std::string file) {
   );
 }
 
+void checkAssignements() {
+  for (auto ap : assignementsToCheck) {
+      checkType(ap.first->getVariable()->getId(),
+                ap.second.first, ap.second.second,
+                ap.first->getVariable()->getType(),
+                ap.first->getValue()->getType());
+  }
+}
+
+void checkFuncalls() {
+  for (auto fp : funcallsToCheck) {
+    std::list<Type> funcallType = getTypes(fp.first->getParams());
+    std::optional<Symbol> sym = contextManager.lookup(fp.first->getFunctionName());
+    std::list<Type> expectedType;
+
+    if (sym.has_value()) {
+      // get the founded return type (types of the parameters)
+      std::list<Type> funcallType = getTypes(fp.first->getParams());
+      fp.first->setType(expectedType.back());
+      expectedType = sym.value().getType();
+      expectedType.pop_back(); // remove the return type
+
+      if (checkTypeError(expectedType, funcallType)) {
+        reportTypeError(fp.first->getFunctionName(), fp.second.first, fp.second.second, expectedType, funcallType);
+      }
+    } else {
+       reportDefinitionError(fp.first->getFunctionName(), fp.second.first, fp.second.second);
+    }
+  }
+}
+
 void compile(std::string fileName, std::string outputName) {
   ProgramBuilder pb;
   Preprocessor pp("__main_pp.prog__");
@@ -589,9 +623,13 @@ void compile(std::string fileName, std::string outputName) {
   interpreter::Scanner scanner{ is , std::cerr };
   interpreter::Parser parser{ &scanner, pb };
   parser.parse();
+  checkFuncalls();
+  checkAssignements();
 
   // loock for main
   std::optional<Symbol> sym = contextManager.lookup("main");
+  // TODO: check function definition and types here (once everything is parser,
+  // so we will be able to use functions that are define after the funcall).
   if (!sym.has_value()) {
     errMgr.newError("no entry point.");
   }
