@@ -2,7 +2,7 @@
 
 Projet de seconde année à l'ISIMA.
 
-**IMPORTANT**: le code source du transpileur à été déplacé dans son propre
+**IMPORTANT**: le code source du transpileur a été déplacé dans son propre
            [répertoire git](https://github.com/drfailer/prog). Le rapport est toujours disponible ici.
 
 ## Objectif
